@@ -46,6 +46,9 @@ enum class InputEventType {
 	MIDI,
 	SHORTCUT,
 	ACTION,
+	VIRTUAL_BUTTON,
+	VIRTUAL_MOTION,
+	VIRTUAL_GESTURE,
 	MAX,
 };
 

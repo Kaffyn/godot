@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="VirtualGestureArea" inherits="VirtualDevice" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		A control for recognizing complex touch gestures (shapes and symbols).
+	</brief_description>
+	<description>
+		[VirtualGestureArea] is a specialized control for recognizing multi-touch, multi-stroke gestures such as swipes, geometric shapes, and symbols.
+		
+		**Architecture Note (Pure Gesture):**
+		This node is designed strictly for **Discrete Pattern Recognition** (e.g., casting spells, drawing symbols). It accumulates touch points and emits [InputEventVirtualGesture] only when the gesture is recognized (usually on touch release).
+		It does **NOT** emit continuous motion events. For camera control or aiming, use [VirtualTouchPad].
+		
+		**Multistroke Support:**
+		It automatically handles multi-stroke gestures (like drawing an 'X' with two lines) by using the [GestureRecognizer] internally.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_min_confidence" qualifiers="const">
+			<return type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="get_resample_points" qualifiers="const">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="set_min_confidence">
+			<return type="void" />
+			<param index="0" name="confidence" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="set_resample_points">
+			<return type="void" />
+			<param index="0" name="points" type="int" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="min_confidence" type="float" setter="set_min_confidence" getter="get_min_confidence" default="0.5">
+			Minimum confidence required to recognize a gesture.
+		</member>
+		<member name="resample_points" type="int" setter="set_resample_points" getter="get_resample_points" default="32">
+			Number of points to use for recognition.
+		</member>
+	</members>
+</class>

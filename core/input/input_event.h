@@ -592,3 +592,116 @@ public:
 
 	InputEventShortcut();
 };
+
+class InputEventVirtualButton : public InputEventWithModifiers {
+	GDCLASS(InputEventVirtualButton, InputEventWithModifiers);
+
+	int button_index = 0;
+	float pressure = 0;
+
+protected:
+	static void _bind_methods();
+
+public:
+	void set_button_index(int p_index);
+	int get_button_index() const;
+
+	void set_pressure(float p_pressure);
+	float get_pressure() const;
+
+	void set_pressed(bool p_pressed);
+	void set_canceled(bool p_canceled);
+
+	virtual bool action_match(const Ref<InputEvent> &p_event, bool p_exact_match, float p_deadzone, bool *r_pressed, float *r_strength, float *r_raw_strength) const override;
+	virtual bool is_match(const Ref<InputEvent> &p_event, bool p_exact_match = true) const override;
+
+	virtual bool is_action_type() const override { return true; }
+
+	virtual String as_text() const override;
+	virtual String _to_string() override;
+
+	InputEventType get_type() const final override { return InputEventType::VIRTUAL_BUTTON; }
+};
+
+class InputEventVirtualMotion : public InputEvent {
+	GDCLASS(InputEventVirtualMotion, InputEvent);
+
+	int axis = 0;
+	float axis_value = 0;
+
+protected:
+	static void _bind_methods();
+
+public:
+	void set_axis(int p_axis);
+	int get_axis() const;
+
+	void set_axis_value(float p_value);
+	float get_axis_value() const;
+
+	virtual bool action_match(const Ref<InputEvent> &p_event, bool p_exact_match, float p_deadzone, bool *r_pressed, float *r_strength, float *r_raw_strength) const override;
+	virtual bool is_match(const Ref<InputEvent> &p_event, bool p_exact_match = true) const override;
+
+	virtual bool is_action_type() const override { return true; }
+
+	virtual String as_text() const override;
+	virtual String _to_string() override;
+
+	InputEventType get_type() const final override { return InputEventType::VIRTUAL_MOTION; }
+};
+
+class InputEventVirtualGesture : public InputEvent {
+	GDCLASS(InputEventVirtualGesture, InputEvent);
+
+	int gesture_type = 0;
+	Vector2 delta;
+	float value = 0;
+	Vector2 position;
+	Vector2 start_position;
+	Vector2 velocity;
+	Vector2 acceleration;
+	float pressure = 0;
+	PackedVector2Array points;
+
+protected:
+	static void _bind_methods();
+
+public:
+	void set_gesture_type(int p_type);
+	int get_gesture_type() const;
+
+	void set_delta(const Vector2 &p_delta);
+	Vector2 get_delta() const;
+
+	void set_value(float p_value);
+	float get_value() const;
+
+	void set_position(const Vector2 &p_position);
+	Vector2 get_position() const;
+
+	void set_start_position(const Vector2 &p_start_position);
+	Vector2 get_start_position() const;
+
+	void set_velocity(const Vector2 &p_velocity);
+	Vector2 get_velocity() const;
+
+	void set_acceleration(const Vector2 &p_acceleration);
+	Vector2 get_acceleration() const;
+
+	void set_pressure(float p_pressure);
+	float get_pressure() const;
+
+	void set_points(const PackedVector2Array &p_points);
+	PackedVector2Array get_points() const;
+
+	virtual bool action_match(const Ref<InputEvent> &p_event, bool p_exact_match, float p_deadzone, bool *r_pressed, float *r_strength, float *r_raw_strength) const override;
+	virtual bool is_match(const Ref<InputEvent> &p_event, bool p_exact_match = true) const override;
+	virtual RequiredResult<InputEvent> xformed_by(const Transform2D &p_xform, const Vector2 &p_local_ofs = Vector2()) const override;
+
+	virtual bool is_action_type() const override { return true; }
+
+	virtual String as_text() const override;
+	virtual String _to_string() override;
+
+	InputEventType get_type() const final override { return InputEventType::VIRTUAL_GESTURE; }
+};

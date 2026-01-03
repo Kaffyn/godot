@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GestureRecognizer" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		A robust multi-stroke gesture recognizer based on the $Q Super-Quick algorithm.
+	</brief_description>
+	<description>
+		[GestureRecognizer] implements the $Q Super-Quick algorithm (a variation of the $P Point Cloud Recognizer). Unlike simpler recognizers, it supports **multi-stroke gestures** (e.g., drawing an 'X' with two separate lines) and is **invariant to stroke order and direction**.
+
+		It works by converting the gesture into a normalized point cloud and matching it against a set of pre-defined or dynamically created templates using an efficient Look-up Table (LUT) approach.
+
+		**Features:**
+		- Multi-stroke support (use [method end_stroke] to separate strokes).
+		- Rotation invariant (matches shapes drawn at any angle).
+		- Scale and Position invariant.
+		- Dynamic API: Create custom templates at runtime using [method create_template] or [method create_multistroke_template].
+
+		**Built-in Templates:**
+		- Geometric Shapes: Circle, Square, Triangle, Check, X, ZigZag.
+		- Latin Alphabet: A-Z (Unistroke optimized versions).
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="add_point">
+			<return type="void" />
+			<param index="0" name="point" type="Vector2" />
+			<description>
+				Adds a point to the current active stroke. Call [method end_stroke] to finish the stroke and start a new one (for multi-stroke gestures).
+			</description>
+		</method>
+		<method name="clear">
+			<return type="void" />
+			<description>
+				Clears all current strokes, resetting the recognizer state.
+			</description>
+		</method>
+		<method name="create_multistroke_template">
+			<return type="void" />
+			<param index="0" name="type" type="int" />
+			<param index="1" name="strokes" type="Array" />
+			<description>
+				Creates a custom multi-stroke template associated with a gesture ID (can be a custom integer).
+				[param strokes] must be an Array of [PackedVector2Array], where each array represents a single stroke.
+			</description>
+		</method>
+		<method name="create_template">
+			<return type="void" />
+			<param index="0" name="type" type="int" />
+			<param index="1" name="points" type="PackedVector2Array" />
+			<description>
+				Creates a custom single-stroke template associated with a gesture ID.
+			</description>
+		</method>
+		<method name="end_stroke">
+			<return type="void" />
+			<description>
+				Marks the end of the current stroke. Subsequent calls to [method add_point] will start a new stroke. Essential for recognizing multi-stroke characters like 'X', 'H', or 'T'.
+			</description>
+		</method>
+		<method name="get_point_count" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns the total number of points in all current strokes.
+			</description>
+		</method>
+		<method name="get_points" qualifiers="const">
+			<return type="PackedVector2Array" />
+			<description>
+				Returns a flattened array of all points in all strokes.
+			</description>
+		</method>
+		<method name="recognize">
+			<return type="Dictionary" />
+			<description>
+				Analyzes the accumulated strokes and returns a [Dictionary] containing:
+				- [code]type[/code]: The recognized gesture ID (e.g., [constant GESTURE_CIRCLE_CLOCKWISE] or a custom ID).
+				- [code]confidence[/code]: Match confidence (0.0 to 1.0).
+				- [code]start_position[/code]: Start of the first stroke.
+				- [code]end_position[/code]: End of the last stroke.
+				- [code]duration[/code]: Total duration.
+				Returns [code]GESTURE_UNKNOWN[/code] if confidence is below [member min_confidence].
+			</description>
+		</method>
+		<method name="remove_template">
+			<return type="void" />
+			<param index="0" name="type" type="int" />
+			<description>
+				Removes all templates associated with the given gesture ID.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="min_confidence" type="float" setter="set_min_confidence" getter="get_min_confidence" default="0.5">
+			Minimum confidence threshold (0.0 to 1.0). The $Q algorithm is very permissive, so 0.5 is a reasonable default. Higher values require more precise drawing.
+		</member>
+		<member name="resample_points" type="int" setter="set_resample_points" getter="get_resample_points" default="32">
+			Number of points to normalize the point cloud to. Lower values (e.g. 32) are faster; higher values (e.g. 64) offer slightly more precision for complex shapes.
+		</member>
+	</members>
+	<constants>
+		<constant name="GESTURE_UNKNOWN" value="0" enum="GestureType">
+			No gesture recognized.
+		</constant>
+		<constant name="GESTURE_SWIPE_LEFT" value="1" enum="GestureType">
+			Swipe Left.
+		</constant>
+		<constant name="GESTURE_SWIPE_RIGHT" value="2" enum="GestureType">
+			Swipe Right.
+		</constant>
+		<constant name="GESTURE_SWIPE_UP" value="3" enum="GestureType">
+			Swipe Up.
+		</constant>
+		<constant name="GESTURE_SWIPE_DOWN" value="4" enum="GestureType">
+			Swipe Down.
+		</constant>
+		<constant name="GESTURE_SWIPE_UP_LEFT" value="5" enum="GestureType">
+			Swipe Up-Left.
+		</constant>
+		<constant name="GESTURE_SWIPE_UP_RIGHT" value="6" enum="GestureType">
+			Swipe Up-Right.
+		</constant>
+		<constant name="GESTURE_SWIPE_DOWN_LEFT" value="7" enum="GestureType">
+			Swipe Down-Left.
+		</constant>
+		<constant name="GESTURE_SWIPE_DOWN_RIGHT" value="8" enum="GestureType">
+			Swipe Down-Right.
+		</constant>
+		<constant name="GESTURE_CIRCLE_CLOCKWISE" value="9" enum="GestureType">
+			Circle.
+		</constant>
+		<constant name="GESTURE_CIRCLE_COUNTER_CLOCKWISE" value="10" enum="GestureType">
+			Circle (Reverse).
+		</constant>
+		<constant name="GESTURE_TRIANGLE" value="11" enum="GestureType">
+			Triangle.
+		</constant>
+		<constant name="GESTURE_SQUARE" value="12" enum="GestureType">
+			Square.
+		</constant>
+		<constant name="GESTURE_CHECK_MARK" value="13" enum="GestureType">
+			Check Mark (✓).
+		</constant>
+		<constant name="GESTURE_X_MARK" value="14" enum="GestureType">
+			X Mark.
+		</constant>
+		<constant name="GESTURE_ZIGZAG" value="15" enum="GestureType">
+			ZigZag pattern.
+		</constant>
+		<constant name="GESTURE_RECTANGLE" value="16" enum="GestureType">
+			Rectangle shape.
+		</constant>
+		<constant name="GESTURE_ELLIPSE" value="17" enum="GestureType">
+			Ellipse shape.
+		</constant>
+		<constant name="GESTURE_HEXAGON" value="18" enum="GestureType">
+			Hexagon shape.
+		</constant>
+		<constant name="GESTURE_PENTAGON" value="19" enum="GestureType">
+			Pentagon shape.
+		</constant>
+		<constant name="GESTURE_STAR" value="20" enum="GestureType">
+			Star shape (5-point).
+		</constant>
+		<constant name="GESTURE_DIAMOND" value="21" enum="GestureType">
+			Diamond (Rhombus) shape.
+		</constant>
+		<constant name="GESTURE_LETTER_A" value="22" enum="GestureType">
+			Letter A.
+		</constant>
+		<constant name="GESTURE_LETTER_B" value="17" enum="GestureType">
+			Letter B.
+		</constant>
+		<constant name="GESTURE_LETTER_C" value="18" enum="GestureType">
+			Letter C.
+		</constant>
+		<constant name="GESTURE_LETTER_D" value="19" enum="GestureType">
+			Letter D.
+		</constant>
+		<constant name="GESTURE_LETTER_E" value="20" enum="GestureType">
+			Letter E.
+		</constant>
+		<constant name="GESTURE_LETTER_F" value="21" enum="GestureType">
+			Letter F.
+		</constant>
+		<constant name="GESTURE_LETTER_G" value="22" enum="GestureType">
+			Letter G.
+		</constant>
+		<constant name="GESTURE_LETTER_H" value="23" enum="GestureType">
+			Letter H.
+		</constant>
+		<constant name="GESTURE_LETTER_I" value="24" enum="GestureType">
+			Letter I.
+		</constant>
+		<constant name="GESTURE_LETTER_J" value="25" enum="GestureType">
+			Letter J.
+		</constant>
+		<constant name="GESTURE_LETTER_K" value="26" enum="GestureType">
+			Letter K.
+		</constant>
+		<constant name="GESTURE_LETTER_L" value="27" enum="GestureType">
+			Letter L.
+		</constant>
+		<constant name="GESTURE_LETTER_M" value="28" enum="GestureType">
+			Letter M.
+		</constant>
+		<constant name="GESTURE_LETTER_N" value="29" enum="GestureType">
+			Letter N.
+		</constant>
+		<constant name="GESTURE_LETTER_O" value="30" enum="GestureType">
+			Letter O.
+		</constant>
+		<constant name="GESTURE_LETTER_P" value="31" enum="GestureType">
+			Letter P.
+		</constant>
+		<constant name="GESTURE_LETTER_Q" value="32" enum="GestureType">
+			Letter Q.
+		</constant>
+		<constant name="GESTURE_LETTER_R" value="33" enum="GestureType">
+			Letter R.
+		</constant>
+		<constant name="GESTURE_LETTER_S" value="34" enum="GestureType">
+			Letter S.
+		</constant>
+		<constant name="GESTURE_LETTER_T" value="35" enum="GestureType">
+			Letter T.
+		</constant>
+		<constant name="GESTURE_LETTER_U" value="36" enum="GestureType">
+			Letter U.
+		</constant>
+		<constant name="GESTURE_LETTER_V" value="37" enum="GestureType">
+			Letter V.
+		</constant>
+		<constant name="GESTURE_LETTER_W" value="38" enum="GestureType">
+			Letter W.
+		</constant>
+		<constant name="GESTURE_LETTER_X" value="39" enum="GestureType">
+			Letter X.
+		</constant>
+		<constant name="GESTURE_LETTER_Y" value="40" enum="GestureType">
+			Letter Y.
+		</constant>
+		<constant name="GESTURE_LETTER_Z" value="41" enum="GestureType">
+			Letter Z.
+		</constant>
+		<constant name="GESTURE_LETTER_Z" value="41" enum="GestureType">
+			Letter Z gesture.
+		</constant>
+		<constant name="GESTURE_DIGIT_0" value="42" enum="GestureType">
+			Digit 0 gesture.
+		</constant>
+		<constant name="GESTURE_DIGIT_1" value="43" enum="GestureType">
+			Digit 1 gesture.
+		</constant>
+		<constant name="GESTURE_DIGIT_2" value="44" enum="GestureType">
+			Digit 2 gesture.
+		</constant>
+		<constant name="GESTURE_DIGIT_3" value="45" enum="GestureType">
+			Digit 3 gesture.
+		</constant>
+		<constant name="GESTURE_DIGIT_4" value="46" enum="GestureType">
+			Digit 4 gesture.
+		</constant>
+		<constant name="GESTURE_DIGIT_5" value="47" enum="GestureType">
+			Digit 5 gesture.
+		</constant>
+		<constant name="GESTURE_DIGIT_6" value="48" enum="GestureType">
+			Digit 6 gesture.
+		</constant>
+		<constant name="GESTURE_DIGIT_7" value="49" enum="GestureType">
+			Digit 7 gesture.
+		</constant>
+		<constant name="GESTURE_DIGIT_8" value="50" enum="GestureType">
+			Digit 8 gesture.
+		</constant>
+		<constant name="GESTURE_DIGIT_9" value="51" enum="GestureType">
+			Digit 9 gesture.
+		</constant>
+	</constants>
+</class>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="VirtualJoystickRegion" inherits="VirtualJoystick" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		An on-screen area that spawns a virtual joystick at the touch position.
+	</brief_description>
+	<description>
+		[VirtualJoystickRegion] is a specialized [VirtualJoystick] designed to cover a large area of the screen (e.g., the entire left half). It remains invisible until touched. When touched, the joystick "embodies" at the touch position, allowing for dynamic analog control without requiring precision from the user to hit a fixed timestamp. It defaults to [constant VirtualJoystick.JOYSTICK_MODE_DYNAMIC].
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+	</members>
+</class>
