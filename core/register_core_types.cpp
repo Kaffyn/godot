@@ -69,7 +69,6 @@
 #include "core/math/a_star.h"
 #include "core/math/a_star_grid_2d.h"
 #include "core/math/expression.h"
-#include "core/math/gesture_recognizer.h"
 #include "core/math/random_number_generator.h"
 #include "core/math/triangle_mesh.h"
 #include "core/object/class_db.h"
@@ -198,9 +197,6 @@ void register_core_types() {
 	GDREGISTER_CLASS(InputEventMagnifyGesture);
 	GDREGISTER_CLASS(InputEventPanGesture);
 	GDREGISTER_CLASS(InputEventMIDI);
-	GDREGISTER_CLASS(InputEventVirtualButton);
-	GDREGISTER_CLASS(InputEventVirtualMotion);
-	GDREGISTER_CLASS(InputEventVirtualGesture);
 
 	// Network
 	GDREGISTER_ABSTRACT_CLASS(StreamPeer);
@@ -278,7 +274,6 @@ void register_core_types() {
 	GDREGISTER_CLASS(AStar3D);
 	GDREGISTER_CLASS(AStar2D);
 	GDREGISTER_CLASS(AStarGrid2D);
-	GDREGISTER_CLASS(GestureRecognizer);
 	GDREGISTER_CLASS(EncodedObjectAsID);
 	GDREGISTER_CLASS(RandomNumberGenerator);
 #ifndef DISABLE_DEPRECATED

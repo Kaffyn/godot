@@ -31,7 +31,6 @@
 #include "event_listener_line_edit.h"
 
 #include "core/input/input_map.h"
-#include "core/math/gesture_recognizer.h"
 #include "scene/gui/dialogs.h"
 
 // Maps to 2*axis if value is neg, or 2*axis+1 if value is pos.
@@ -114,60 +113,7 @@ String EventListenerLineEdit::get_event_text(const Ref<InputEvent> &p_event, boo
 		// TRANSLATORS: %d is the axis number, the first %s is either "-" or "+", and the second %s is the description of the axis.
 		text = vformat(TTR("Joypad Axis %d %s (%s)"), (int64_t)jp_motion->get_axis(), jp_motion->get_axis_value() < 0 ? "-" : "+", desc);
 	}
-	Ref<InputEventVirtualMotion> vm = p_event;
-	if (vm.is_valid()) {
-		String desc = TTR("Unknown Virtual Axis");
-		if (vm->get_axis() < (int)JoyAxis::MAX) {
-			desc = TTR(_joy_axis_descriptions[2 * (size_t)vm->get_axis() + (vm->get_axis_value() < 0 ? 0 : 1)]);
-		}
-
-		// TRANSLATORS: %d is the axis number, the first %s is either "-" or "+", and the second %s is the description of the axis.
-		text = vformat(TTR("Virtual Axis %d %s (%s)"), (int64_t)vm->get_axis(), vm->get_axis_value() < 0 ? "-" : "+", desc);
-	}
-	Ref<InputEventVirtualButton> vb = p_event;
-	if (vb.is_valid()) {
-		switch (vb->get_button_index()) {
-			case (int)JoyButton::DPAD_UP: text = TTR("Virtual D-Pad Up"); break;
-			case (int)JoyButton::DPAD_DOWN: text = TTR("Virtual D-Pad Down"); break;
-			case (int)JoyButton::DPAD_LEFT: text = TTR("Virtual D-Pad Left"); break;
-			case (int)JoyButton::DPAD_RIGHT: text = TTR("Virtual D-Pad Right"); break;
-			default: text = vformat(TTR("Virtual Button %d"), (int64_t)vb->get_button_index()); break;
-		}
-	}
-	Ref<InputEventVirtualGesture> vg = p_event;
-	if (vg.is_valid()) {
-		String gesture_name = TTR("Unknown Gesture");
-
-		// Names should match GestureRecognizer enum
-		switch(vg->get_gesture_type()) {
-			case GestureRecognizer::GESTURE_SWIPE_LEFT: gesture_name = TTR("Swipe Left"); break;
-			case GestureRecognizer::GESTURE_SWIPE_RIGHT: gesture_name = TTR("Swipe Right"); break;
-			case GestureRecognizer::GESTURE_SWIPE_UP: gesture_name = TTR("Swipe Up"); break;
-			case GestureRecognizer::GESTURE_SWIPE_DOWN: gesture_name = TTR("Swipe Down"); break;
-			case GestureRecognizer::GESTURE_SWIPE_UP_LEFT: gesture_name = TTR("Swipe Up-Left"); break;
-			case GestureRecognizer::GESTURE_SWIPE_UP_RIGHT: gesture_name = TTR("Swipe Up-Right"); break;
-			case GestureRecognizer::GESTURE_SWIPE_DOWN_LEFT: gesture_name = TTR("Swipe Down-Left"); break;
-			case GestureRecognizer::GESTURE_SWIPE_DOWN_RIGHT: gesture_name = TTR("Swipe Down-Right"); break;
-			case GestureRecognizer::GESTURE_CIRCLE_CLOCKWISE: gesture_name = TTR("Circle Clockwise"); break;
-			case GestureRecognizer::GESTURE_CIRCLE_COUNTER_CLOCKWISE: gesture_name = TTR("Circle Counter-Clockwise"); break;
-			case GestureRecognizer::GESTURE_TRIANGLE: gesture_name = TTR("Triangle"); break;
-			case GestureRecognizer::GESTURE_SQUARE: gesture_name = TTR("Square"); break;
-			case GestureRecognizer::GESTURE_CHECK_MARK: gesture_name = TTR("Check Mark"); break;
-			case GestureRecognizer::GESTURE_X_MARK: gesture_name = TTR("X Mark"); break;
-			case GestureRecognizer::GESTURE_ZIGZAG: gesture_name = TTR("ZigZag"); break;
-			case GestureRecognizer::GESTURE_RECTANGLE: gesture_name = TTR("Rectangle"); break;
-			case GestureRecognizer::GESTURE_ELLIPSE: gesture_name = TTR("Ellipse"); break;
-			case GestureRecognizer::GESTURE_HEXAGON: gesture_name = TTR("Hexagon"); break;
-			case GestureRecognizer::GESTURE_PENTAGON: gesture_name = TTR("Pentagon"); break;
-			case GestureRecognizer::GESTURE_STAR: gesture_name = TTR("Star"); break;
-			case GestureRecognizer::GESTURE_DIAMOND: gesture_name = TTR("Diamond"); break;
-			default: gesture_name = vformat(TTR("Virtual Gesture %d"), (int64_t)vg->get_gesture_type()); break;
-		}
-
-		text = gesture_name;
-	}
-
-	if (p_include_device && (mouse.is_valid() || jp_button.is_valid() || jp_motion.is_valid() || vb.is_valid() || vm.is_valid() || vg.is_valid())) {
+	if (p_include_device && (mouse.is_valid() || jp_button.is_valid() || jp_motion.is_valid())) {
 		String device_string = get_device_string(p_event->get_device());
 		text += vformat(" - %s", device_string);
 	}
@@ -187,17 +133,11 @@ bool EventListenerLineEdit::_is_event_allowed(const Ref<InputEvent> &p_event) co
 	const Ref<InputEventKey> k = p_event;
 	const Ref<InputEventJoypadButton> jb = p_event;
 	const Ref<InputEventJoypadMotion> jm = p_event;
-	const Ref<InputEventVirtualButton> vb = p_event;
-	const Ref<InputEventVirtualMotion> vm = p_event;
-	const Ref<InputEventVirtualGesture> vg = p_event;
 
 	return (mb.is_valid() && (allowed_input_types & INPUT_MOUSE_BUTTON)) ||
 			(k.is_valid() && (allowed_input_types & INPUT_KEY)) ||
 			(jb.is_valid() && (allowed_input_types & INPUT_JOY_BUTTON)) ||
-			(jm.is_valid() && (allowed_input_types & INPUT_JOY_MOTION)) ||
-			(vb.is_valid() && (allowed_input_types & INPUT_VIRTUAL_BUTTON)) ||
-			(vm.is_valid() && (allowed_input_types & INPUT_VIRTUAL_MOTION)) ||
-			(vg.is_valid() && (allowed_input_types & INPUT_VIRTUAL_GESTURE));
+			(jm.is_valid() && (allowed_input_types & INPUT_JOY_MOTION));
 }
 
 void EventListenerLineEdit::gui_input(const Ref<InputEvent> &p_event) {

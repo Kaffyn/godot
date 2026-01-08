@@ -395,7 +395,3 @@ $RECYCLE.BIN/
 *.msp
 *.lnk
 *.generated.props
-/VirtualTest/.godot
-*.import
-*.uid
-/kinesis

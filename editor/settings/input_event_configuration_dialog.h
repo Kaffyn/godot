@@ -47,9 +47,6 @@ private:
 		Ref<Texture2D> mouse;
 		Ref<Texture2D> joypad_button;
 		Ref<Texture2D> joypad_axis;
-		Ref<Texture2D> virtual_button;
-		Ref<Texture2D> virtual_axis;
-		Ref<Texture2D> virtual_gesture;
 	} icon_cache;
 
 	Ref<InputEvent> event;
