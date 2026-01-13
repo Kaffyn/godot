@@ -1,0 +1,68 @@
+name: Upstream Sync
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Daily at midnight UTC
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  TARGET_BRANCH: Zyris
+  UPSTREAM_REPO: https://github.com/godotengine/godot.git
+  UPSTREAM_BRANCH: origin/4.5
+
+jobs:
+  sync_latest_from_upstream:
+    name: Sync with Upstream
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_BRANCH }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Add or Update Upstream
+        run: |
+          set -euo pipefail
+          git remote add upstream $UPSTREAM_REPO || \
+          git remote set-url upstream $UPSTREAM_REPO
+          git fetch upstream $UPSTREAM_BRANCH
+
+      - name: Check if upstream has new commits
+        id: check
+        run: |
+          set -euo pipefail
+          LOCAL=$(git rev-parse HEAD)
+          UPSTREAM=$(git rev-parse upstream/$UPSTREAM_BRANCH)
+
+          if [ "$LOCAL" = "$UPSTREAM" ]; then
+            echo "up_to_date=true" >> $GITHUB_OUTPUT
+          else
+            echo "up_to_date=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Rebase onto upstream
+        if: steps.check.outputs.up_to_date == 'false'
+        run: |
+          set -euo pipefail
+          echo "Starting rebase..."
+          git rebase upstream/$UPSTREAM_BRANCH
+
+      - name: Push changes
+        if: steps.check.outputs.up_to_date == 'false'
+        run: |
+          git push origin $TARGET_BRANCH --force-with-lease

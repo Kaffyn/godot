@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  event_listener_line_edit.h                                            */
+/*  virtual_touch_pad.h                                                   */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,49 +30,87 @@
 
 #pragma once
 
-#include "scene/gui/line_edit.h"
+#include "scene/gui/virtual_device.h"
 
-enum InputType {
-	INPUT_KEY = 1,
-	INPUT_MOUSE_BUTTON = 2,
-	INPUT_JOY_BUTTON = 4,
-	INPUT_JOY_MOTION = 8,
-	INPUT_VIRTUAL_BUTTON = 16,
-	INPUT_VIRTUAL_MOTION = 32,
-};
+class Timer;
 
-class EventListenerLineEdit : public LineEdit {
-	GDCLASS(EventListenerLineEdit, LineEdit)
+class VirtualTouchPad : public VirtualDevice {
+	GDCLASS(VirtualTouchPad, VirtualDevice);
 
-	uint64_t hold_next = 0;
-	Ref<InputEvent> hold_event;
+public:
+	enum TouchPadHand {
+		HAND_LEFT,
+		HAND_RIGHT,
+	};
 
-	int allowed_input_types = INPUT_KEY | INPUT_MOUSE_BUTTON | INPUT_JOY_BUTTON | INPUT_JOY_MOTION;
-	bool ignore_next_event = true;
-	bool share_keycodes = false;
-	Ref<InputEvent> event;
-
-	bool _is_event_allowed(const Ref<InputEvent> &p_event) const;
-
-	void gui_input(const Ref<InputEvent> &p_event) override;
-	void _on_text_changed(const String &p_text);
+private:
+	// Axis Mapping is derived from hand property
 
 protected:
+	// Settings - accessible to derived touchpads
+	float sensitivity = 1.0f;
+	TouchPadHand hand = HAND_LEFT;
+
+	// Visuals
+	bool trace_visible = true;
+	int trace_length = 30; // Max points in trail
+	float fade_duration = 1.0f; // Time to fade out completely
+	Color base_color = Color(1, 1, 1, 0.5); // If alpha is 0, use theme color
+	float base_width = 4.0f; // If <= 0, use theme constant
+	bool tapering = false;
+
+	Vector<Vector2> trace_points;
+	Vector2 last_pos;
+	Vector2 current_pos;
+	Timer *fade_timer = nullptr;
+
+	struct ThemeCache {
+		Ref<StyleBox> style_panel;
+		Color trace_color;
+		int trace_width = 2; // Default
+		Ref<Texture2D> trace_texture; // Optional pattern
+	} theme_cache;
+
+	virtual void _update_theme_item_cache() override;
 	void _notification(int p_what);
 	static void _bind_methods();
+	void _on_fade_timer_timeout();
+	void _update_timer_interval();
+
+	virtual void _on_touch_down(int p_index, const Vector2 &p_pos) override;
+	virtual void _on_touch_up(int p_index, const Vector2 &p_pos) override;
+	virtual void _on_drag(int p_index, const Vector2 &p_pos, const Vector2 &p_relative) override;
+
+	void _reset_touchpad();
+	virtual void pressed_state_changed() override;
+	virtual Size2 get_minimum_size() const override;
 
 public:
-	static String get_event_text(const Ref<InputEvent> &p_event, bool p_include_device);
-	static String get_device_string(int p_device);
+	void set_sensitivity(float p_sensitivity);
+	float get_sensitivity() const;
 
-	Ref<InputEvent> get_event() const;
-	void clear_event();
+	void set_hand(TouchPadHand p_hand);
+	TouchPadHand get_hand() const { return hand; }
 
-	void set_allowed_input_types(int p_type_masks);
-	int get_allowed_input_types() const;
+	void set_trace_visible(bool p_visible);
+	bool is_trace_visible() const;
 
-	void grab_focus();
+	void set_trace_length(int p_length);
+	int get_trace_length() const;
 
-public:
-	EventListenerLineEdit();
+	void set_fade_duration(float p_duration);
+	float get_fade_duration() const;
+
+	void set_base_color(const Color &p_color);
+	Color get_base_color() const;
+
+	void set_base_width(float p_width);
+	float get_base_width() const;
+
+	void set_tapering(bool p_tapering);
+	bool is_tapering() const;
+
+	VirtualTouchPad();
 };
+
+VARIANT_ENUM_CAST(VirtualTouchPad::TouchPadHand);
