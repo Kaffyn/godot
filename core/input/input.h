@@ -34,6 +34,7 @@
 #include "core/object/object.h"
 #include "core/os/keyboard.h"
 #include "core/os/thread_safe.h"
+#include "core/templates/rb_map.h"
 #include "core/templates/rb_set.h"
 #include "core/variant/typed_array.h"
 
@@ -78,6 +79,21 @@ public:
 		CURSOR_MAX
 	};
 
+	enum LastInputType {
+		LAST_INPUT_KEYBOARD_MOUSE,
+		LAST_INPUT_JOYPAD,
+		LAST_INPUT_TOUCH,
+		LAST_INPUT_UNKNOWN,
+	};
+
+	class JoypadFeatures {
+	public:
+		virtual ~JoypadFeatures() {}
+
+		virtual bool has_joy_light() const { return false; }
+		virtual bool set_joy_light(const Color &p_color) { return false; }
+	};
+
 	static constexpr int32_t JOYPADS_MAX = 16;
 
 	typedef void (*EventDispatchFunc)(const Ref<InputEvent> &p_event);
@@ -90,6 +106,12 @@ private:
 	RBSet<Key> keys_pressed;
 	RBSet<JoyButton> joy_buttons_pressed;
 	RBMap<JoyAxis, float> _joy_axis;
+	struct VirtualDeviceState {
+		RBSet<int> buttons_pressed;
+		RBMap<int, float> axes_values;
+	};
+	HashMap<int, VirtualDeviceState> virtual_device_states;
+
 	//RBMap<StringName,int> custom_action_press;
 	bool gravity_enabled = false;
 	Vector3 gravity;
@@ -103,6 +125,9 @@ private:
 	int64_t mouse_window = 0;
 	bool legacy_just_pressed_behavior = false;
 	bool disable_input = false;
+
+	LastInputType last_input_type = LAST_INPUT_UNKNOWN;
+	void _set_last_input_type(LastInputType p_type);
 
 	struct ActionState {
 		uint64_t pressed_physics_frame = UINT64_MAX;
@@ -174,6 +199,8 @@ private:
 		int mapping = -1;
 		int hat_current = 0;
 		Dictionary info;
+		bool has_light = false;
+		Input::JoypadFeatures *features = nullptr;
 	};
 
 	VelocityTrack mouse_velocity_track;
@@ -253,6 +280,7 @@ private:
 	void _button_event(int p_device, JoyButton p_index, bool p_pressed);
 	void _axis_event(int p_device, JoyAxis p_axis, float p_value);
 	void _update_action_cache(const StringName &p_action_name, ActionState &r_action_state);
+	void _update_joypad_features(int p_device);
 
 	void _parse_input_event_impl(const Ref<InputEvent> &p_event, bool p_is_emulated);
 
@@ -306,6 +334,8 @@ public:
 	bool is_key_label_pressed(Key p_keycode) const;
 	bool is_mouse_button_pressed(MouseButton p_button) const;
 	bool is_joy_button_pressed(int p_device, JoyButton p_button) const;
+	bool is_virtual_button_pressed(int p_device_id, int p_button_index) const;
+	float get_virtual_axis_value(int p_device_id, int p_axis) const;
 	bool is_action_pressed(const StringName &p_action, bool p_exact = false) const;
 	bool is_action_just_pressed(const StringName &p_action, bool p_exact = false) const;
 	bool is_action_just_released(const StringName &p_action, bool p_exact = false) const;
@@ -319,6 +349,7 @@ public:
 
 	float get_joy_axis(int p_device, JoyAxis p_axis) const;
 	String get_joy_name(int p_idx);
+	String get_joy_button_string(JoyButton p_button);
 	TypedArray<int> get_connected_joypads();
 	Vector2 get_joy_vibration_strength(int p_device);
 	float get_joy_vibration_duration(int p_device);
@@ -346,9 +377,16 @@ public:
 	void set_gyroscope(const Vector3 &p_gyroscope);
 	void set_joy_axis(int p_device, JoyAxis p_axis, float p_value);
 
+	void set_joy_features(int p_device, JoypadFeatures *p_features);
+
+	bool set_joy_light(int p_device, const Color &p_color);
+	bool has_joy_light(int p_device) const;
+
 	void start_joy_vibration(int p_device, float p_weak_magnitude, float p_strong_magnitude, float p_duration = 0);
 	void stop_joy_vibration(int p_device);
 	void vibrate_handheld(int p_duration_ms = 500, float p_amplitude = -1.0);
+
+	LastInputType get_last_input_type() const;
 
 	void set_mouse_position(const Point2 &p_posf);
 
@@ -405,3 +443,4 @@ public:
 
 VARIANT_ENUM_CAST(Input::MouseMode);
 VARIANT_ENUM_CAST(Input::CursorShape);
+VARIANT_ENUM_CAST(Input::LastInputType);

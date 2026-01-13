@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  input_event_codec.h                                                   */
+/*  virtual_touch_pad.h                                                   */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,22 +30,60 @@
 
 #pragma once
 
-#include "core/input/input_event.h"
+#include "scene/gui/virtual_device.h"
 
-/**
- * Encodes the input event as a byte array.
- *
- * Returns `true` if the event was successfully encoded, `false` otherwise.
- */
-bool encode_input_event(const Ref<InputEvent> &p_event, PackedByteArray &r_data);
-void decode_input_event(const PackedByteArray &p_data, Ref<InputEvent> &r_event);
+class VirtualTouchPad : public VirtualDevice {
+	GDCLASS(VirtualTouchPad, VirtualDevice);
 
-void encode_input_event_key(const Ref<InputEventKey> &p_event, PackedByteArray &r_data);
-void encode_input_event_mouse_button(const Ref<InputEventMouseButton> &p_event, PackedByteArray &r_data);
-void encode_input_event_mouse_motion(const Ref<InputEventMouseMotion> &p_event, PackedByteArray &r_data);
-void encode_input_event_joypad_button(const Ref<InputEventJoypadButton> &p_event, PackedByteArray &r_data);
-void encode_input_event_joypad_motion(const Ref<InputEventJoypadMotion> &p_event, PackedByteArray &r_data);
-void encode_input_event_gesture_pan(const Ref<InputEventPanGesture> &p_event, PackedByteArray &r_data);
-void encode_input_event_gesture_magnify(const Ref<InputEventMagnifyGesture> &p_event, PackedByteArray &r_data);
-void encode_input_event_virtual_button(const Ref<InputEventVirtualButton> &p_event, PackedByteArray &r_data);
-void encode_input_event_virtual_motion(const Ref<InputEventVirtualMotion> &p_event, PackedByteArray &r_data);
+public:
+	enum TouchPadHand {
+		HAND_LEFT,
+		HAND_RIGHT,
+	};
+
+private:
+	// Axis Mapping is derived from hand property
+
+protected:
+	// Settings - accessible to derived touchpads
+	float sensitivity = 1.0f;
+	TouchPadHand hand = HAND_LEFT;
+
+	// Visuals
+	bool trace_visible = true;
+	Vector2 last_pos;
+	Vector2 current_pos;
+
+	struct ThemeCache {
+		Ref<StyleBox> style_panel;
+		Color trace_color;
+		int trace_width = 2; // Default
+		Ref<Texture2D> trace_texture; // Optional pattern
+	} theme_cache;
+
+	virtual void _update_theme_item_cache() override;
+	void _notification(int p_what);
+	static void _bind_methods();
+
+	virtual void _on_touch_down(int p_index, const Vector2 &p_pos) override;
+	virtual void _on_touch_up(int p_index, const Vector2 &p_pos) override;
+	virtual void _on_drag(int p_index, const Vector2 &p_pos, const Vector2 &p_relative) override;
+
+	void _reset_touchpad();
+	virtual void pressed_state_changed() override;
+	virtual Size2 get_minimum_size() const override;
+
+public:
+	void set_sensitivity(float p_sensitivity);
+	float get_sensitivity() const;
+
+	void set_hand(TouchPadHand p_hand);
+	TouchPadHand get_hand() const { return hand; }
+
+	void set_trace_visible(bool p_visible);
+	bool is_trace_visible() const;
+
+	VirtualTouchPad();
+};
+
+VARIANT_ENUM_CAST(VirtualTouchPad::TouchPadHand);
