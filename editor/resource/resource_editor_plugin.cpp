@@ -34,6 +34,14 @@
 #include "editor/editor_node.h"
 #include "editor/themes/editor_scale.h"
 
+String ResourceEditorPlugin::get_plugin_name() const {
+	return "Resource ";
+}
+
+Ref<Texture2D> ResourceEditorPlugin::get_plugin_icon() const {
+	return EditorNode::get_singleton()->get_editor_theme()->get_icon(SNAME("Resource"), EditorStringName(EditorIcons));
+}
+
 void ResourceEditorPlugin::edit(Object *p_object) {
 	Resource *res = Object::cast_to<Resource>(p_object);
 	if (resource_editor && res) {
@@ -87,7 +95,7 @@ ResourceEditorPlugin::ResourceEditorPlugin() {
 
 	resource_library = memnew(ResourceLibrary);
 	resource_library->set_custom_minimum_size(Size2(0, 250 * EDSCALE));
-	library_button = add_control_to_bottom_panel(resource_library, TTR("Library"));
+	library_button = add_control_to_bottom_panel(resource_library, "Resource Library");
 	library_button->hide();
 }
 

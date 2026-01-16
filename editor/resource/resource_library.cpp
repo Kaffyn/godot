@@ -65,7 +65,7 @@ void ResourceLibrary::_update_tree() {
 
 	// Create sections
 	TreeItem *resources_root = item_tree->create_item(root);
-	resources_root->set_text(0, TTR("Resources"));
+	resources_root->set_text(0, "Resources");
 	resources_root->set_selectable(0, false);
 	resources_root->set_collapsed(false);
 
