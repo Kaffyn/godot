@@ -32,13 +32,14 @@
 
 #include "editor/editor_interface.h"
 #include "editor/editor_node.h"
+#include "editor/editor_string_names.h"
 #include "editor/themes/editor_scale.h"
 
 String ResourceEditorPlugin::get_plugin_name() const {
 	return "Resource ";
 }
 
-Ref<Texture2D> ResourceEditorPlugin::get_plugin_icon() const {
+const Ref<Texture2D> ResourceEditorPlugin::get_plugin_icon() const {
 	return EditorNode::get_singleton()->get_editor_theme()->get_icon(SNAME("Resource"), EditorStringName(EditorIcons));
 }
 

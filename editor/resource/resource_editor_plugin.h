@@ -43,7 +43,7 @@ class ResourceEditorPlugin : public EditorPlugin {
 
 public:
 	virtual String get_plugin_name() const override;
-	virtual Ref<Texture2D> get_plugin_icon() const override;
+	virtual const Ref<Texture2D> get_plugin_icon() const override;
 	bool has_main_screen() const override { return true; }
 	virtual void edit(Object *p_object) override;
 	virtual bool handles(Object *p_object) const override;
