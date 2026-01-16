@@ -1,0 +1,4 @@
+# noqa: F821
+Import("env")
+
+env.add_source_files(env.editor_sources, "*.cpp")
