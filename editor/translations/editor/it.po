@@ -21976,3 +21976,18 @@ msgstr ""
 "cambiata nella versione 4.3, quindi se questo codice è stato scritto prima di "
 "4.3, non continuerà a funzionare. Considera di specificare il componente z "
 "dello spazio clip direttamente. Ovvero, utilizza`vec4 (VERTEX.xy, 1.0, 1.0)`."
+
+msgid "Visual"
+msgstr "Visivo"
+
+msgid "Code"
+msgstr "Codice"
+
+msgid "Library"
+msgstr "Libreria"
+
+msgid "Resources"
+msgstr "Risorse"
+
+msgid "Search Resources..."
+msgstr "Cerca Risorse..."

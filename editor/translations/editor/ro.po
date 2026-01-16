@@ -4149,3 +4149,18 @@ msgid ""
 msgstr ""
 "Dimensiunea totală a %s pentru acest shader pe acest dispozitiv a fost "
 "depășită (%d/%d). Shader-ul poate să nu funcționeze corect."
+
+msgid "Visual"
+msgstr "Vizual"
+
+msgid "Code"
+msgstr "Cod"
+
+msgid "Library"
+msgstr "Bibliotecă"
+
+msgid "Resources"
+msgstr "Resurse"
+
+msgid "Search Resources..."
+msgstr "Caută resurse..."

@@ -10327,3 +10327,18 @@ msgstr "Het uniform '%s' is gedeclareerd maar nooit gebruikt."
 
 msgid "The local variable '%s' is declared but never used."
 msgstr "De lokale variabele '%s' wordt gedeclareerd maar nergens gebruikt."
+
+msgid "Visual"
+msgstr "Visueel"
+
+msgid "Code"
+msgstr "Code"
+
+msgid "Library"
+msgstr "Bibliotheek"
+
+msgid "Resources"
+msgstr "Bronnen"
+
+msgid "Search Resources..."
+msgstr "Zoek bronnen..."

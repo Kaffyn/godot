@@ -4653,3 +4653,18 @@ msgstr "Érvénytelen makró argumentum."
 
 msgid "Invalid macro argument count."
 msgstr "Érvénytelen makró argumentum mennyiség."
+
+msgid "Visual"
+msgstr "Vizuális"
+
+msgid "Code"
+msgstr "Kód"
+
+msgid "Library"
+msgstr "Könyvtár"
+
+msgid "Resources"
+msgstr "Erőforrások"
+
+msgid "Search Resources..."
+msgstr "Erőforrások keresése..."

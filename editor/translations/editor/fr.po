@@ -22134,3 +22134,18 @@ msgstr ""
 "changé dans la version 4.3, donc si ce code a été écrit avant la 4.3, il ne "
 "va pas continuer à fonctionner. Considérez spécifier l'espace du clip du z-"
 "component directement. Par exemple, utilisez `vec4(VERTEX.xy, 1.0, 1.0)`."
+
+msgid "Visual"
+msgstr "Visuel"
+
+msgid "Code"
+msgstr "Code"
+
+msgid "Library"
+msgstr "Bibliothèque"
+
+msgid "Resources"
+msgstr "Ressources"
+
+msgid "Search Resources..."
+msgstr "Rechercher des ressources..."

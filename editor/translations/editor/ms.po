@@ -4288,3 +4288,18 @@ msgstr "Nod B mestilah PhysicsBody2D"
 
 msgid "Constants cannot be modified."
 msgstr "Pemalar tidak dapat diubah suai."
+
+msgid "Visual"
+msgstr "Visual"
+
+msgid "Code"
+msgstr "Kod"
+
+msgid "Library"
+msgstr "Pustaka"
+
+msgid "Resources"
+msgstr "Sumber"
+
+msgid "Search Resources..."
+msgstr "Cari Sumber..."

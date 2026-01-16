@@ -12904,3 +12904,18 @@ msgstr "Vakio '%s' on määritelty, mutta ei käytetty."
 
 msgid "The local variable '%s' is declared but never used."
 msgstr "Lokaali muuttuja '%s' on määritelty, mutta ei käytetty."
+
+msgid "Visual"
+msgstr "Visuaalinen"
+
+msgid "Code"
+msgstr "Koodi"
+
+msgid "Library"
+msgstr "Kirjasto"
+
+msgid "Resources"
+msgstr "Resurssit"
+
+msgid "Search Resources..."
+msgstr "Hae resursseja..."

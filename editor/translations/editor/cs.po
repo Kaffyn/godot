@@ -19848,3 +19848,18 @@ msgstr ""
 "clip prostoru. Definice clip prostoru se ve verzi 4.3 změnila, takže pokud "
 "byl tento kód napsán před verzí 4.3, nebude nadále fungovat. Zvažte přímé "
 "zadání z-komponenty clip prostoru, tj. použijte `vec4(VERTEX.xy, 1.0, 1.0)`."
+
+msgid "Visual"
+msgstr "Vizuální"
+
+msgid "Code"
+msgstr "Kód"
+
+msgid "Library"
+msgstr "Knihovna"
+
+msgid "Resources"
+msgstr "Zdroje"
+
+msgid "Search Resources..."
+msgstr "Hledat zdroje..."

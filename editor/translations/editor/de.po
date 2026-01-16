@@ -21963,3 +21963,18 @@ msgstr ""
 "geändert. Wenn dieser Code also vor 4.3 geschrieben wurde, wird er nicht mehr "
 "funktionieren. Erwägen Sie, die z-Komponente des Clip-Space direkt anzugeben, "
 "d.h. verwenden Sie `vec4(VERTEX.xy, 1.0, 1.0)`."
+
+msgid "Visual"
+msgstr "Visuell"
+
+msgid "Code"
+msgstr "Code"
+
+msgid "Library"
+msgstr "Bibliothek"
+
+msgid "Resources"
+msgstr "Ressourcen"
+
+msgid "Search Resources..."
+msgstr "Ressourcen suchen..."

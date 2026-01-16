@@ -21625,3 +21625,18 @@ msgstr ""
 "тому, якщо цей код був написаний до версії 4.3, він не працюватиме. Спробуйте "
 "вказати z-компонент простору кліпу напряму, тобто використайте "
 "`vec4(VERTEX.xy, 1.0, 1.0)`."
+
+msgid "Visual"
+msgstr "Визуально"
+
+msgid "Code"
+msgstr "Код"
+
+msgid "Library"
+msgstr "Бібліотека"
+
+msgid "Resources"
+msgstr "Ресурси"
+
+msgid "Search Resources..."
+msgstr "Пошук ресурсів..."

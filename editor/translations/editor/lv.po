@@ -4161,3 +4161,18 @@ msgstr "Virsmas Indekss"
 
 msgid "Constants cannot be modified."
 msgstr "Konstantes nevar pārveidot."
+
+msgid "Visual"
+msgstr "Vizuāls"
+
+msgid "Code"
+msgstr "Kods"
+
+msgid "Library"
+msgstr "Bibliotēka"
+
+msgid "Resources"
+msgstr "Resursi"
+
+msgid "Search Resources..."
+msgstr "Meklēt resursus..."

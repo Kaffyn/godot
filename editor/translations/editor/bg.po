@@ -5651,3 +5651,18 @@ msgstr "Невалиден списък с аргументи на макрос�
 
 msgid "Invalid macro argument."
 msgstr "Невалиден аргумент на макроса."
+
+msgid "Visual"
+msgstr "Визуален"
+
+msgid "Code"
+msgstr "Код"
+
+msgid "Library"
+msgstr "Библиотека"
+
+msgid "Resources"
+msgstr "Ресурси"
+
+msgid "Search Resources..."
+msgstr "Търсене на ресурси..."

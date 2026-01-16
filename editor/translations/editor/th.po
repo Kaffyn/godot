@@ -6926,3 +6926,18 @@ msgstr "อาร์กูเมนท์มาโครไม่ถูกต้
 
 msgid "Invalid macro argument count."
 msgstr "จำนวนอาร์กูเมนท์มาโครไม่ถูกต้อง"
+
+msgid "Visual"
+msgstr "Visual"
+
+msgid "Code"
+msgstr "Code"
+
+msgid "Library"
+msgstr "Library"
+
+msgid "Resources"
+msgstr "Resources"
+
+msgid "Search Resources..."
+msgstr "ค้นหาทรัพยากร..."

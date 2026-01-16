@@ -21431,3 +21431,18 @@ msgstr ""
 "denna kod skrevs före 4.3 kommer den inte längre att fungera. Överväg att "
 "ange z‑komponenten i klipputrymmet direkt, dvs. använd `vec4(VERTEX.xy, 1.0, "
 "1.0)`."
+
+msgid "Visual"
+msgstr "Visuell"
+
+msgid "Code"
+msgstr "Kod"
+
+msgid "Library"
+msgstr "Bibliotek"
+
+msgid "Resources"
+msgstr "Resurser"
+
+msgid "Search Resources..."
+msgstr "Sök resurser..."

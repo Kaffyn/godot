@@ -20960,3 +20960,18 @@ msgstr ""
 "4.3 より前に書かれている場合は正常に動作しなくなります。クリップ空間のZ成分を"
 "直接指定することを検討してください。例えば vec4(VERTEX.xy, 1.0, 1.0) を使用し"
 "てください。"
+
+msgid "Visual"
+msgstr "ビジュアル"
+
+msgid "Code"
+msgstr "コード"
+
+msgid "Library"
+msgstr "ライブラリ"
+
+msgid "Resources"
+msgstr "リソース"
+
+msgid "Search Resources..."
+msgstr "リソースを検索..."

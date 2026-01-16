@@ -4901,3 +4901,18 @@ msgid ""
 msgstr ""
 "La entute grandeco de la %s por ĉi tio ombrigilo sur ĉi tiu aparato estis "
 "superita (%d/%d). La ombrigilo majo ne funkcias ĝuste."
+
+msgid "Visual"
+msgstr "Vida"
+
+msgid "Code"
+msgstr "Kodo"
+
+msgid "Library"
+msgstr "Biblioteko"
+
+msgid "Resources"
+msgstr "Rimedoj"
+
+msgid "Search Resources..."
+msgstr "Serĉi Rimedojn..."

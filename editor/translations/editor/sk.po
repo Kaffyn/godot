@@ -6947,3 +6947,18 @@ msgstr ""
 "priestore. Definícia clip priestoru sa zmenila vo verzii 4.3, takže ak bol "
 "tento kód napísaný pred verziou 4.3, nebude naďalej fungovať. Skúste priamo "
 "zadať z-komponent clip priestoru, t. j. použite `vec4(VERTEX.xy, 1.0, 1.0)`."
+
+msgid "Visual"
+msgstr "Vizuálne"
+
+msgid "Code"
+msgstr "Kód"
+
+msgid "Library"
+msgstr "Knižnica"
+
+msgid "Resources"
+msgstr "Zdroje"
+
+msgid "Search Resources..."
+msgstr "Hľadať zdroje..."

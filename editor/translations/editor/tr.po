@@ -21406,3 +21406,18 @@ msgstr ""
 "değişmiştir, bundan dolayı bu kod 4.3'ten önce yazılmışsa çalışmaya devam "
 "etmeyecektir. Parça uzayının z-bileşenini doğrudan belirtmeyi düşünün, yani "
 "`vec4(VERTEX.xy, 1.0, 1.0)` kullanın."
+
+msgid "Visual"
+msgstr "Görsel"
+
+msgid "Code"
+msgstr "Kod"
+
+msgid "Library"
+msgstr "Kütüphane"
+
+msgid "Resources"
+msgstr "Kaynaklar"
+
+msgid "Search Resources..."
+msgstr "Kaynakları Ara..."

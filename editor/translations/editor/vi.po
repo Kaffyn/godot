@@ -7960,3 +7960,18 @@ msgid ""
 msgstr ""
 "Tổng kích thước của %s cho shader của thiết bị này đã vượt quá (%d %d). "
 "Shader có thể hoạt động không chính xác."
+
+msgid "Visual"
+msgstr "Trực quan"
+
+msgid "Code"
+msgstr "Mã"
+
+msgid "Library"
+msgstr "Thư viện"
+
+msgid "Resources"
+msgstr "Tài nguyên"
+
+msgid "Search Resources..."
+msgstr "Tìm kiếm tài nguyên..."

@@ -21797,3 +21797,18 @@ msgstr ""
 "4.3, mar sin má scríobhadh an cód seo roimh 4.3, ní leanfaidh sé ar aghaidh "
 "ag obair. Smaoinigh ar an spás gearrthóg z-chomhpháirt a shonrú go díreach "
 "i.e. úsáid 'vec4 (VERTEX.xy, 1.0, 1.0)'."
+
+msgid "Visual"
+msgstr "Amharc"
+
+msgid "Code"
+msgstr "Cód"
+
+msgid "Library"
+msgstr "Leabharlann"
+
+msgid "Resources"
+msgstr "Acmhainní"
+
+msgid "Search Resources..."
+msgstr "Cuardaigh Acmhainní..."

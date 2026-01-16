@@ -12007,3 +12007,18 @@ msgstr "Daftar Argumen Macro Tidak Valid"
 
 msgid "Unmatched conditional statement."
 msgstr "Pernyataan kondisi tidak cocok."
+
+msgid "Visual"
+msgstr "Visual"
+
+msgid "Code"
+msgstr "Kode"
+
+msgid "Library"
+msgstr "Pustaka"
+
+msgid "Resources"
+msgstr "Sumber Daya"
+
+msgid "Search Resources..."
+msgstr "Cari Sumber Daya..."

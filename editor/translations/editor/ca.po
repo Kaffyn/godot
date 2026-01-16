@@ -7144,3 +7144,18 @@ msgstr "Font no vàlida pel Shader."
 
 msgid "Constants cannot be modified."
 msgstr "Les constants no es poden modificar."
+
+msgid "Visual"
+msgstr "Visual"
+
+msgid "Code"
+msgstr "Codi"
+
+msgid "Library"
+msgstr "Biblioteca"
+
+msgid "Resources"
+msgstr "Recursos"
+
+msgid "Search Resources..."
+msgstr "Cerca recursos..."

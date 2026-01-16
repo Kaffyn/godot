@@ -4574,3 +4574,18 @@ msgstr "אי אפשר לשנות קבועים."
 
 msgid "The local variable '%s' is declared but never used."
 msgstr "המשתנה המקומי '%s' הוגדר אך לא משומש."
+
+msgid "Visual"
+msgstr "חזותי"
+
+msgid "Code"
+msgstr "קוד"
+
+msgid "Library"
+msgstr "ספרייה"
+
+msgid "Resources"
+msgstr "משאבים"
+
+msgid "Search Resources..."
+msgstr "חפש משאבים..."

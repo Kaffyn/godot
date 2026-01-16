@@ -5236,3 +5236,18 @@ msgstr "sina toki e nanpa awen '%s' taso sina kepeken ala e ona."
 
 msgid "The local variable '%s' is declared but never used."
 msgstr "sina toki e nanpa ante '%s' pi ma ni taso sina kepeken ala e ona."
+
+msgid "Visual"
+msgstr "lukin"
+
+msgid "Code"
+msgstr "nena"
+
+msgid "Library"
+msgstr "poki"
+
+msgid "Resources"
+msgstr "ijo"
+
+msgid "Search Resources..."
+msgstr "alasa ijo..."

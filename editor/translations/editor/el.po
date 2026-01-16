@@ -8012,3 +8012,18 @@ msgid ""
 msgstr ""
 "Το συνολικό μέγεθος του %s για αυτό το shader σε αυτήν τη συσκευή έχει "
 "ξεπεραστεί (%d/%d). Το shader ενδέχεται να μην λειτουργεί σωστά."
+
+msgid "Visual"
+msgstr "Οπτικό"
+
+msgid "Code"
+msgstr "Κώδικας"
+
+msgid "Library"
+msgstr "Βιβλιοθήκη"
+
+msgid "Resources"
+msgstr "Πόροι"
+
+msgid "Search Resources..."
+msgstr "Αναζήτηση Πόρων..."

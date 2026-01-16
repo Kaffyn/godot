@@ -5672,3 +5672,18 @@ msgstr "პირობა მითითებული არაა."
 
 msgid "Invalid '%s' directive."
 msgstr "არასწორი დირექტორივა '%s'."
+
+msgid "Visual"
+msgstr "ვიზუალური"
+
+msgid "Code"
+msgstr "კოდი"
+
+msgid "Library"
+msgstr "ბიბლიოთეკა"
+
+msgid "Resources"
+msgstr "რესურსები"
+
+msgid "Search Resources..."
+msgstr "რესურსების ძიება..."

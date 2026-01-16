@@ -8846,3 +8846,18 @@ msgstr "Vale makroargumentide loend."
 
 msgid "Invalid macro argument."
 msgstr "Vale makro argument."
+
+msgid "Visual"
+msgstr "Visuaalne"
+
+msgid "Code"
+msgstr "Kood"
+
+msgid "Library"
+msgstr "Teek"
+
+msgid "Resources"
+msgstr "Ressursid"
+
+msgid "Search Resources..."
+msgstr "Otsi ressursse..."

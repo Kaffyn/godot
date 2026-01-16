@@ -21649,3 +21649,18 @@ msgstr ""
 "wcześniejszej wersji niż 4.3, nie będzie on dalej działał. Rozważ podanie "
 "komponentu z w przestrzeni przycinania bezpośrednio np. użyj `vec4(VERTEX.xy, "
 "1.0, 1.0)`."
+
+msgid "Visual"
+msgstr "Wizualny"
+
+msgid "Code"
+msgstr "Kod"
+
+msgid "Library"
+msgstr "Biblioteka"
+
+msgid "Resources"
+msgstr "Zasoby"
+
+msgid "Search Resources..."
+msgstr "Szukaj zasobów..."

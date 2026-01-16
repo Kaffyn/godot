@@ -21948,3 +21948,18 @@ msgstr ""
 "cambió en la versión 4.3, por lo que si este código se escribió antes de la "
 "4.3, no seguirá funcionando. Considere especificar el componente z del "
 "espacio de recorte directamente, es decir, use `vec4(VERTEX.xy, 1.0, 1.0)`."
+
+msgid "Visual"
+msgstr "Visual"
+
+msgid "Code"
+msgstr "Código"
+
+msgid "Library"
+msgstr "Biblioteca"
+
+msgid "Resources"
+msgstr "Recursos"
+
+msgid "Search Resources..."
+msgstr "Buscar recursos..."

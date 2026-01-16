@@ -17066,3 +17066,18 @@ msgid ""
 msgstr ""
 "تم الوصول للحجم الكامل لـ %s بالنسبة لهذا الـ shader على هذا الجهاز (%d/%d). "
 "قد لا يعمل الـ shader بالشكل المناسب."
+
+msgid "Visual"
+msgstr "مرئي"
+
+msgid "Code"
+msgstr "كود"
+
+msgid "Library"
+msgstr "مكتبة"
+
+msgid "Resources"
+msgstr "الموارد"
+
+msgid "Search Resources..."
+msgstr "البحث في الموارد..."

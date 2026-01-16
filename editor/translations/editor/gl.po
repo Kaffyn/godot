@@ -5632,3 +5632,18 @@ msgid ""
 msgstr ""
 "As palabras clave do sombreador non se poden usar como nomes de parámetros.\n"
 "Escolle outro nome."
+
+msgid "Visual"
+msgstr "Visual"
+
+msgid "Code"
+msgstr "Código"
+
+msgid "Library"
+msgstr "Biblioteca"
+
+msgid "Resources"
+msgstr "Recursos"
+
+msgid "Search Resources..."
+msgstr "Buscar Recursos..."
