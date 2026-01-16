@@ -30,7 +30,7 @@
 
 #include "resource_library.h"
 #include "core/object/class_db.h"
-#include "editor/editor_scale.h"
+#include "editor/themes/editor_scale.h"
 
 void ResourceLibrary::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_search_text_changed", "text"), &ResourceLibrary::_search_text_changed);

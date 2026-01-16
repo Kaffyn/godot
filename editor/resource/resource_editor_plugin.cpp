@@ -32,6 +32,7 @@
 
 #include "editor/editor_interface.h"
 #include "editor/editor_node.h"
+#include "editor/themes/editor_scale.h"
 
 void ResourceEditorPlugin::edit(Object *p_object) {
 	Resource *res = Object::cast_to<Resource>(p_object);
