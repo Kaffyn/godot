@@ -74,17 +74,8 @@ bool ResourceEditorPlugin::handles(Object *p_object) const {
 void ResourceEditorPlugin::make_visible(bool p_visible) {
 	if (p_visible) {
 		resource_editor->show();
-		if (library_button) {
-			library_button->show();
-		}
 	} else {
 		resource_editor->hide();
-		if (library_button) {
-			if (resource_library->is_visible_in_tree()) {
-				hide_bottom_panel();
-			}
-			library_button->hide();
-		}
 	}
 }
 
@@ -93,11 +84,6 @@ ResourceEditorPlugin::ResourceEditorPlugin() {
 	resource_editor->set_v_size_flags(Control::SIZE_EXPAND_FILL);
 	EditorInterface::get_singleton()->get_editor_main_screen()->add_child(resource_editor);
 	resource_editor->hide();
-
-	resource_library = memnew(ResourceLibrary);
-	resource_library->set_custom_minimum_size(Size2(0, 250 * EDSCALE));
-	library_button = add_control_to_bottom_panel(resource_library, "Resource Library");
-	library_button->hide();
 }
 
 ResourceEditorPlugin::~ResourceEditorPlugin() {

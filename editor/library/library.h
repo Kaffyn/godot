@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  resource_editor_plugin.h                                              */
+/*  library.h                                                             */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,22 +30,15 @@
 
 #pragma once
 
-#include "editor/plugins/editor_plugin.h"
-#include "resource_editor.h"
+#include "scene/gui/box_container.h"
+#include "scene/gui/tab_container.h"
 
-class ResourceEditorPlugin : public EditorPlugin {
-	GDCLASS(ResourceEditorPlugin, EditorPlugin);
+class Library : public VBoxContainer {
+	GDCLASS(Library, VBoxContainer);
 
-	ResourceEditor *resource_editor = nullptr;
+	TabContainer *tabs;
 
 public:
-	virtual String get_plugin_name() const override;
-	virtual const Ref<Texture2D> get_plugin_icon() const override;
-	bool has_main_screen() const override { return true; }
-	virtual void edit(Object *p_object) override;
-	virtual bool handles(Object *p_object) const override;
-	virtual void make_visible(bool p_visible) override;
-
-	ResourceEditorPlugin();
-	~ResourceEditorPlugin();
+	Library();
+	~Library();
 };

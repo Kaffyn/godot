@@ -94,6 +94,7 @@ if env.editor_build:
     SConscript("scene/SCsub")
     SConscript("script/SCsub")
     SConscript("resource/SCsub")
+    SConscript("library/SCsub")
     SConscript("shader/SCsub")
     SConscript("themes/SCsub")
     SConscript("translations/SCsub")

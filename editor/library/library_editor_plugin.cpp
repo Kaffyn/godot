@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  resource_editor_plugin.h                                              */
+/*  library_editor_plugin.cpp                                             */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,24 +28,18 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#pragma once
+#include "library_editor_plugin.h"
+#include "core/input/shortcut.h"
+#include "editor/themes/editor_scale.h"
+#include "library.h"
 
-#include "editor/plugins/editor_plugin.h"
-#include "resource_editor.h"
+LibraryEditorPlugin::LibraryEditorPlugin() {
+	library_panel = memnew(Library);
+	library_panel->set_custom_minimum_size(Size2(0, 250 * EDSCALE));
 
-class ResourceEditorPlugin : public EditorPlugin {
-	GDCLASS(ResourceEditorPlugin, EditorPlugin);
+	// Add to bottom panel
+	bottom_panel_button = add_control_to_bottom_panel(library_panel, "Library");
+}
 
-	ResourceEditor *resource_editor = nullptr;
-
-public:
-	virtual String get_plugin_name() const override;
-	virtual const Ref<Texture2D> get_plugin_icon() const override;
-	bool has_main_screen() const override { return true; }
-	virtual void edit(Object *p_object) override;
-	virtual bool handles(Object *p_object) const override;
-	virtual void make_visible(bool p_visible) override;
-
-	ResourceEditorPlugin();
-	~ResourceEditorPlugin();
-};
+LibraryEditorPlugin::~LibraryEditorPlugin() {
+}

@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  resource_editor_plugin.h                                              */
+/*  library.cpp                                                           */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,24 +28,39 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#pragma once
+#include "library.h"
 
-#include "editor/plugins/editor_plugin.h"
-#include "resource_editor.h"
+#include "scene/gui/label.h"
 
-class ResourceEditorPlugin : public EditorPlugin {
-	GDCLASS(ResourceEditorPlugin, EditorPlugin);
+Library::Library() {
+	tabs = memnew(TabContainer);
+	tabs->set_v_size_flags(SIZE_EXPAND_FILL);
+	add_child(tabs);
 
-	ResourceEditor *resource_editor = nullptr;
+	// Tab 1: Assets
+	VBoxContainer *assets_tab = memnew(VBoxContainer);
+	assets_tab->set_name("Assets");
+	Label *l1 = memnew(Label);
+	l1->set_text("Assets Browser (TODO)");
+	assets_tab->add_child(l1);
+	tabs->add_child(assets_tab);
 
-public:
-	virtual String get_plugin_name() const override;
-	virtual const Ref<Texture2D> get_plugin_icon() const override;
-	bool has_main_screen() const override { return true; }
-	virtual void edit(Object *p_object) override;
-	virtual bool handles(Object *p_object) const override;
-	virtual void make_visible(bool p_visible) override;
+	// Tab 2: Workbench
+	VBoxContainer *workbench_tab = memnew(VBoxContainer);
+	workbench_tab->set_name("Workbench");
+	Label *l2 = memnew(Label);
+	l2->set_text("Workbench Inspector (TODO)");
+	workbench_tab->add_child(l2);
+	tabs->add_child(workbench_tab);
 
-	ResourceEditorPlugin();
-	~ResourceEditorPlugin();
-};
+	// Tab 3: CraftTable
+	VBoxContainer *craft_tab = memnew(VBoxContainer);
+	craft_tab->set_name("CraftTable");
+	Label *l3 = memnew(Label);
+	l3->set_text("Creation Wizards (TODO)");
+	craft_tab->add_child(l3);
+	tabs->add_child(craft_tab);
+}
+
+Library::~Library() {
+}
