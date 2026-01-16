@@ -12514,3 +12514,150 @@ msgstr "Камера привязана к источнику"
 
 msgid "Primary Interface"
 msgstr "Основной интерфейс"
+
+msgid "button_index"
+msgstr "Индекс кнопки"
+
+msgid "font_size"
+msgstr "Размер шрифта"
+
+msgid "texture_normal"
+msgstr "Обычная текстура"
+
+msgid "texture_pressed"
+msgstr "Нажатая текстура"
+
+msgid "texture_hover"
+msgstr "Текстура при наведении"
+
+msgid "texture_disabled"
+msgstr "Отключенная текстура"
+
+msgid "texture_focused"
+msgstr "Сфокусированная текстура"
+
+msgid "ignore_texture_size"
+msgstr "Игнорировать размер текстуры"
+
+msgid "stretch_mode"
+msgstr "Режим растяжения"
+
+msgid "visibility_mode"
+msgstr "Режим видимости"
+
+msgid "haptic_feedback"
+msgstr "Тактильная отдача"
+
+msgid "button_width_ratio"
+msgstr "Коэффициент ширины кнопки"
+
+msgid "up_index"
+msgstr "Индекс вверх"
+
+msgid "down_index"
+msgstr "Индекс вниз"
+
+msgid "left_index"
+msgstr "Индекс влево"
+
+msgid "right_index"
+msgstr "Индекс вправо"
+
+msgid "deadzone_size"
+msgstr "Размер мертвой зоны"
+
+msgid "clamp_zone_size"
+msgstr "Размер зоны зажима"
+
+msgid "clamp_zone_mode"
+msgstr "Режим зоны зажима"
+
+msgid "tip_scale"
+msgstr "Масштаб наконечника"
+
+msgid "joystick_hand"
+msgstr "Рука джойстика"
+
+msgid "base_texture"
+msgstr "Текстура базы"
+
+msgid "tip_texture"
+msgstr "Текстура наконечника"
+
+msgid "base_color"
+msgstr "Цвет базы"
+
+msgid "tip_color"
+msgstr "Цвет наконечника"
+
+msgid "visible_by_default"
+msgstr "Видимый по умолчанию"
+
+msgid "default_position"
+msgstr "Позиция по умолчанию"
+
+msgid "joystick_size"
+msgstr "Размер джойстика"
+
+msgid "trace_visible"
+msgstr "След виден"
+
+msgid "trace_length"
+msgstr "Длина следа"
+
+msgid "trace_fade_duration"
+msgstr "Длительность затухания следа"
+
+msgid "trace_base_color"
+msgstr "Базовый цвет следа"
+
+msgid "trace_base_width"
+msgstr "Базовая ширина следа"
+
+msgid "trace_tapering"
+msgstr "Сужение слеda"
+
+msgid "Button Indices"
+msgstr "Индексы кнопок"
+
+msgid "Visuals"
+msgstr "Визуализация"
+
+msgid "Trace"
+msgstr "След"
+
+msgid "Center"
+msgstr "Центр"
+
+msgid "Always"
+msgstr "Всегда"
+
+msgid "TouchScreen Only"
+msgstr "Только сенсорный экран"
+
+msgid "Fixed"
+msgstr "Фиксированный"
+
+msgid "Dynamic"
+msgstr "Динамический"
+
+msgid "Tile"
+msgstr "Плитка"
+
+msgid "Keep"
+msgstr "Сохранить"
+
+msgid "Keep Centered"
+msgstr "Сохранить по центру"
+
+msgid "Keep Aspect Centered"
+msgstr "Сохранить пропорции по центру"
+
+msgid "Keep Aspect Covered"
+msgstr "Сохранить пропорции с заполнением"
+
+msgid "Deadzone"
+msgstr "Мертвая зона"
+
+msgid "Clamp Zone"
+msgstr "Зона зажима"

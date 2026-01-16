@@ -12395,3 +12395,150 @@ msgstr "Cámara Bloqueada al Origen"
 
 msgid "Primary Interface"
 msgstr "Interfaz Principal"
+
+msgid "button_index"
+msgstr "Índice de botón"
+
+msgid "font_size"
+msgstr "Tamaño de fuente"
+
+msgid "texture_normal"
+msgstr "Textura normal"
+
+msgid "texture_pressed"
+msgstr "Textura presionada"
+
+msgid "texture_hover"
+msgstr "Textura al pasar el ratón"
+
+msgid "texture_disabled"
+msgstr "Textura desactivada"
+
+msgid "texture_focused"
+msgstr "Textura enfocada"
+
+msgid "ignore_texture_size"
+msgstr "Ignorar tamaño de textura"
+
+msgid "stretch_mode"
+msgstr "Modo de estiramiento"
+
+msgid "visibility_mode"
+msgstr "Modo de visibilidad"
+
+msgid "haptic_feedback"
+msgstr "Retroalimentación háptica"
+
+msgid "button_width_ratio"
+msgstr "Relación de ancho de botón"
+
+msgid "up_index"
+msgstr "Índice arriba"
+
+msgid "down_index"
+msgstr "Índice abajo"
+
+msgid "left_index"
+msgstr "Índice izquierda"
+
+msgid "right_index"
+msgstr "Índice derecha"
+
+msgid "deadzone_size"
+msgstr "Tamaño de zona muerta"
+
+msgid "clamp_zone_size"
+msgstr "Tamaño de zona de límite"
+
+msgid "clamp_zone_mode"
+msgstr "Modo de zona de límite"
+
+msgid "tip_scale"
+msgstr "Escala de la punta"
+
+msgid "joystick_hand"
+msgstr "Mano del joystick"
+
+msgid "base_texture"
+msgstr "Textura de la base"
+
+msgid "tip_texture"
+msgstr "Textura de la punta"
+
+msgid "base_color"
+msgstr "Color de la base"
+
+msgid "tip_color"
+msgstr "Color de la punta"
+
+msgid "visible_by_default"
+msgstr "Visible por defecto"
+
+msgid "default_position"
+msgstr "Posición por defecto"
+
+msgid "joystick_size"
+msgstr "Tamaño del joystick"
+
+msgid "trace_visible"
+msgstr "Rastro visible"
+
+msgid "trace_length"
+msgstr "Longitud del rastro"
+
+msgid "trace_fade_duration"
+msgstr "Duración del desvanecimiento del rastro"
+
+msgid "trace_base_color"
+msgstr "Color base do rastro"
+
+msgid "trace_base_width"
+msgstr "Ancho base del rastro"
+
+msgid "trace_tapering"
+msgstr "Afilamiento del rastro"
+
+msgid "Button Indices"
+msgstr "Índices de botones"
+
+msgid "Visuals"
+msgstr "Visuales"
+
+msgid "Trace"
+msgstr "Rastro"
+
+msgid "Center"
+msgstr "Centro"
+
+msgid "Always"
+msgstr "Siempre"
+
+msgid "TouchScreen Only"
+msgstr "Solo pantalla táctil"
+
+msgid "Fixed"
+msgstr "Fijo"
+
+msgid "Dynamic"
+msgstr "Dinámico"
+
+msgid "Tile"
+msgstr "Mosaico"
+
+msgid "Keep"
+msgstr "Mantener"
+
+msgid "Keep Centered"
+msgstr "Mantener centrado"
+
+msgid "Keep Aspect Centered"
+msgstr "Mantener aspecto centrado"
+
+msgid "Keep Aspect Covered"
+msgstr "Mantener aspecto cubierto"
+
+msgid "Deadzone"
+msgstr "Zona muerta"
+
+msgid "Clamp Zone"
+msgstr "Zona de límite"

@@ -11251,3 +11251,150 @@ msgstr "Kamera auf Ursprung fixiert"
 
 msgid "Primary Interface"
 msgstr "Primäre Schnittstelle"
+
+msgid "button_index"
+msgstr "Button-Index"
+
+msgid "font_size"
+msgstr "Schriftgröße"
+
+msgid "texture_normal"
+msgstr "Normale Textur"
+
+msgid "texture_pressed"
+msgstr "Gedrückte Textur"
+
+msgid "texture_hover"
+msgstr "Hover-Textur"
+
+msgid "texture_disabled"
+msgstr "Deaktivierte Textur"
+
+msgid "texture_focused"
+msgstr "Fokussierte Textur"
+
+msgid "ignore_texture_size"
+msgstr "Texturgröße ignorieren"
+
+msgid "stretch_mode"
+msgstr "Streckmodus"
+
+msgid "visibility_mode"
+msgstr "Sichtbarkeitsmodus"
+
+msgid "haptic_feedback"
+msgstr "Haptisches Feedback"
+
+msgid "button_width_ratio"
+msgstr "Button-Breitenverhältnis"
+
+msgid "up_index"
+msgstr "Index oben"
+
+msgid "down_index"
+msgstr "Index unten"
+
+msgid "left_index"
+msgstr "Index links"
+
+msgid "right_index"
+msgstr "Index rechts"
+
+msgid "deadzone_size"
+msgstr "Totzonengröße"
+
+msgid "clamp_zone_size"
+msgstr "Begrenzungszonengröße"
+
+msgid "clamp_zone_mode"
+msgstr "Begrenzungszonenmodus"
+
+msgid "tip_scale"
+msgstr "Spitzenskalierung"
+
+msgid "joystick_hand"
+msgstr "Joystick-Hand"
+
+msgid "base_texture"
+msgstr "Basistextur"
+
+msgid "tip_texture"
+msgstr "Spitzentextur"
+
+msgid "base_color"
+msgstr "Basisfarbe"
+
+msgid "tip_color"
+msgstr "Spitzenfarbe"
+
+msgid "visible_by_default"
+msgstr "Standardmäßig sichtbar"
+
+msgid "default_position"
+msgstr "Standardposition"
+
+msgid "joystick_size"
+msgstr "Joystick-Größe"
+
+msgid "trace_visible"
+msgstr "Spur sichtbar"
+
+msgid "trace_length"
+msgstr "Spurlänge"
+
+msgid "trace_fade_duration"
+msgstr "Spur-Ausblendedauer"
+
+msgid "trace_base_color"
+msgstr "Spur-Basisfarbe"
+
+msgid "trace_base_width"
+msgstr "Spur-Basisbreite"
+
+msgid "trace_tapering"
+msgstr "Spur-Verjüngung"
+
+msgid "Button Indices"
+msgstr "Button-Indizes"
+
+msgid "Visuals"
+msgstr "Grafik"
+
+msgid "Trace"
+msgstr "Spur"
+
+msgid "Center"
+msgstr "Mitte"
+
+msgid "Always"
+msgstr "Immer"
+
+msgid "TouchScreen Only"
+msgstr "Nur Touchscreen"
+
+msgid "Fixed"
+msgstr "Fest"
+
+msgid "Dynamic"
+msgstr "Dynamisch"
+
+msgid "Tile"
+msgstr "Kachel"
+
+msgid "Keep"
+msgstr "Beibehalten"
+
+msgid "Keep Centered"
+msgstr "Zentriert beibehalten"
+
+msgid "Keep Aspect Centered"
+msgstr "Seitenverhältnis zentriert beibehalten"
+
+msgid "Keep Aspect Covered"
+msgstr "Seitenverhältnis abgedeckt beibehalten"
+
+msgid "Deadzone"
+msgstr "Totzone"
+
+msgid "Clamp Zone"
+msgstr "Begrenzungszone"

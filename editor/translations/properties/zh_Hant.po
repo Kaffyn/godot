@@ -12331,3 +12331,48 @@ msgstr "攝影機鎖定至原點"
 
 msgid "Primary Interface"
 msgstr "主介面"
+
+msgid "Visuals"
+msgstr "視覺"
+
+msgid "Fixed"
+msgstr "固定"
+
+msgid "Dynamic"
+msgstr "動態"
+
+msgid "Center"
+msgstr "居中"
+
+msgid "Always"
+msgstr "總是"
+
+msgid "Deadzone"
+msgstr "死區"
+
+msgid "button_index"
+msgstr "按鈕索引"
+
+msgid "font_size"
+msgstr "字體大小"
+
+msgid "texture_normal"
+msgstr "常規紋理"
+
+msgid "texture_pressed"
+msgstr "按下紋理"
+
+msgid "visibility_mode"
+msgstr "可見性模式"
+
+msgid "haptic_feedback"
+msgstr "觸感反饋"
+
+msgid "trace_visible"
+msgstr "軌跡可見"
+
+msgid "joystick_size"
+msgstr "搖桿大小"
+
+msgid "tip_scale"
+msgstr "尖端縮放"

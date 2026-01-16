@@ -5955,3 +5955,48 @@ msgstr "カメラを原点にロック"
 
 msgid "Primary Interface"
 msgstr "プライマリインターフェース"
+
+msgid "Visuals"
+msgstr "ビジュアル"
+
+msgid "Fixed"
+msgstr "固定"
+
+msgid "Dynamic"
+msgstr "ダイナミック"
+
+msgid "Center"
+msgstr "中央"
+
+msgid "Always"
+msgstr "常に"
+
+msgid "Deadzone"
+msgstr "デッドゾーン"
+
+msgid "button_index"
+msgstr "ボタンインデックス"
+
+msgid "font_size"
+msgstr "フォントサイズ"
+
+msgid "texture_normal"
+msgstr "通常テクスチャ"
+
+msgid "texture_pressed"
+msgstr "プレス状態のテクスチャ"
+
+msgid "visibility_mode"
+msgstr "可視モード"
+
+msgid "haptic_feedback"
+msgstr "触覚フィードバック"
+
+msgid "trace_visible"
+msgstr "トレース表示"
+
+msgid "joystick_size"
+msgstr "ジョイスティックのサイズ"
+
+msgid "tip_scale"
+msgstr "先端のスケール"

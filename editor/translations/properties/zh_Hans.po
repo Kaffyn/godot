@@ -12377,3 +12377,48 @@ msgstr "相机锁定到原点"
 
 msgid "Primary Interface"
 msgstr "主接口"
+
+msgid "Visuals"
+msgstr "视觉"
+
+msgid "Fixed"
+msgstr "固定"
+
+msgid "Dynamic"
+msgstr "动态"
+
+msgid "Center"
+msgstr "居中"
+
+msgid "Always"
+msgstr "总是"
+
+msgid "Deadzone"
+msgstr "死区"
+
+msgid "button_index"
+msgstr "按钮索引"
+
+msgid "font_size"
+msgstr "字体大小"
+
+msgid "texture_normal"
+msgstr "常规纹理"
+
+msgid "texture_pressed"
+msgstr "按下纹理"
+
+msgid "visibility_mode"
+msgstr "可见性模式"
+
+msgid "haptic_feedback"
+msgstr "触感反馈"
+
+msgid "trace_visible"
+msgstr "轨迹可见"
+
+msgid "joystick_size"
+msgstr "摇杆大小"
+
+msgid "tip_scale"
+msgstr "尖端缩放"
