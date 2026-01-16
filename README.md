@@ -73,6 +73,12 @@ Zyris is implementing a comprehensive suite of engine systems. Below is our deve
   - Hash map inverted candidate selection
   - Multiplayer-ready with deterministic execution
 
+- [ ] **Resource Editor & Library** - Resource composition tool
+  - Main panel IDE for resource composition
+  - Graph-based component editor
+  - Factory system with templates
+  - Resource browser
+
 ### Planned Core Systems
 
 - [ ] **AI Perception System** - Advanced perception engine
@@ -139,12 +145,6 @@ Zyris is implementing a comprehensive suite of engine systems. Below is our deve
   - Loot tables
   - Crafting system
   - UI components (slots, hotbar)
-
-- [ ] **Visual Data Editor** - Resource composition tool
-  - Main panel IDE for resource composition
-  - Graph-based component editor
-  - Factory system with templates
-  - Resource browser
 
 - [ ] **AOT Export System (Zyris AOT Compiler)** - GDScript to native code
 

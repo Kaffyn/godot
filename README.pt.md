@@ -73,6 +73,12 @@ O Zyris está implementando um conjunto abrangente de sistemas. Abaixo está nos
   - Seleção de candidatos invertida via hash map
   - Pronto para multiplayer com execução determinística
 
+- [ ] **Editor de Recursos & Biblioteca** - Ferramenta de composição de recursos
+  - IDE no painel principal para composição de recursos
+  - Editor de components baseado em grafos
+  - Sistema de fábrica com templates
+  - Navegador de recursos
+
 ### Sistemas Core Planejados
 
 - [ ] **AI Perception System** - Engine de percepção avançada
@@ -139,12 +145,6 @@ O Zyris está implementando um conjunto abrangente de sistemas. Abaixo está nos
   - Tabelas de loot
   - Sistema de crafting
   - Components de UI (slots, hotbar)
-
-- [ ] **Visual Data Editor** - Ferramenta de composição de recursos
-  - IDE no painel principal para composição de recursos
-  - Editor de components baseado em grafos
-  - Sistema de fábrica com templates
-  - Navegador de recursos
 
 - [ ] **AOT Export System (Zyris AOT Compiler)** - GDScript para código nativo
 
