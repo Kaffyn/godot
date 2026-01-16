@@ -108,14 +108,16 @@ void ResourceEditor::_update_mode() {
 		code_editor->show();
 
 		if (current_resource.is_valid()) {
-			String code_dump = "; Resource Dump for " + current_resource->get_path() + "\n";
-			code_dump += "; Class: " + current_resource->get_class() + "\n\n";
+			String code_dump = "";
 
 			List<PropertyInfo> props;
 			current_resource->get_property_list(&props);
 
 			for (const PropertyInfo &E : props) {
 				if (E.usage & PROPERTY_USAGE_STORAGE) {
+					if (E.name == "resource_local_to_scene" || E.name == "resource_name" || E.name == "script" || E.name.begins_with("metadata/")) {
+						continue;
+					}
 					code_dump += String(E.name) + " = " + String(current_resource->get(E.name)) + "\n";
 				}
 			}
