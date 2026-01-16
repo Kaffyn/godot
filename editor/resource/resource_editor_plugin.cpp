@@ -87,7 +87,7 @@ ResourceEditorPlugin::ResourceEditorPlugin() {
 
 	resource_library = memnew(ResourceLibrary);
 	resource_library->set_custom_minimum_size(Size2(0, 250 * EDSCALE));
-	library_button = add_control_to_bottom_panel(resource_library, "Library");
+	library_button = add_control_to_bottom_panel(resource_library, TTR("Library"));
 	library_button->hide();
 }
 

@@ -21040,3 +21040,18 @@ msgstr ""
 "4.3, então se este código foi escrito antes desta, não irá continuar "
 "funcionando. Considere especificar o componente z do espaço de corte "
 "diretamente (use `vec4(VERTEX.xy, 1.0,1.0)`."
+
+msgid "Visual"
+msgstr "Visual"
+
+msgid "Code"
+msgstr "Código"
+
+msgid "Library"
+msgstr "Biblioteca"
+
+msgid "Resources"
+msgstr "Recursos"
+
+msgid "Search Resources..."
+msgstr "Pesquisar Recursos..."

@@ -65,7 +65,7 @@ void ResourceLibrary::_update_tree() {
 
 	// Create sections
 	TreeItem *resources_root = item_tree->create_item(root);
-	resources_root->set_text(0, "Resources");
+	resources_root->set_text(0, TTR("Resources"));
 	resources_root->set_selectable(0, false);
 	resources_root->set_collapsed(false);
 
@@ -95,7 +95,7 @@ void ResourceLibrary::_update_tree() {
 
 ResourceLibrary::ResourceLibrary() {
 	search_box = memnew(LineEdit);
-	search_box->set_placeholder("Search Resources...");
+	search_box->set_placeholder(TTR("Search Resources..."));
 	search_box->connect("text_changed", callable_mp(this, &ResourceLibrary::_search_text_changed));
 	add_child(search_box);
 

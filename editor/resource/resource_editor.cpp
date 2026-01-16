@@ -158,13 +158,13 @@ ResourceEditor::ResourceEditor() {
 	mode_visual_button = memnew(Button);
 	mode_visual_button->set_toggle_mode(true);
 	mode_visual_button->set_pressed(true);
-	mode_visual_button->set_text("Visual");
+	mode_visual_button->set_text(TTR("Visual"));
 	mode_visual_button->connect("pressed", callable_mp(this, &ResourceEditor::_on_mode_visual_pressed));
 	toolbar->add_child(mode_visual_button);
 
 	mode_code_button = memnew(Button);
 	mode_code_button->set_toggle_mode(true);
-	mode_code_button->set_text("Code");
+	mode_code_button->set_text(TTR("Code"));
 	mode_code_button->connect("pressed", callable_mp(this, &ResourceEditor::_on_mode_code_pressed));
 	toolbar->add_child(mode_code_button);
 
