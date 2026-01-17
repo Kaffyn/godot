@@ -32,6 +32,11 @@
 
 #include "editor/inspector/editor_inspector.h"
 #include "scene/gui/box_container.h"
+#include "scene/gui/dialogs.h"
+#include "scene/gui/item_list.h"
+#include "scene/gui/line_edit.h"
+#include "scene/gui/popup_menu.h"
+#include "scene/gui/split_container.h"
 #include "scene/gui/tab_container.h"
 #include "scene/gui/tree.h"
 
@@ -39,12 +44,26 @@ class Library : public VBoxContainer {
 	GDCLASS(Library, VBoxContainer);
 
 	TabContainer *tabs;
-	Tree *assets_tree;
+	Tree *folders_tree;
+	ItemList *assets_list;
 	EditorInspector *workbench_inspector;
+	PopupMenu *context_menu;
+	ConfirmationDialog *delete_dialog;
+	ConfirmationDialog *rename_dialog;
+	LineEdit *rename_edit;
 
-	void _update_assets_tree();
-	void _scan_dir(const String &p_path, TreeItem *p_parent);
-	void _on_asset_selected();
+	String current_path;
+
+	void _update_folders_tree();
+	void _scan_folders(const String &p_path, TreeItem *p_parent);
+	void _update_file_list(const String &p_dir_path);
+
+	void _on_folder_selected();
+	void _on_asset_item_selected(int p_index);
+	void _on_asset_item_clicked(int p_index, const Vector2 &p_pos, MouseButton p_mouse_button_index);
+	void _on_context_menu_id_pressed(int p_id);
+	void _on_delete_confirmed();
+	void _on_rename_confirmed();
 
 protected:
 	static void _bind_methods();
