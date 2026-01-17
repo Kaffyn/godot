@@ -29,7 +29,7 @@
 /**************************************************************************/
 
 #include "library.h"
-#include "editor/resource/resource_library.h"
+#include "editor/resource/resource_server.h"
 
 #include "core/io/dir_access.h"
 #include "core/io/resource_loader.h"
@@ -44,6 +44,9 @@ void Library::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_on_context_menu_id_pressed", "id"), &Library::_on_context_menu_id_pressed);
 	ClassDB::bind_method(D_METHOD("_on_delete_confirmed"), &Library::_on_delete_confirmed);
 	ClassDB::bind_method(D_METHOD("_on_rename_confirmed"), &Library::_on_rename_confirmed);
+
+	ClassDB::bind_method(D_METHOD("_update_craft_tree"), &Library::_update_craft_tree);
+	ClassDB::bind_method(D_METHOD("_on_craft_search_text_changed", "text"), &Library::_on_craft_search_text_changed);
 }
 
 void Library::_notification(int p_what) {
@@ -51,8 +54,64 @@ void Library::_notification(int p_what) {
 		case NOTIFICATION_ENTER_TREE: {
 			_update_folders_tree();
 			_update_file_list("res://");
+			_update_craft_tree();
 		} break;
 	}
+}
+
+void Library::_update_craft_tree() {
+	if (!craft_tree) {
+		return;
+	}
+	craft_tree->clear();
+	TreeItem *root = craft_tree->create_item();
+
+	String search_term = craft_search->get_text();
+
+	// Create sections
+	TreeItem *zyris_root = craft_tree->create_item(root);
+	zyris_root->set_text(0, "Zyris Resources");
+	zyris_root->set_selectable(0, false);
+	zyris_root->set_collapsed(false);
+
+	if (ResourceServer::get_singleton()) {
+		// Use Registered Domains from ResourceServer
+		Array domains = ResourceServer::get_singleton()->get_registered_domains();
+		for (int i = 0; i < domains.size(); i++) {
+			String domain_name = domains[i];
+			Dictionary info = ResourceServer::get_singleton()->get_domain_info(domain_name);
+			String type_name = info.get("resource_type", "");
+
+			if (type_name.is_empty()) {
+				continue;
+			}
+
+			if (!search_term.is_empty() && type_name.findn(search_term) == -1 && domain_name.findn(search_term) == -1) {
+				continue;
+			}
+
+			TreeItem *item = craft_tree->create_item(zyris_root);
+			item->set_text(0, domain_name + " (" + type_name + ")");
+
+			Ref<Texture2D> icon = info.get("icon", Variant());
+			if (icon.is_valid()) {
+				item->set_icon(0, icon);
+			} else {
+				if (has_theme_icon(type_name, "EditorIcons")) {
+					item->set_icon(0, get_theme_icon(type_name, "EditorIcons"));
+				} else {
+					item->set_icon(0, get_theme_icon("Object", "EditorIcons"));
+				}
+			}
+		}
+	} else {
+		TreeItem *err = craft_tree->create_item(zyris_root);
+		err->set_text(0, "ResourceServer not active.");
+	}
+}
+
+void Library::_on_craft_search_text_changed(const String &p_text) {
+	_update_craft_tree();
 }
 
 void Library::_update_folders_tree() {
@@ -307,9 +366,17 @@ Library::Library() {
 	// Tab 3: CraftTable
 	VBoxContainer *craft_tab = memnew(VBoxContainer);
 	craft_tab->set_name("CraftTable");
-	ResourceLibrary *resource_lib = memnew(ResourceLibrary);
-	resource_lib->set_v_size_flags(SIZE_EXPAND_FILL);
-	craft_tab->add_child(resource_lib);
+
+	craft_search = memnew(LineEdit);
+	craft_search->set_placeholder(TTR("Search Zyris Resources..."));
+	craft_search->connect("text_changed", callable_mp(this, &Library::_on_craft_search_text_changed));
+	craft_tab->add_child(craft_search);
+
+	craft_tree = memnew(Tree);
+	craft_tree->set_v_size_flags(SIZE_EXPAND_FILL);
+	craft_tree->set_hide_root(true);
+	craft_tab->add_child(craft_tree);
+
 	tabs->add_child(craft_tab);
 }
 

@@ -54,9 +54,17 @@ class Library : public VBoxContainer {
 
 	String current_path;
 
+	// CraftTable Components
+	LineEdit *craft_search;
+	Tree *craft_tree;
+
 	void _update_folders_tree();
 	void _scan_folders(const String &p_path, TreeItem *p_parent);
 	void _update_file_list(const String &p_dir_path);
+
+	// CraftTable Methods
+	void _update_craft_tree();
+	void _on_craft_search_text_changed(const String &p_text);
 
 	void _on_folder_selected();
 	void _on_asset_item_selected(int p_index);
