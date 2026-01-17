@@ -54,6 +54,7 @@ class ResourceEditor : public VBoxContainer {
 
 	// Visual Editor
 	GraphEdit *graph_edit;
+	Control *custom_editor;
 
 	// Code Editor
 	CodeTextEditor *code_editor;

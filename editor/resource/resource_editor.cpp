@@ -33,10 +33,12 @@
 #include "editor/editor_node.h"
 #include "editor/gui/code_editor.h"
 #include "editor/themes/editor_scale.h"
+#include "resource_server.h" // Added
 
 ResourceEditor *ResourceEditor::singleton = nullptr;
 
 void ResourceEditor::_bind_methods() {
+	// ... existing binds
 	ClassDB::bind_method(D_METHOD("_on_mode_visual_pressed"), &ResourceEditor::_on_mode_visual_pressed);
 	ClassDB::bind_method(D_METHOD("_on_mode_code_pressed"), &ResourceEditor::_on_mode_code_pressed);
 }
@@ -56,49 +58,89 @@ void ResourceEditor::_notification(int p_what) {
 
 void ResourceEditor::_update_mode() {
 	bool visual = mode_visual_button->is_pressed();
+
+	// Clear previous custom editor state
+	if (custom_editor) {
+		memdelete(custom_editor);
+		custom_editor = nullptr;
+	}
+
 	if (visual) {
-		graph_edit->show();
 		code_editor->hide();
 
-		// Logic to populate graph
-		graph_edit->clear_connections();
-		// Remove all child nodes (graph nodes)
-		for (int i = graph_edit->get_child_count() - 1; i >= 0; i--) {
-			GraphNode *gn = Object::cast_to<GraphNode>(graph_edit->get_child(i));
-			if (gn) {
-				memdelete(gn);
+		bool handled_by_domain = false;
+		if (current_resource.is_valid()) {
+			String domain = ResourceServer::get_singleton()->get_domain_for_resource(current_resource->get_class());
+			if (!domain.is_empty()) {
+				Dictionary info = ResourceServer::get_singleton()->get_domain_info(domain);
+				String visual_class = info.get("visual_class_name", "");
+				if (ClassDB::class_exists(visual_class)) {
+					Object *obj = ClassDB::instantiate(visual_class);
+					Control *ctrl = Object::cast_to<Control>(obj);
+					if (ctrl) {
+						custom_editor = ctrl;
+						// Fix sizing
+						custom_editor->set_anchors_and_offsets_preset(Control::PRESET_FULL_RECT);
+						editor_container->add_child(custom_editor);
+
+						if (ctrl->has_method("bind_data")) {
+							ctrl->call("bind_data", current_resource);
+						}
+
+						graph_edit->hide();
+						handled_by_domain = true;
+					} else {
+						if (obj) {
+							memdelete(obj);
+						}
+					}
+				}
 			}
 		}
 
-		if (current_resource.is_valid()) {
-			GraphNode *root_node = memnew(GraphNode);
-			root_node->set_title(current_resource->get_class());
-			root_node->set_position_offset(Vector2(50, 50));
-			graph_edit->add_child(root_node);
+		if (!handled_by_domain) {
+			graph_edit->show();
 
-			List<PropertyInfo> props;
-			current_resource->get_property_list(&props);
+			// Logic to populate graph
+			graph_edit->clear_connections();
+			// Remove all child nodes (graph nodes)
+			for (int i = graph_edit->get_child_count() - 1; i >= 0; i--) {
+				GraphNode *gn = Object::cast_to<GraphNode>(graph_edit->get_child(i));
+				if (gn) {
+					memdelete(gn);
+				}
+			}
 
-			int slot_idx = 0;
-			for (const PropertyInfo &E : props) {
-				if (E.usage & PROPERTY_USAGE_STORAGE) {
-					Label *prop_label = memnew(Label);
-					Variant val = current_resource->get(E.name);
-					String val_str = String(val);
+			if (current_resource.is_valid()) {
+				GraphNode *root_node = memnew(GraphNode);
+				root_node->set_title(current_resource->get_class());
+				root_node->set_position_offset(Vector2(50, 50));
+				graph_edit->add_child(root_node);
 
-					// Truncate long strings
-					if (val_str.length() > 50) {
-						val_str = val_str.substr(0, 50) + "...";
+				List<PropertyInfo> props;
+				current_resource->get_property_list(&props);
+
+				int slot_idx = 0;
+				for (const PropertyInfo &E : props) {
+					if (E.usage & PROPERTY_USAGE_STORAGE) {
+						Label *prop_label = memnew(Label);
+						Variant val = current_resource->get(E.name);
+						String val_str = String(val);
+
+						// Truncate long strings
+						if (val_str.length() > 50) {
+							val_str = val_str.substr(0, 50) + "...";
+						}
+
+						prop_label->set_text(E.name + ": " + val_str);
+						root_node->add_child(prop_label);
+
+						// Enable right slot for Resources (output)
+						if (E.type == Variant::OBJECT) {
+							root_node->set_slot(slot_idx, false, 0, Color(1, 1, 1), true, 0, Color(0, 1, 0));
+						}
+						slot_idx++;
 					}
-
-					prop_label->set_text(E.name + ": " + val_str);
-					root_node->add_child(prop_label);
-
-					// Enable right slot for Resources (output)
-					if (E.type == Variant::OBJECT) {
-						root_node->set_slot(slot_idx, false, 0, Color(1, 1, 1), true, 0, Color(0, 1, 0));
-					}
-					slot_idx++;
 				}
 			}
 		}
@@ -153,6 +195,9 @@ Ref<Resource> ResourceEditor::get_edited_resource() const {
 
 ResourceEditor::ResourceEditor() {
 	singleton = this;
+	memnew(ResourceServer); // Initialize the server singleton
+
+	custom_editor = nullptr;
 
 	toolbar = memnew(HBoxContainer);
 	add_child(toolbar);
@@ -185,5 +230,8 @@ ResourceEditor::ResourceEditor() {
 }
 
 ResourceEditor::~ResourceEditor() {
+	if (ResourceServer::get_singleton()) {
+		memdelete(ResourceServer::get_singleton());
+	}
 	singleton = nullptr;
 }

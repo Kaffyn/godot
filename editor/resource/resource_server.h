@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  library.h                                                             */
+/*  resource_server.h                                                     */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,27 +30,40 @@
 
 #pragma once
 
-#include "editor/inspector/editor_inspector.h"
-#include "scene/gui/box_container.h"
-#include "scene/gui/tab_container.h"
-#include "scene/gui/tree.h"
+#include "core/object/object.h"
+#include "scene/resources/texture.h"
 
-class Library : public VBoxContainer {
-	GDCLASS(Library, VBoxContainer);
+class ResourceServer : public Object {
+	GDCLASS(ResourceServer, Object);
 
-	TabContainer *tabs;
-	Tree *assets_tree;
-	EditorInspector *workbench_inspector;
+	static ResourceServer *singleton;
 
-	void _update_assets_tree();
-	void _scan_dir(const String &p_path, TreeItem *p_parent);
-	void _on_asset_selected();
+	// Domain Definition
+	struct DomainDef {
+		String name;
+		String resource_type;
+		String visual_class_name;
+		Ref<Texture2D> icon;
+		Dictionary rules;
+	};
+
+	// Maps "DomainName" -> DomainDef
+	HashMap<String, DomainDef> domains;
 
 protected:
 	static void _bind_methods();
-	void _notification(int p_what);
 
 public:
-	Library();
-	~Library();
+	static ResourceServer *get_singleton();
+
+	// Domain Injection API
+	void register_domain(const String &p_name, const String &p_resource_type, const String &p_visual_class_name, const Ref<Texture2D> &p_icon, const Dictionary &p_rules = Dictionary());
+	Dictionary get_domain_info(const String &p_name) const;
+	Array get_registered_domains() const;
+
+	// Helper to find domain by resource type
+	String get_domain_for_resource(const String &p_resource_type) const;
+
+	ResourceServer();
+	~ResourceServer();
 };
