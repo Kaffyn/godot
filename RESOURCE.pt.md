@@ -1,12 +1,12 @@
 # Resource Editor (Main Panel System)
 
-**Documento de Design Técnico v1.0**
+**Documento de Design Técnico v1.1**
 
 | Metadados | Detalhes |
 | :--- | :--- |
-| **Author** | Assistente (Lead Engine Dev) |
+| **Autor** | Assistente (Lead Engine Dev) |
 | **Revisor** | Machi (Diretor Técnico) |
-| **Status** | **RFC (Request for Comments)** |
+| **Status** | **Implementado** |
 
 ---
 
@@ -43,60 +43,28 @@ Um editor de texto integrado, similar ao editor de Scripts, mas focado no format
 * **Edição Direta:** Modificar valores brutos rapidamente.
 * **Refatoração:** Copiar, colar e substituir blocos de dados serializados.
 * **Debug:** Visualizar exatamente como o Resource está sendo salvo no disco.
+* **Filtragem:** Filtra automaticamente metadados internos (`metadata/_`) e propriedades que não são de editor para fornecer uma visão limpa e semântica dos dados.
 
 ---
 
 ## 3. Arquitetura Técnica
 
-O sistema reside em `editor/resource_editor` e faz interface direta com o `EditorNode`.
+O sistema reside em `editor/resource` e é orquestrado pelo singleton **ResourceServer**.
 
-### 3.1 Components de Sistema
-
-```mermaid
-classDiagram
-    class ResourceEditor {
-        -ResourceVisualEditor visual_editor
-        -ResourceCodeEditor code_editor
-        +edit_resource(p_resource)
-        +switch_mode(p_mode)
-    }
-
-    class ResourceVisualEditor {
-        -GraphEdit graph
-        +reconstruct_from_resource()
-    }
-
-    class ResourceCodeEditor {
-        -TextEdit editor
-        +load_text()
-        +apply_changes()
-    }
-
-    Control <|-- ResourceEditor
-```
+*   **ResourceServer:** Gerencia domínios registrados (subsistemas Zyris) e direciona resources para seus editores visuais apropriados.
+*   **ResourceEditor:** O controle do painel principal, gerenciando a visualização dividida entre a Barra Lateral (arquivos recentes) e a Área de Edição.
 
 ---
 
 ## 4. The Library (A Biblioteca)
 
-Integrada como a aba lateral do Resource Editor, a **Library** funciona como um navegador de "Blueprints" e Templates.
+Integrada como o painel inferior, **The Library** serve como o principal navegador de assets para o ecossistema Zyris.
 
-* **Templates:** Atalhos para criar Resources pré-configurados (Ex: Personagem Básico, Item de Loot).
-* **Drag & Drop:** Integrado para arrastar novos components diretamente para o Modo Visual.
-
----
-
-## 5. Fluxo de Trabalho Integrado
-
-1. O usuário clica em `PlayerAttributes.tres`.
-2. A engine detecta que é um Resource e ativa a aba **Resource** no Main Panel.
-3. O **Inspetor** mostra as propriedades básicas.
-4. O **Resource Editor** (Main Panel) mostra a estrutura de grafos (Modo Visual).
-5. O usuário alterna para **Modo Code** para renomear uma variável em massa ou verificar um ID.
-6. As alterações são sincronizadas em tempo real entre Inspetor, Modo Visual e Modo Code.
+*   **Aba Assets:** Um gerenciador de arquivos com visualização dividida (Split-View), apresentando uma Árvore de Pastas à esquerda e uma Grade de Assets visual à direita, permitindo navegação rápida e pré-visualização dos recursos do projeto.
+*   **CraftTable:** Uma bancada de trabalho especializada que filtra especificamente por domínios registrados no Zyris (como Behavior Trees ou Blueprints de Habilidade), proporcionando um ambiente focado para a criação de dados de jogo.
 
 ---
 
-## 6. Conclusão
+## 5. Conclusão
 
 O **Resource Editor** remove a barreira entre o design de dados e a implementação técnica. Ao oferecer modos Visual e Code no painel principal, a Zyris Engine permite que desenvolvedores e designers trabalhem no mesmo asset usando a ferramenta mais eficiente para cada tarefa, mantendo a integridade e a clareza da arquitetura de dados do projeto.
