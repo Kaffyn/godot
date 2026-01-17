@@ -48,30 +48,49 @@ void VirtualTouchPad::_update_theme_item_cache() {
 		theme_cache.trace_texture = Ref<Texture2D>();
 	}
 
-	// Integer theme items are not standard for width, using "constant" usually works for int values
 	theme_cache.trace_width = get_theme_constant(SNAME("trace_width"), SNAME("VirtualTouchPad"));
 }
 
 void VirtualTouchPad::_notification(int p_what) {
 	VirtualDevice::_notification(p_what);
 	switch (p_what) {
+		case NOTIFICATION_INTERNAL_PROCESS: {
+			if (is_pressed()) {
+				Vector2 deflection;
+				float d = get_process_delta_time();
+				if (d > 0) {
+					Size2 viewport_size = get_viewport_rect().size;
+					float ref_side = MIN(viewport_size.x, viewport_size.y);
+					if (ref_side > 0) {
+						Vector2 vel = accumulated_relative / (ref_side * d);
+						deflection = vel * sensitivity;
+					}
+				}
+
+				deflection.x = CLAMP(deflection.x, -1.0, 1.0);
+				deflection.y = CLAMP(deflection.y, -1.0, 1.0);
+
+				if (deflection != last_sent_deflection || deflection != Vector2()) {
+					_send_axis_events(deflection);
+					last_sent_deflection = deflection;
+				}
+
+				accumulated_relative = Vector2();
+			}
+		} break;
 		case NOTIFICATION_DRAW: {
-			// Draw Background (only in editor)
 			if (Engine::get_singleton()->is_editor_hint()) {
 				if (theme_cache.style_panel.is_valid()) {
 					theme_cache.style_panel->draw(get_canvas_item(), Rect2(Point2(), get_size()));
 				} else {
-					// Fallback editor visual
 					draw_rect(Rect2(Point2(), get_size()), Color(0.5, 0.5, 0.5, 0.2), true);
 					draw_rect(Rect2(Point2(), get_size()), Color(1, 1, 1, 0.5), false);
 				}
 			}
 
-			// Draw Trace
 			if (trace_visible) {
 				if (theme_cache.trace_texture.is_valid()) {
 					if (is_pressed()) {
-						// Draw texture at current pos (like a brush)
 						Vector2 size = theme_cache.trace_texture->get_size();
 						draw_texture_rect(theme_cache.trace_texture, Rect2(current_pos - size / 2, size), false, theme_cache.trace_color);
 					}
@@ -102,7 +121,6 @@ void VirtualTouchPad::_notification(int p_what) {
 	}
 }
 
-// Update FX: Sync child particles to touch position
 void _update_fx(Node *p_root, const Vector2 &p_pos, bool p_emitting) {
 	for (int i = 0; i < p_root->get_child_count(); i++) {
 		Node *child = p_root->get_child(i);
@@ -125,30 +143,8 @@ void _update_fx(Node *p_root, const Vector2 &p_pos, bool p_emitting) {
 }
 
 void VirtualTouchPad::_on_drag(int p_index, const Vector2 &p_pos, const Vector2 &p_relative) {
-	// ... (Input movement logic same as before) ...
-	// Calculate axes based on hand
-	int axis_x = (hand == HAND_LEFT) ? 0 : 2;
-	int axis_y = (hand == HAND_LEFT) ? 1 : 3;
+	accumulated_relative += p_relative;
 
-	if (p_relative.x != 0) {
-		Ref<InputEventVirtualMotion> ie_x;
-		ie_x.instantiate();
-		ie_x->set_device(get_device());
-		ie_x->set_axis(axis_x);
-		ie_x->set_axis_value(p_relative.x * sensitivity);
-		Input::get_singleton()->parse_input_event(ie_x);
-	}
-
-	if (p_relative.y != 0) {
-		Ref<InputEventVirtualMotion> ie_y;
-		ie_y.instantiate();
-		ie_y->set_device(get_device());
-		ie_y->set_axis(axis_y);
-		ie_y->set_axis_value(p_relative.y * sensitivity);
-		Input::get_singleton()->parse_input_event(ie_y);
-	}
-
-	// Update trail positions
 	last_pos = current_pos;
 	current_pos = p_pos;
 
@@ -162,7 +158,7 @@ void VirtualTouchPad::_on_drag(int p_index, const Vector2 &p_pos, const Vector2 
 	queue_redraw();
 }
 
-void VirtualTouchPad::_reset_touchpad() {
+void VirtualTouchPad::_send_axis_events(const Vector2 &p_deflection) {
 	int axis_x = (hand == HAND_LEFT) ? 0 : 2;
 	int axis_y = (hand == HAND_LEFT) ? 1 : 3;
 
@@ -170,17 +166,21 @@ void VirtualTouchPad::_reset_touchpad() {
 	ie_x.instantiate();
 	ie_x->set_device(get_device());
 	ie_x->set_axis(axis_x);
-	ie_x->set_axis_value(0.0);
+	ie_x->set_axis_value(p_deflection.x);
 	Input::get_singleton()->parse_input_event(ie_x);
 
 	Ref<InputEventVirtualMotion> ie_y;
 	ie_y.instantiate();
 	ie_y->set_device(get_device());
 	ie_y->set_axis(axis_y);
-	ie_y->set_axis_value(0.0);
+	ie_y->set_axis_value(p_deflection.y);
 	Input::get_singleton()->parse_input_event(ie_y);
+}
 
-	// Turn off FX
+void VirtualTouchPad::_reset_touchpad() {
+	_send_axis_events(Vector2());
+	last_sent_deflection = Vector2();
+	accumulated_relative = Vector2();
 	_update_fx(this, current_pos, false);
 }
 
@@ -206,6 +206,7 @@ bool VirtualTouchPad::is_trace_visible() const {
 void VirtualTouchPad::_on_touch_down(int p_index, const Vector2 &p_pos) {
 	last_pos = p_pos;
 	current_pos = p_pos;
+	accumulated_relative = Vector2();
 	trace_points.clear();
 	trace_points.push_back(p_pos);
 	_update_fx(this, current_pos, true);
@@ -290,6 +291,8 @@ VirtualTouchPad::VirtualTouchPad() {
 	fade_timer->connect("timeout", callable_mp(this, &VirtualTouchPad::_on_fade_timer_timeout));
 	fade_timer->set_autostart(true);
 	add_child(fade_timer);
+
+	set_process_internal(true);
 }
 
 Size2 VirtualTouchPad::get_minimum_size() const {
@@ -335,7 +338,7 @@ void VirtualTouchPad::_bind_methods() {
 	BIND_ENUM_CONSTANT(HAND_RIGHT);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, VirtualTouchPad, style_panel);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, VirtualTouchPad, trace_width); // Using constant
+	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, VirtualTouchPad, trace_width);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, VirtualTouchPad, trace_color, "trace_color");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, VirtualTouchPad, trace_texture, "trace_texture");
 }

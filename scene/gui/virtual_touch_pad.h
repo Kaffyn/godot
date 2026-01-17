@@ -62,7 +62,11 @@ protected:
 	Vector<Vector2> trace_points;
 	Vector2 last_pos;
 	Vector2 current_pos;
+	Vector2 accumulated_relative;
+	Vector2 last_sent_deflection;
 	Timer *fade_timer = nullptr;
+
+	void _send_axis_events(const Vector2 &p_deflection);
 
 	struct ThemeCache {
 		Ref<StyleBox> style_panel;

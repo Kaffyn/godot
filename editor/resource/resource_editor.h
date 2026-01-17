@@ -33,22 +33,35 @@
 #include "scene/gui/box_container.h"
 #include "scene/gui/button.h"
 #include "scene/gui/graph_edit.h"
+#include "scene/gui/item_list.h"
+#include "scene/gui/line_edit.h"
 #include "scene/gui/split_container.h"
 #include "scene/gui/tab_container.h"
 
 class CodeTextEditor;
 
-class ResourceEditor : public VBoxContainer {
-	GDCLASS(ResourceEditor, VBoxContainer);
+class ResourceEditor : public Control {
+	GDCLASS(ResourceEditor, Control);
 
 	static ResourceEditor *singleton;
 
 	Ref<Resource> current_resource;
+	List<Ref<Resource>> open_resources;
 
-	// UI Components
+	// Layout
+	HSplitContainer *main_split;
+
+	// Sidebar (Left)
+	VBoxContainer *sidebar;
+	LineEdit *filter_txt;
+	ItemList *resource_list;
+
+	// Editor Area (Right)
+	VBoxContainer *editor_layout;
 	HBoxContainer *toolbar;
 	Button *mode_visual_button;
 	Button *mode_code_button;
+	Button *edit_script_button; // New button
 
 	Control *editor_container;
 
@@ -62,6 +75,11 @@ class ResourceEditor : public VBoxContainer {
 	void _update_mode();
 	void _on_mode_visual_pressed();
 	void _on_mode_code_pressed();
+	void _on_edit_script_pressed(); // New callback
+
+	void _update_resource_list();
+	void _on_resource_selected(int p_index);
+	void _on_filter_changed(const String &p_text);
 
 protected:
 	static void _bind_methods();
