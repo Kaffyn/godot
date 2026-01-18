@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  resource_graph_node.cpp                                               */
+/*  resource_node_preview.cpp                                             */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,72 +28,36 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "resource_graph_node.h"
 #include "resource_node_preview.h"
-#include "resource_node_property.h"
-#include "scene/gui/separator.h"
+#include "editor/editor_node.h"
+#include "editor/themes/editor_scale.h"
+#include "scene/resources/texture.h"
 
-void ResourceGraphNode::set_resource(const Ref<Resource> &p_resource) {
+void ResourceNodePreview::set_resource(const Ref<Resource> &p_resource) {
 	resource = p_resource;
 
-	// Clear existing children
-	for (int i = get_child_count() - 1; i >= 0; i--) {
-		Node *child = get_child(i);
-		remove_child(child);
-		memdelete(child);
-	}
-	clear_all_slots();
-
 	if (resource.is_null()) {
-		set_title("Null");
+		preview_rect->set_texture(Ref<Texture2D>());
 		return;
 	}
 
-	set_title(resource->get_class());
-
-	// Add Preview
-	ResourceNodePreview *preview = memnew(ResourceNodePreview);
-	preview->set_resource(resource);
-	add_child(preview);
-	// Slot 0 for preview? No, let's keep it clean for now.
-
-	// Separator
-	add_child(memnew(HSeparator));
-
-	List<PropertyInfo> props;
-	resource->get_property_list(&props);
-
-	int slot_idx = 0;
-	// Adjust slot index because of preview and separator children (GraphNode slots are mapped to children indices usually, but set_slot takes index)
-	// Actually set_slot index corresponds to child index.
-	// Child 0: Preview
-	// Child 1: Separator
-	// Properties start at Child 2.
-	int child_idx = 2;
-
-	for (const PropertyInfo &E : props) {
-		// Filter exactly like EditorInspector
-		if (!(E.usage & PROPERTY_USAGE_EDITOR)) {
-			continue;
-		}
-		if (E.name == "script" || E.name == "resource_name" || E.name == "resource_path" || E.name == "resource_local_to_scene" || E.name.begins_with("metadata/_")) {
-			continue;
-		}
-
-		ResourceNodeProperty *prop_row = memnew(ResourceNodeProperty);
-		prop_row->set_property(E.name, resource->get(E.name));
-		add_child(prop_row);
-
-		// Enable right slot for Resources (output)
-		if (E.type == Variant::OBJECT) {
-			set_slot(child_idx, false, 0, Color(1, 1, 1), true, 0, Color(0, 1, 0));
-		}
-		child_idx++;
+	// Quick check if it's a texture
+	Ref<Texture2D> tex = resource;
+	if (tex.is_valid()) {
+		preview_rect->set_texture(tex);
+	} else {
+		// Fallback to class icon
+		preview_rect->set_texture(EditorNode::get_singleton()->get_object_icon(resource.ptr(), "Object"));
 	}
 }
-Ref<Resource> ResourceGraphNode::get_resource() const {
-	return resource;
-}
 
-ResourceGraphNode::ResourceGraphNode() {
+ResourceNodePreview::ResourceNodePreview() {
+	set_custom_minimum_size(Size2(0, 64) * EDSCALE);
+	set_alignment(ALIGNMENT_CENTER);
+
+	preview_rect = memnew(TextureRect);
+	preview_rect->set_expand_mode(TextureRect::EXPAND_IGNORE_SIZE);
+	preview_rect->set_stretch_mode(TextureRect::STRETCH_KEEP_ASPECT_CENTERED);
+	preview_rect->set_custom_minimum_size(Size2(64, 64) * EDSCALE);
+	add_child(preview_rect);
 }
