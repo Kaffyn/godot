@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  resource_factory.h                                                    */
+/*  library_factory.h                                                     */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,17 +30,17 @@
 
 #pragma once
 
-#ifndef RESOURCE_FACTORY_H
-#define RESOURCE_FACTORY_H
+#ifndef LIBRARY_FACTORY_H
+#define LIBRARY_FACTORY_H
 
 #include "core/io/resource.h"
 #include "core/object/ref_counted.h"
 #include "core/string/string_name.h"
 
-class ResourceFactory {
+class LibraryFactory {
 public:
 	static Ref<Resource> create_resource_from_domain(const StringName &p_domain_name);
 	static Ref<Resource> create_resource_by_class(const StringName &p_class_name);
 };
 
-#endif // RESOURCE_FACTORY_H
+#endif // LIBRARY_FACTORY_H

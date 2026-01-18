@@ -36,7 +36,7 @@
 #include "editor/themes/editor_scale.h"
 
 String ResourceEditorPlugin::get_plugin_name() const {
-	return "Resource ";
+	return TTR("Resource");
 }
 
 const Ref<Texture2D> ResourceEditorPlugin::get_plugin_icon() const {

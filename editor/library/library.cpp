@@ -29,8 +29,8 @@
 /**************************************************************************/
 
 #include "library.h"
+#include "editor/library/library_factory.h"
 #include "editor/resource/resource_editor.h"
-#include "editor/resource/resource_factory.h"
 #include "editor/resource/resource_server.h"
 
 #include "core/io/dir_access.h"
@@ -40,6 +40,7 @@
 #include "editor/editor_interface.h"
 #include "editor/editor_node.h"
 #include "editor/file_system/editor_file_system.h"
+#include "editor/themes/editor_scale.h"
 #include "scene/gui/label.h"
 #include "scene/gui/texture_rect.h"
 
@@ -85,8 +86,9 @@ void Library::_scan_recursive(EditorFileSystemDirectory *p_dir) {
 	for (int i = 0; i < p_dir->get_file_count(); i++) {
 		String path = p_dir->get_file_path(i);
 		String type = p_dir->get_file_type(i);
+		String ext = path.get_extension().to_lower();
 
-		if (type == "Resource" || ClassDB::is_parent_class(type, "Resource")) {
+		if ((type == "Resource" || ClassDB::is_parent_class(type, "Resource")) && (ext == "tres" || ext == "res")) {
 			AssetData asset_data;
 			asset_data.path = path;
 			asset_data.name = path.get_file();
@@ -237,7 +239,7 @@ void Library::_update_craft_tree() {
 				// Fallback icon
 				item->set_icon(0, get_theme_icon("Resource", "EditorIcons"));
 			}
-			item->set_tooltip_text(0, "Creates a new " + type);
+			item->set_tooltip_text(0, vformat(TTR("Creates a new %s"), type));
 		}
 	}
 }
@@ -265,7 +267,7 @@ void Library::_on_creation_file_selected(const String &p_path) {
 		return;
 	}
 
-	Ref<Resource> res = ResourceFactory::create_resource_from_domain(current_creation_domain);
+	Ref<Resource> res = LibraryFactory::create_resource_from_domain(current_creation_domain);
 	if (res.is_valid()) {
 		Error err = ResourceSaver::save(res, p_path);
 		if (err == OK) {
@@ -291,7 +293,7 @@ Library::Library() {
 
 	// Tab 1: Assets (Flat List)
 	VBoxContainer *assets_tab = memnew(VBoxContainer);
-	assets_tab->set_name("Resources");
+	assets_tab->set_name(TTR("Resources"));
 
 	assets_search = memnew(LineEdit);
 	assets_search->set_placeholder(TTR("Search Resources (Recursive)..."));
@@ -301,6 +303,10 @@ Library::Library() {
 
 	assets_list = memnew(ItemList);
 	assets_list->set_v_size_flags(SIZE_EXPAND_FILL);
+	assets_list->set_icon_mode(ItemList::ICON_MODE_TOP);
+	assets_list->set_max_columns(0);
+	assets_list->set_same_column_width(true);
+	assets_list->set_fixed_icon_size(Size2(64, 64) * EDSCALE);
 	assets_list->connect("item_activated", callable_mp(this, &Library::_on_asset_item_activated));
 	assets_list->set_drag_forwarding(callable_mp(this, &Library::_get_drag_data_fw), Callable(), Callable());
 	assets_tab->add_child(assets_list);
@@ -309,7 +315,7 @@ Library::Library() {
 
 	// Tab 2: Workbench
 	VBoxContainer *workbench_tab = memnew(VBoxContainer);
-	workbench_tab->set_name("Workbench");
+	workbench_tab->set_name(TTR("Workbench"));
 
 	workbench_inspector = memnew(EditorInspector);
 	workbench_inspector->set_v_size_flags(SIZE_EXPAND_FILL);
@@ -319,7 +325,7 @@ Library::Library() {
 
 	// Tab 3: CraftTable
 	VBoxContainer *craft_tab = memnew(VBoxContainer);
-	craft_tab->set_name("CraftTable");
+	craft_tab->set_name(TTR("CraftTable"));
 
 	craft_search = memnew(LineEdit);
 	craft_search->set_placeholder(TTR("Search Zyris Resources..."));
@@ -337,7 +343,7 @@ Library::Library() {
 	// Creation Dialog
 	creation_dialog = memnew(EditorFileDialog);
 	creation_dialog->set_file_mode(EditorFileDialog::FILE_MODE_SAVE_FILE);
-	creation_dialog->add_filter("*.tres", "Resource");
+	creation_dialog->add_filter("*.tres", TTR("Resource"));
 	creation_dialog->connect("file_selected", callable_mp(this, &Library::_on_creation_file_selected));
 	add_child(creation_dialog);
 

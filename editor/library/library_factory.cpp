@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  resource_factory.cpp                                                  */
+/*  library_factory.cpp                                                   */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,12 +28,12 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "resource_factory.h"
+#include "library_factory.h"
 #include "core/object/class_db.h"
 #include "editor/editor_node.h"
-#include "resource_server.h"
+#include "editor/resource/resource_server.h"
 
-Ref<Resource> ResourceFactory::create_resource_from_domain(const StringName &p_domain_name) {
+Ref<Resource> LibraryFactory::create_resource_from_domain(const StringName &p_domain_name) {
 	if (!ResourceServer::get_singleton()) {
 		ERR_PRINT("ResourceServer singleton is not available.");
 		return Ref<Resource>();
@@ -50,7 +50,7 @@ Ref<Resource> ResourceFactory::create_resource_from_domain(const StringName &p_d
 	return create_resource_by_class(resource_class_name);
 }
 
-Ref<Resource> ResourceFactory::create_resource_by_class(const StringName &p_class_name) {
+Ref<Resource> LibraryFactory::create_resource_by_class(const StringName &p_class_name) {
 	if (!ClassDB::class_exists(p_class_name)) {
 		ERR_PRINT(vformat("Class '%s' does not exist in ClassDB.", p_class_name));
 		return Ref<Resource>();

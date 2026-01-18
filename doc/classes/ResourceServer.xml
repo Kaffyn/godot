@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ResourceServer" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		Singleton for managing resource domains and visual editors.
+	</brief_description>
+	<description>
+		[ResourceServer] is the central orchestration system for the Zyris Resource ecosystem. It allows modules to register "Domains", which associate specific [Resource] types with specialized visual editors and creation rules.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_domain_for_resource" qualifiers="const">
+			<return type="String" />
+			<param index="0" name="resource_type" type="String" />
+			<description>
+				Returns the registered domain name for a given resource class type.
+			</description>
+		</method>
+		<method name="get_domain_info" qualifiers="const">
+			<return type="Dictionary" />
+			<param index="0" name="name" type="String" />
+			<description>
+				Returns information about a registered domain.
+			</description>
+		</method>
+		<method name="get_registered_domains" qualifiers="const">
+			<return type="Array" />
+			<description>
+				Returns a list of all currently registered resource domains.
+			</description>
+		</method>
+		<method name="register_domain">
+			<return type="void" />
+			<param index="0" name="name" type="String" />
+			<param index="1" name="resource_type" type="String" />
+			<param index="2" name="visual_class_name" type="String" />
+			<param index="3" name="icon" type="Texture2D" />
+			<param index="4" name="rules" type="Dictionary" default="{}" />
+			<description>
+				Registers a new resource domain with the server.
+			</description>
+		</method>
+	</methods>
+</class>

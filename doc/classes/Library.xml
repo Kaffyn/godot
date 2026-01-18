@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="Library" inherits="VBoxContainer" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		A unified asset management panel for resources.
+	</brief_description>
+	<description>
+		The [Library] panel provides a centralized interface for managing project resources. It features a recursive scanner for [Resource] files ([code].tres[/code], [code].res[/code]), a Workbench for quick inspection, and a CraftTable for creating new resources based on registered domains.
+	</description>
+	<tutorials>
+	</tutorials>
+</class>

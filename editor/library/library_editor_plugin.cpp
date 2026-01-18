@@ -38,7 +38,7 @@ LibraryEditorPlugin::LibraryEditorPlugin() {
 	library_panel->set_custom_minimum_size(Size2(0, 250 * EDSCALE));
 
 	// Add to bottom panel
-	bottom_panel_button = add_control_to_bottom_panel(library_panel, "Library");
+	bottom_panel_button = add_control_to_bottom_panel(library_panel, TTR("Library"));
 }
 
 LibraryEditorPlugin::~LibraryEditorPlugin() {

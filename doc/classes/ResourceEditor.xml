@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ResourceEditor" inherits="Control" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		The main panel workspace for editing Resources.
+	</brief_description>
+	<description>
+		[ResourceEditor] is a Main Panel system that provides dual-mode editing for [Resource] assets. It supports a Visual Mode (graph-based or domain-specific) and a Code Mode (text-based property editing).
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="edit">
+			<return type="void" />
+			<param index="0" name="resource" type="Resource" />
+			<description>
+				Opens the specified resource in the editor.
+			</description>
+		</method>
+		<method name="get_edited_resource" qualifiers="const">
+			<return type="Resource" />
+			<description>
+				Returns the resource currently being edited.
+			</description>
+		</method>
+	</methods>
+</class>
