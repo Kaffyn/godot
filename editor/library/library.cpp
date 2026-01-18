@@ -291,7 +291,7 @@ Library::Library() {
 
 	// Tab 1: Assets (Flat List)
 	VBoxContainer *assets_tab = memnew(VBoxContainer);
-	assets_tab->set_name("Assets");
+	assets_tab->set_name("Resources");
 
 	assets_search = memnew(LineEdit);
 	assets_search->set_placeholder(TTR("Search Resources (Recursive)..."));
