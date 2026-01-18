@@ -29,84 +29,215 @@
 /**************************************************************************/
 
 #include "library.h"
+#include "editor/resource/resource_editor.h"
+#include "editor/resource/resource_factory.h"
 #include "editor/resource/resource_server.h"
 
 #include "core/io/dir_access.h"
+#include "core/io/file_access.h"
 #include "core/io/resource_loader.h"
+#include "core/io/resource_saver.h"
+#include "editor/editor_interface.h"
 #include "editor/editor_node.h"
+#include "editor/file_system/editor_file_system.h"
 #include "scene/gui/label.h"
 
 void Library::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("_update_folders_tree"), &Library::_update_folders_tree);
-	ClassDB::bind_method(D_METHOD("_on_folder_selected"), &Library::_on_folder_selected);
-	ClassDB::bind_method(D_METHOD("_on_asset_item_selected", "index"), &Library::_on_asset_item_selected);
-	ClassDB::bind_method(D_METHOD("_on_asset_item_clicked", "index", "at_position", "mouse_button_index"), &Library::_on_asset_item_clicked);
-	ClassDB::bind_method(D_METHOD("_on_context_menu_id_pressed", "id"), &Library::_on_context_menu_id_pressed);
-	ClassDB::bind_method(D_METHOD("_on_delete_confirmed"), &Library::_on_delete_confirmed);
-	ClassDB::bind_method(D_METHOD("_on_rename_confirmed"), &Library::_on_rename_confirmed);
+	ClassDB::bind_method(D_METHOD("_scan_project"), &Library::_scan_project);
+	ClassDB::bind_method(D_METHOD("_update_assets_list"), &Library::_update_assets_list);
+	ClassDB::bind_method(D_METHOD("_on_assets_search_text_changed", "text"), &Library::_on_assets_search_text_changed);
+	ClassDB::bind_method(D_METHOD("_on_asset_item_activated", "index"), &Library::_on_asset_item_activated);
+	ClassDB::bind_method(D_METHOD("_get_drag_data_fw", "point", "from"), &Library::_get_drag_data_fw);
 
 	ClassDB::bind_method(D_METHOD("_update_craft_tree"), &Library::_update_craft_tree);
 	ClassDB::bind_method(D_METHOD("_on_craft_search_text_changed", "text"), &Library::_on_craft_search_text_changed);
+	ClassDB::bind_method(D_METHOD("_on_craft_item_activated"), &Library::_on_craft_item_activated);
+	ClassDB::bind_method(D_METHOD("_on_creation_file_selected", "path"), &Library::_on_creation_file_selected);
 }
 
 void Library::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE: {
-			_update_folders_tree();
-			_update_file_list("res://");
+			if (EditorFileSystem::get_singleton()) {
+				EditorFileSystem::get_singleton()->connect("filesystem_changed", callable_mp(this, &Library::_scan_project));
+			}
+			_scan_project();
 			_update_craft_tree();
 		} break;
 	}
 }
 
-void Library::_update_craft_tree() {
-	if (!craft_tree) {
+void Library::_scan_project() {
+	all_assets.clear();
+	EditorFileSystemDirectory *fs = EditorFileSystem::get_singleton()->get_filesystem();
+	if (fs) {
+		_scan_recursive(fs);
+	}
+	_update_assets_list();
+}
+
+void Library::_scan_recursive(EditorFileSystemDirectory *p_dir) {
+	for (int i = 0; i < p_dir->get_subdir_count(); i++) {
+		_scan_recursive(p_dir->get_subdir(i));
+	}
+
+	for (int i = 0; i < p_dir->get_file_count(); i++) {
+		String path = p_dir->get_file_path(i);
+		String type = p_dir->get_file_type(i);
+
+		if (type == "Resource" || ClassDB::is_parent_class(type, "Resource")) {
+			AssetData data;
+			data.path = path;
+			data.name = path.get_file();
+			data.type = type;
+			data.icon = EditorNode::get_singleton()->get_class_icon(type, "Resource");
+			all_assets.push_back(data);
+
+			// Scan for internal resources in text files if needed
+			if (path.ends_with(".tscn") || path.ends_with(".tres")) {
+				_scan_internal_resources(path);
+			}
+		}
+	}
+}
+
+void Library::_scan_internal_resources(const String &p_path) {
+	Ref<FileAccess> f = FileAccess::open(p_path, FileAccess::READ);
+	if (f.is_null()) {
 		return;
 	}
+
+	while (!f->eof_reached()) {
+		String line = f->get_line().strip_edges();
+		if (line.begins_with("[sub_resource")) {
+			// Basic parser for [sub_resource type="ClassName" id="ID"]
+			int id_pos = line.find("id=\"");
+			int type_pos = line.find("type=\"");
+
+			if (id_pos != -1 && type_pos != -1) {
+				String id = line.substr(id_pos + 4).get_slice("\"", 0);
+				String type = line.substr(type_pos + 6).get_slice("\"", 0);
+
+				AssetData data;
+				data.path = p_path + "::" + id;
+				data.name = p_path.get_file() + "::" + id;
+				data.type = type;
+				data.icon = EditorNode::get_singleton()->get_class_icon(type, "Resource");
+				all_assets.push_back(data);
+			}
+		}
+	}
+}
+
+void Library::_update_assets_list() {
+	assets_list->clear();
+	String filter = assets_search->get_text();
+
+	for (const AssetData &data : all_assets) {
+		if (!filter.is_empty() && data.name.findn(filter) == -1 && data.type.findn(filter) == -1) {
+			continue;
+		}
+
+		int idx = assets_list->add_item(data.name, data.icon);
+		assets_list->set_item_tooltip(idx, data.path + "\nType: " + data.type);
+		assets_list->set_item_metadata(idx, data.path);
+	}
+}
+
+void Library::_on_assets_search_text_changed(const String &p_text) {
+	_update_assets_list();
+}
+
+void Library::_on_asset_item_activated(int p_index) {
+	String path = assets_list->get_item_metadata(p_index);
+	if (path.is_empty()) {
+		return;
+	}
+
+	Ref<Resource> res = ResourceLoader::load(path);
+	if (res.is_valid()) {
+		// Open in Inspector
+		EditorInterface::get_singleton()->edit_resource(res);
+		// Open in ResourceEditor
+		if (ResourceEditor::get_singleton()) {
+			ResourceEditor::get_singleton()->edit(res);
+			ResourceEditor::get_singleton()->show(); // Ensure visible
+		}
+
+		// Optionally, if we want to show it in the Workbench tab
+		if (workbench_inspector) {
+			workbench_inspector->edit(res.ptr());
+			tabs->set_current_tab(1); // Switch to Workbench
+		}
+	} else {
+		EditorNode::get_singleton()->show_warning(vformat(TTR("Could not load resource: %s"), path));
+	}
+}
+
+Variant Library::_get_drag_data_fw(const Point2 &p_point, Control *p_from) {
+	if (p_from == assets_list) {
+		int idx = assets_list->get_item_at_position(p_point, true);
+		if (idx != -1) {
+			String path = assets_list->get_item_metadata(idx);
+			if (path.is_empty()) {
+				return Variant();
+			}
+
+			Dictionary drag_data;
+			drag_data["type"] = "files";
+			Vector<String> files;
+			files.push_back(path);
+			drag_data["files"] = files;
+			drag_data["from"] = this;
+
+			// Preview
+			HBoxContainer *preview = memnew(HBoxContainer);
+			TextureRect *icon = memnew(TextureRect);
+			icon->set_texture(assets_list->get_item_icon(idx));
+			preview->add_child(icon);
+			Label *label = memnew(Label);
+			label->set_text(assets_list->get_item_text(idx));
+			preview->add_child(label);
+			assets_list->set_drag_preview(preview);
+
+			return drag_data;
+		}
+	}
+	return Variant();
+}
+
+// ... (CraftTable methods remain largely the same, logic reused) ...
+
+void Library::_update_craft_tree() {
 	craft_tree->clear();
 	TreeItem *root = craft_tree->create_item();
 
 	String search_term = craft_search->get_text();
 
-	// Create sections
-	TreeItem *zyris_root = craft_tree->create_item(root);
-	zyris_root->set_text(0, "Zyris Resources");
-	zyris_root->set_selectable(0, false);
-	zyris_root->set_collapsed(false);
-
 	if (ResourceServer::get_singleton()) {
-		// Use Registered Domains from ResourceServer
 		Array domains = ResourceServer::get_singleton()->get_registered_domains();
 		for (int i = 0; i < domains.size(); i++) {
 			String domain_name = domains[i];
 			Dictionary info = ResourceServer::get_singleton()->get_domain_info(domain_name);
-			String type_name = info.get("resource_type", "");
+			String type = info.get("resource_type", "");
+			Ref<Texture2D> icon = info.get("icon", Ref<Texture2D>());
 
-			if (type_name.is_empty()) {
+			if (!search_term.is_empty() && domain_name.findn(search_term) == -1 && type.findn(search_term) == -1) {
 				continue;
 			}
 
-			if (!search_term.is_empty() && type_name.findn(search_term) == -1 && domain_name.findn(search_term) == -1) {
-				continue;
-			}
+			TreeItem *item = craft_tree->create_item(root);
+			item->set_text(0, domain_name);
+			item->set_metadata(0, domain_name);
 
-			TreeItem *item = craft_tree->create_item(zyris_root);
-			item->set_text(0, domain_name + " (" + type_name + ")");
-
-			Ref<Texture2D> icon = info.get("icon", Variant());
 			if (icon.is_valid()) {
 				item->set_icon(0, icon);
 			} else {
-				if (has_theme_icon(type_name, "EditorIcons")) {
-					item->set_icon(0, get_theme_icon(type_name, "EditorIcons"));
-				} else {
-					item->set_icon(0, get_theme_icon("Object", "EditorIcons"));
-				}
+				// Fallback icon
+				item->set_icon(0, get_theme_icon("Resource", "EditorIcons"));
 			}
+			item->set_tooltip_text(0, "Creates a new " + type);
 		}
-	} else {
-		TreeItem *err = craft_tree->create_item(zyris_root);
-		err->set_text(0, "ResourceServer not active.");
 	}
 }
 
@@ -114,244 +245,66 @@ void Library::_on_craft_search_text_changed(const String &p_text) {
 	_update_craft_tree();
 }
 
-void Library::_update_folders_tree() {
-	if (!folders_tree) {
+void Library::_on_craft_item_activated() {
+	TreeItem *item = craft_tree->get_selected();
+	if (!item) {
 		return;
 	}
-	folders_tree->clear();
-	TreeItem *root = folders_tree->create_item();
-	root->set_text(0, "res://");
-	root->set_metadata(0, "res://");
-	if (has_theme_icon("Folder", "EditorIcons")) {
-		root->set_icon(0, get_theme_icon("Folder", "EditorIcons"));
-	}
 
-	_scan_folders("res://", root);
+	String domain_name = item->get_metadata(0);
+	current_creation_domain = domain_name;
+
+	// Show Save Dialog
+	creation_dialog->set_current_file(domain_name + ".tres");
+	creation_dialog->popup_centered_ratio();
 }
 
-void Library::_scan_folders(const String &p_path, TreeItem *p_parent) {
-	Ref<DirAccess> da = DirAccess::open(p_path);
-	if (da.is_null()) {
+void Library::_on_creation_file_selected(const String &p_path) {
+	if (current_creation_domain.is_empty()) {
 		return;
 	}
 
-	da->list_dir_begin();
-	String f = da->get_next();
-
-	List<String> folders;
-
-	while (!f.is_empty()) {
-		if (f == "." || f == ".." || f == ".import") {
-			f = da->get_next();
-			continue;
-		}
-
-		if (da->current_is_dir()) {
-			folders.push_back(f);
-		}
-		f = da->get_next();
-	}
-	da->list_dir_end();
-
-	folders.sort();
-
-	for (const String &E : folders) {
-		TreeItem *ti = folders_tree->create_item(p_parent);
-		ti->set_text(0, E);
-		String full_path = p_path.path_join(E);
-		ti->set_metadata(0, full_path);
-		ti->set_collapsed(true);
-		if (has_theme_icon("Folder", "EditorIcons")) {
-			ti->set_icon(0, get_theme_icon("Folder", "EditorIcons"));
-		}
-		_scan_folders(full_path, ti);
-	}
-}
-
-void Library::_update_file_list(const String &p_dir_path) {
-	current_path = p_dir_path;
-	assets_list->clear();
-
-	Ref<DirAccess> da = DirAccess::open(p_dir_path);
-	if (da.is_null()) {
-		return;
-	}
-
-	da->list_dir_begin();
-	String f = da->get_next();
-
-	List<String> files;
-
-	while (!f.is_empty()) {
-		if (f == "." || f == ".." || f == ".import") {
-			f = da->get_next();
-			continue;
-		}
-
-		if (!da->current_is_dir()) {
-			if (!f.ends_with(".import") && (f.ends_with(".tres") || f.ends_with(".res"))) {
-				files.push_back(f);
+	Ref<Resource> res = ResourceFactory::create_resource_from_domain(current_creation_domain);
+	if (res.is_valid()) {
+		Error err = ResourceSaver::save(res, p_path);
+		if (err == OK) {
+			_scan_project(); // Refresh list
+			// Open
+			EditorInterface::get_singleton()->edit_resource(res);
+			if (ResourceEditor::get_singleton()) {
+				ResourceEditor::get_singleton()->edit(res);
 			}
-		}
-		f = da->get_next();
-	}
-	da->list_dir_end();
-
-	files.sort();
-
-	for (const String &E : files) {
-		int idx = assets_list->add_item(E);
-		String full_path = p_dir_path.path_join(E);
-		assets_list->set_item_metadata(idx, full_path);
-
-		Ref<Texture2D> icon;
-		// Try to load resource to get type icon (expensive?)
-		// For now, generic Resource icon or File
-		if (has_theme_icon("Resource", "EditorIcons")) {
-			icon = get_theme_icon("Resource", "EditorIcons");
 		} else {
-			icon = get_theme_icon("File", "EditorIcons");
+			EditorNode::get_singleton()->show_warning(TTR("Error saving resource to disk."));
 		}
-		assets_list->set_item_icon(idx, icon);
-	}
-}
-
-void Library::_on_folder_selected() {
-	if (!folders_tree) {
-		return;
-	}
-	TreeItem *ti = folders_tree->get_selected();
-	if (!ti) {
-		return;
-	}
-
-	String path = ti->get_metadata(0);
-	_update_file_list(path);
-}
-
-void Library::_on_asset_item_selected(int p_index) {
-	String path = assets_list->get_item_metadata(p_index);
-	if (path.is_empty()) {
-		return;
-	}
-
-	if (ResourceLoader::exists(path)) {
-		Ref<Resource> res = ResourceLoader::load(path);
-		if (res.is_valid() && workbench_inspector) {
-			workbench_inspector->edit(res.ptr());
-		}
-	}
-}
-
-void Library::_on_asset_item_clicked(int p_index, const Vector2 &p_pos, MouseButton p_mouse_button_index) {
-	if (p_mouse_button_index == MouseButton::RIGHT) {
-		assets_list->select(p_index);
-		_on_asset_item_selected(p_index);
-		context_menu->set_position(get_screen_position() + get_local_mouse_position());
-		// Note: get_local_mouse_position is relative to Library, but click is on List.
-		// Use global mouse pos usually, or calculate offset.
-		// For simplicity:
-		context_menu->set_position(assets_list->get_screen_position() + p_pos);
-		context_menu->popup();
-	}
-}
-
-void Library::_on_context_menu_id_pressed(int p_id) {
-	if (assets_list->get_selected_items().size() == 0) {
-		return;
-	}
-	int idx = assets_list->get_selected_items()[0];
-	String path = assets_list->get_item_metadata(idx);
-
-	switch (p_id) {
-		case 0: // Rename
-			rename_edit->set_text(path.get_file());
-			rename_dialog->popup_centered(Size2(300, 80));
-			break;
-		case 1: // Delete
-			delete_dialog->set_text("Are you sure you want to delete " + path.get_file() + "?");
-			delete_dialog->popup_centered();
-			break;
-	}
-}
-
-void Library::_on_delete_confirmed() {
-	if (assets_list->get_selected_items().size() == 0) {
-		return;
-	}
-	int idx = assets_list->get_selected_items()[0];
-	String path = assets_list->get_item_metadata(idx);
-
-	Ref<DirAccess> da = DirAccess::create(DirAccess::ACCESS_RESOURCES);
-	if (da->remove(path) == OK) {
-		_update_file_list(current_path);
 	} else {
-		// Error handling
+		EditorNode::get_singleton()->show_warning(TTR("Failed to create resource instance."));
 	}
-}
-
-void Library::_on_rename_confirmed() {
-	if (assets_list->get_selected_items().size() == 0) {
-		return;
-	}
-	int idx = assets_list->get_selected_items()[0];
-	String path = assets_list->get_item_metadata(idx);
-	String new_name = rename_edit->get_text();
-	String new_path = path.get_base_dir().path_join(new_name);
-
-	Ref<DirAccess> da = DirAccess::create(DirAccess::ACCESS_RESOURCES);
-	if (da->rename(path, new_path) == OK) {
-		_update_file_list(current_path);
-	}
+	current_creation_domain = "";
 }
 
 Library::Library() {
-	current_path = "res://";
-
 	tabs = memnew(TabContainer);
 	tabs->set_v_size_flags(SIZE_EXPAND_FILL);
 	add_child(tabs);
 
-	// Tab 1: Assets (Split View)
-	HSplitContainer *assets_tab = memnew(HSplitContainer);
+	// Tab 1: Assets (Flat List)
+	VBoxContainer *assets_tab = memnew(VBoxContainer);
 	assets_tab->set_name("Assets");
 
-	folders_tree = memnew(Tree);
-	folders_tree->set_v_size_flags(SIZE_EXPAND_FILL);
-	folders_tree->set_custom_minimum_size(Size2(150, 0));
-	folders_tree->connect("cell_selected", callable_mp(this, &Library::_on_folder_selected));
-	assets_tab->add_child(folders_tree);
+	assets_search = memnew(LineEdit);
+	assets_search->set_placeholder(TTR("Search Resources (Recursive)..."));
+	assets_search->set_clear_button_enabled(true);
+	assets_search->connect("text_changed", callable_mp(this, &Library::_on_assets_search_text_changed));
+	assets_tab->add_child(assets_search);
 
 	assets_list = memnew(ItemList);
 	assets_list->set_v_size_flags(SIZE_EXPAND_FILL);
-	assets_list->set_h_size_flags(SIZE_EXPAND_FILL);
-	assets_list->set_icon_mode(ItemList::ICON_MODE_TOP);
-	assets_list->set_max_columns(0); // Auto
-	assets_list->set_fixed_icon_size(Size2i(64, 64));
-	assets_list->connect("item_selected", callable_mp(this, &Library::_on_asset_item_selected));
-	assets_list->connect("item_clicked", callable_mp(this, &Library::_on_asset_item_clicked));
+	assets_list->connect("item_activated", callable_mp(this, &Library::_on_asset_item_activated));
+	assets_list->set_drag_forwarding(callable_mp(this, &Library::_get_drag_data_fw), Callable(), Callable());
 	assets_tab->add_child(assets_list);
 
 	tabs->add_child(assets_tab);
-
-	// Context Menu
-	context_menu = memnew(PopupMenu);
-	context_menu->add_item("Rename", 0);
-	context_menu->add_item("Delete", 1);
-	context_menu->connect("id_pressed", callable_mp(this, &Library::_on_context_menu_id_pressed));
-	add_child(context_menu);
-
-	delete_dialog = memnew(ConfirmationDialog);
-	delete_dialog->connect("confirmed", callable_mp(this, &Library::_on_delete_confirmed));
-	add_child(delete_dialog);
-
-	rename_dialog = memnew(ConfirmationDialog);
-	VBoxContainer *vb = memnew(VBoxContainer);
-	rename_dialog->add_child(vb);
-	rename_edit = memnew(LineEdit);
-	vb->add_child(rename_edit);
-	rename_dialog->connect("confirmed", callable_mp(this, &Library::_on_rename_confirmed));
-	add_child(rename_dialog);
 
 	// Tab 2: Workbench
 	VBoxContainer *workbench_tab = memnew(VBoxContainer);
@@ -375,9 +328,22 @@ Library::Library() {
 	craft_tree = memnew(Tree);
 	craft_tree->set_v_size_flags(SIZE_EXPAND_FILL);
 	craft_tree->set_hide_root(true);
+	craft_tree->connect("item_activated", callable_mp(this, &Library::_on_craft_item_activated));
 	craft_tab->add_child(craft_tree);
 
 	tabs->add_child(craft_tab);
+
+	// Creation Dialog
+	creation_dialog = memnew(EditorFileDialog);
+	creation_dialog->set_file_mode(EditorFileDialog::FILE_MODE_SAVE_FILE);
+	creation_dialog->add_filter("*.tres", "Resource");
+	creation_dialog->connect("file_selected", callable_mp(this, &Library::_on_creation_file_selected));
+	add_child(creation_dialog);
+
+	context_menu = nullptr;
+	delete_dialog = nullptr;
+	rename_dialog = nullptr;
+	rename_edit = nullptr;
 }
 
 Library::~Library() {

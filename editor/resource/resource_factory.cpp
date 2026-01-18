@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  library.h                                                             */
+/*  resource_factory.cpp                                                  */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,70 +28,54 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#pragma once
+#include "resource_factory.h"
+#include "core/object/class_db.h"
+#include "editor/editor_node.h"
+#include "resource_server.h"
 
-#include "editor/docks/file_dialog.h"
-#include "editor/inspector/editor_inspector.h"
-#include "scene/gui/box_container.h"
-#include "scene/gui/dialogs.h"
-#include "scene/gui/item_list.h"
-#include "scene/gui/line_edit.h"
-#include "scene/gui/popup_menu.h"
-#include "scene/gui/split_container.h"
-#include "scene/gui/tab_container.h"
-#include "scene/gui/tree.h"
+Ref<Resource> ResourceFactory::create_resource_from_domain(const StringName &p_domain_name) {
+	if (!ResourceServer::get_singleton()) {
+		ERR_PRINT("ResourceServer singleton is not available.");
+		return Ref<Resource>();
+	}
 
-class Library : public VBoxContainer {
-	GDCLASS(Library, VBoxContainer);
+	Dictionary info = ResourceServer::get_singleton()->get_domain_info(p_domain_name);
+	String resource_class_name = info.get("resource_type", "");
 
-	TabContainer *tabs;
-	LineEdit *assets_search;
-	ItemList *assets_list;
-	EditorInspector *workbench_inspector;
+	if (resource_class_name.is_empty()) {
+		EditorNode::get_singleton()->show_warning(vformat(TTR("Resource domain '%s' not found or not registered correctly."), p_domain_name));
+		return Ref<Resource>();
+	}
 
-	// Legacy or simplified context menu
-	PopupMenu *context_menu;
-	ConfirmationDialog *delete_dialog;
-	ConfirmationDialog *rename_dialog;
-	LineEdit *rename_edit;
+	return create_resource_by_class(resource_class_name);
+}
 
-	EditorFileDialog *creation_dialog;
-	String current_creation_domain;
+Ref<Resource> ResourceFactory::create_resource_by_class(const StringName &p_class_name) {
+	if (!ClassDB::class_exists(p_class_name)) {
+		ERR_PRINT(vformat("Class '%s' does not exist in ClassDB.", p_class_name));
+		return Ref<Resource>();
+	}
+	if (!ClassDB::is_parent_class(p_class_name, "Resource")) {
+		ERR_PRINT(vformat("Class '%s' does not inherit from Resource.", p_class_name));
+		return Ref<Resource>();
+	}
+	if (!ClassDB::can_instantiate(p_class_name)) {
+		EditorNode::get_singleton()->show_warning(vformat(TTR("Class '%s' cannot be instantiated. Check if it's abstract or if it requires specific setup."), p_class_name));
+		return Ref<Resource>();
+	}
 
-	// CraftTable Components
-	LineEdit *craft_search;
-	Tree *craft_tree;
+	Object *obj = ClassDB::instantiate(p_class_name);
+	if (!obj) {
+		EditorNode::get_singleton()->show_warning(vformat(TTR("Failed to instantiate class '%s'."), p_class_name));
+		return Ref<Resource>();
+	}
 
-	// Internal data for filtering
-	struct AssetData {
-		String path;
-		String name;
-		String type;
-		Ref<Texture2D> icon;
-	};
-	Vector<AssetData> all_assets;
+	Ref<Resource> resource = obj; // Implicit cast
+	if (resource.is_null()) {
+		memdelete(obj); // Clean up if cast fails
+		EditorNode::get_singleton()->show_warning(vformat(TTR("Instantiated object for class '%s' is not a Resource."), p_class_name));
+		return Ref<Resource>();
+	}
 
-	void _scan_project();
-	void _scan_recursive(EditorFileSystemDirectory *p_dir);
-	void _scan_internal_resources(const String &p_path);
-
-	void _update_assets_list();
-	void _on_assets_search_text_changed(const String &p_text);
-	void _on_asset_item_activated(int p_index);
-
-	Variant _get_drag_data_fw(const Point2 &p_point, Control *p_from);
-
-	// CraftTable Methods
-	void _update_craft_tree();
-	void _on_craft_search_text_changed(const String &p_text);
-	void _on_craft_item_activated();
-	void _on_creation_file_selected(const String &p_path);
-
-protected:
-	static void _bind_methods();
-	void _notification(int p_what);
-
-public:
-	Library();
-	~Library();
-};
+	return resource;
+}

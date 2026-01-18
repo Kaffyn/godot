@@ -260,9 +260,9 @@ void ResourceEditor::_update_resource_list() {
 			continue;
 		}
 
-		String name = res->get_name();
+		String name = res->get_path().get_file();
 		if (name.is_empty()) {
-			name = res->get_path().get_file();
+			name = res->get_name();
 		}
 		if (name.is_empty()) {
 			name = res->get_class();
