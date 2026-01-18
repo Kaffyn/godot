@@ -33,6 +33,7 @@
 #include "editor/editor_interface.h"
 #include "editor/editor_node.h"
 #include "editor/gui/code_editor.h"
+#include "editor/resource/nodes/resource_graph_node.h"
 #include "editor/themes/editor_scale.h"
 #include "resource_server.h"
 
@@ -136,42 +137,10 @@ void ResourceEditor::_update_mode() {
 			}
 
 			if (current_resource.is_valid()) {
-				GraphNode *root_node = memnew(GraphNode);
-				root_node->set_title(current_resource->get_class());
+				ResourceGraphNode *root_node = memnew(ResourceGraphNode);
+				root_node->set_resource(current_resource);
 				root_node->set_position_offset(Vector2(50, 50));
 				graph_edit->add_child(root_node);
-
-				List<PropertyInfo> props;
-				current_resource->get_property_list(&props);
-
-				int slot_idx = 0;
-				for (const PropertyInfo &E : props) {
-					// Filter exactly like EditorInspector
-					if (!(E.usage & PROPERTY_USAGE_EDITOR)) {
-						continue;
-					}
-					if (E.name == "script" || E.name == "resource_name" || E.name == "resource_path" || E.name == "resource_local_to_scene" || E.name.begins_with("metadata/_")) {
-						continue;
-					}
-
-					Label *prop_label = memnew(Label);
-					Variant val = current_resource->get(E.name);
-					String val_str = String(val);
-
-					// Truncate long strings
-					if (val_str.length() > 50) {
-						val_str = val_str.substr(0, 50) + "...";
-					}
-
-					prop_label->set_text(E.name + ": " + val_str);
-					root_node->add_child(prop_label);
-
-					// Enable right slot for Resources (output)
-					if (E.type == Variant::OBJECT) {
-						root_node->set_slot(slot_idx, false, 0, Color(1, 1, 1), true, 0, Color(0, 1, 0));
-					}
-					slot_idx++;
-				}
 			}
 		}
 

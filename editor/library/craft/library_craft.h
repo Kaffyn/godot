@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  library.cpp                                                           */
+/*  library_craft.h                                                       */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,42 +28,35 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "library.h"
-#include "editor/library/assets/library_assets.h"
-#include "editor/library/craft/library_craft.h"
-#include "editor/library/workbench/library_workbench.h"
+#pragma once
 
-void Library::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("_on_resource_created"), &Library::_on_resource_created);
-}
+#include "editor/gui/editor_file_dialog.h"
+#include "scene/gui/box_container.h"
+#include "scene/gui/line_edit.h"
+#include "scene/gui/tree.h"
 
-void Library::_on_resource_created() {
-	if (assets_panel) {
-		assets_panel->scan_project();
-	}
-}
+class LibraryCraft : public VBoxContainer {
+	GDCLASS(LibraryCraft, VBoxContainer);
 
-Library::Library() {
-	tabs = memnew(TabContainer);
-	tabs->set_v_size_flags(SIZE_EXPAND_FILL);
-	add_child(tabs);
+	LineEdit *craft_search;
+	Tree *craft_tree;
+	EditorFileDialog *creation_dialog;
+	String current_creation_domain;
 
-	// Tab 1: Assets (Flat List)
-	assets_panel = memnew(LibraryAssets);
-	tabs->add_child(assets_panel);
+	// Callback to refresh assets list
+	Callable on_resource_created_callback;
 
-	// Tab 2: Workbench
-	workbench_panel = memnew(LibraryWorkbench);
-	tabs->add_child(workbench_panel);
+	void _update_craft_tree();
+	void _on_craft_search_text_changed(const String &p_text);
+	void _on_craft_item_activated();
+	void _on_creation_file_selected(const String &p_path);
 
-	// Connect assets to workbench
-	assets_panel->set_workbench_inspector(workbench_panel->get_inspector());
+protected:
+	static void _bind_methods();
+	void _notification(int p_what);
 
-	// Tab 3: CraftTable
-	craft_panel = memnew(LibraryCraft);
-	craft_panel->set_on_resource_created_callback(callable_mp(this, &Library::_on_resource_created));
-	tabs->add_child(craft_panel);
-}
-
-Library::~Library() {
-}
+public:
+	void set_on_resource_created_callback(const Callable &p_callback);
+	LibraryCraft();
+	~LibraryCraft();
+};

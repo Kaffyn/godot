@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  library.cpp                                                           */
+/*  library_assets.h                                                      */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,42 +28,48 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "library.h"
-#include "editor/library/assets/library_assets.h"
-#include "editor/library/craft/library_craft.h"
-#include "editor/library/workbench/library_workbench.h"
+#pragma once
 
-void Library::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("_on_resource_created"), &Library::_on_resource_created);
-}
+#include "scene/gui/box_container.h"
+#include "scene/gui/item_list.h"
+#include "scene/gui/line_edit.h"
 
-void Library::_on_resource_created() {
-	if (assets_panel) {
-		assets_panel->scan_project();
-	}
-}
+class EditorFileSystemDirectory;
+class EditorInspector;
 
-Library::Library() {
-	tabs = memnew(TabContainer);
-	tabs->set_v_size_flags(SIZE_EXPAND_FILL);
-	add_child(tabs);
+class LibraryAssets : public VBoxContainer {
+	GDCLASS(LibraryAssets, VBoxContainer);
 
-	// Tab 1: Assets (Flat List)
-	assets_panel = memnew(LibraryAssets);
-	tabs->add_child(assets_panel);
+	LineEdit *assets_search;
+	ItemList *assets_list;
 
-	// Tab 2: Workbench
-	workbench_panel = memnew(LibraryWorkbench);
-	tabs->add_child(workbench_panel);
+	// Internal data for filtering
+	struct AssetData {
+		String path;
+		String name;
+		String type;
+		Ref<Texture2D> icon;
+	};
+	Vector<AssetData> all_assets;
 
-	// Connect assets to workbench
-	assets_panel->set_workbench_inspector(workbench_panel->get_inspector());
+	EditorInspector *workbench_inspector_ref = nullptr; // Reference to workbench for double-click action
 
-	// Tab 3: CraftTable
-	craft_panel = memnew(LibraryCraft);
-	craft_panel->set_on_resource_created_callback(callable_mp(this, &Library::_on_resource_created));
-	tabs->add_child(craft_panel);
-}
+	void _scan_recursive(EditorFileSystemDirectory *p_dir);
+	void _scan_internal_resources(const String &p_path);
 
-Library::~Library() {
-}
+	void _update_assets_list();
+	void _on_assets_search_text_changed(const String &p_text);
+	void _on_asset_item_activated(int p_index);
+	Variant _get_drag_data_fw(const Point2 &p_point, Control *p_from);
+
+protected:
+	static void _bind_methods();
+	void _notification(int p_what);
+
+public:
+	void scan_project();
+	void set_workbench_inspector(EditorInspector *p_inspector);
+
+	LibraryAssets();
+	~LibraryAssets();
+};

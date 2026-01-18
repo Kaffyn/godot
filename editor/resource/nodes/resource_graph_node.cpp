@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  library.cpp                                                           */
+/*  resource_graph_node.cpp                                               */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,42 +28,63 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "library.h"
-#include "editor/library/assets/library_assets.h"
-#include "editor/library/craft/library_craft.h"
-#include "editor/library/workbench/library_workbench.h"
+#include "resource_graph_node.h"
+#include "scene/gui/label.h"
 
-void Library::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("_on_resource_created"), &Library::_on_resource_created);
-}
+void ResourceGraphNode::set_resource(const Ref<Resource> &p_resource) {
+	resource = p_resource;
 
-void Library::_on_resource_created() {
-	if (assets_panel) {
-		assets_panel->scan_project();
+	// Clear existing children
+	for (int i = get_child_count() - 1; i >= 0; i--) {
+		Node *child = get_child(i);
+		remove_child(child);
+		memdelete(child);
+	}
+	clear_all_slots();
+
+	if (resource.is_null()) {
+		set_title("Null");
+		return;
+	}
+
+	set_title(resource->get_class());
+
+	List<PropertyInfo> props;
+	resource->get_property_list(&props);
+
+	int slot_idx = 0;
+	for (const PropertyInfo &E : props) {
+		// Filter exactly like EditorInspector
+		if (!(E.usage & PROPERTY_USAGE_EDITOR)) {
+			continue;
+		}
+		if (E.name == "script" || E.name == "resource_name" || E.name == "resource_path" || E.name == "resource_local_to_scene" || E.name.begins_with("metadata/_")) {
+			continue;
+		}
+
+		Label *prop_label = memnew(Label);
+		Variant val = resource->get(E.name);
+		String val_str = String(val);
+
+		// Truncate long strings
+		if (val_str.length() > 50) {
+			val_str = val_str.substr(0, 50) + "...";
+		}
+
+		prop_label->set_text(E.name + ": " + val_str);
+		add_child(prop_label);
+
+		// Enable right slot for Resources (output)
+		if (E.type == Variant::OBJECT) {
+			set_slot(slot_idx, false, 0, Color(1, 1, 1), true, 0, Color(0, 1, 0));
+		}
+		slot_idx++;
 	}
 }
 
-Library::Library() {
-	tabs = memnew(TabContainer);
-	tabs->set_v_size_flags(SIZE_EXPAND_FILL);
-	add_child(tabs);
-
-	// Tab 1: Assets (Flat List)
-	assets_panel = memnew(LibraryAssets);
-	tabs->add_child(assets_panel);
-
-	// Tab 2: Workbench
-	workbench_panel = memnew(LibraryWorkbench);
-	tabs->add_child(workbench_panel);
-
-	// Connect assets to workbench
-	assets_panel->set_workbench_inspector(workbench_panel->get_inspector());
-
-	// Tab 3: CraftTable
-	craft_panel = memnew(LibraryCraft);
-	craft_panel->set_on_resource_created_callback(callable_mp(this, &Library::_on_resource_created));
-	tabs->add_child(craft_panel);
+Ref<Resource> ResourceGraphNode::get_resource() const {
+	return resource;
 }
 
-Library::~Library() {
+ResourceGraphNode::ResourceGraphNode() {
 }

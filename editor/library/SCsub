@@ -4,3 +4,6 @@ from misc.utility.scons_hints import *
 Import("env")
 
 env.add_source_files(env.editor_sources, "*.cpp")
+env.add_source_files(env.editor_sources, "assets/*.cpp")
+env.add_source_files(env.editor_sources, "craft/*.cpp")
+env.add_source_files(env.editor_sources, "workbench/*.cpp")

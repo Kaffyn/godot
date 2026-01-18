@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  library.cpp                                                           */
+/*  library_workbench.cpp                                                 */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,42 +28,18 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "library.h"
-#include "editor/library/assets/library_assets.h"
-#include "editor/library/craft/library_craft.h"
-#include "editor/library/workbench/library_workbench.h"
+#include "library_workbench.h"
 
-void Library::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("_on_resource_created"), &Library::_on_resource_created);
+void LibraryWorkbench::_bind_methods() {
 }
 
-void Library::_on_resource_created() {
-	if (assets_panel) {
-		assets_panel->scan_project();
-	}
+LibraryWorkbench::LibraryWorkbench() {
+	set_name(TTR("Workbench"));
+
+	workbench_inspector = memnew(EditorInspector);
+	workbench_inspector->set_v_size_flags(SIZE_EXPAND_FILL);
+	add_child(workbench_inspector);
 }
 
-Library::Library() {
-	tabs = memnew(TabContainer);
-	tabs->set_v_size_flags(SIZE_EXPAND_FILL);
-	add_child(tabs);
-
-	// Tab 1: Assets (Flat List)
-	assets_panel = memnew(LibraryAssets);
-	tabs->add_child(assets_panel);
-
-	// Tab 2: Workbench
-	workbench_panel = memnew(LibraryWorkbench);
-	tabs->add_child(workbench_panel);
-
-	// Connect assets to workbench
-	assets_panel->set_workbench_inspector(workbench_panel->get_inspector());
-
-	// Tab 3: CraftTable
-	craft_panel = memnew(LibraryCraft);
-	craft_panel->set_on_resource_created_callback(callable_mp(this, &Library::_on_resource_created));
-	tabs->add_child(craft_panel);
-}
-
-Library::~Library() {
+LibraryWorkbench::~LibraryWorkbench() {
 }
