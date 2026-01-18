@@ -33,9 +33,9 @@
 #ifndef RESOURCE_FACTORY_H
 #define RESOURCE_FACTORY_H
 
+#include "core/io/resource.h"
 #include "core/object/ref_counted.h"
 #include "core/string/string_name.h"
-#include "scene/resources/resource.h"
 
 class ResourceFactory {
 public:

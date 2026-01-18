@@ -30,7 +30,7 @@
 
 #pragma once
 
-#include "editor/docks/file_dialog.h"
+#include "editor/gui/editor_file_dialog.h"
 #include "editor/inspector/editor_inspector.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/dialogs.h"
@@ -40,6 +40,8 @@
 #include "scene/gui/split_container.h"
 #include "scene/gui/tab_container.h"
 #include "scene/gui/tree.h"
+
+class EditorFileSystemDirectory;
 
 class Library : public VBoxContainer {
 	GDCLASS(Library, VBoxContainer);

@@ -70,12 +70,13 @@ Ref<Resource> ResourceFactory::create_resource_by_class(const StringName &p_clas
 		return Ref<Resource>();
 	}
 
-	Ref<Resource> resource = obj; // Implicit cast
-	if (resource.is_null()) {
+	Resource *res = Object::cast_to<Resource>(obj);
+	if (!res) {
 		memdelete(obj); // Clean up if cast fails
 		EditorNode::get_singleton()->show_warning(vformat(TTR("Instantiated object for class '%s' is not a Resource."), p_class_name));
 		return Ref<Resource>();
 	}
 
+	Ref<Resource> resource = res;
 	return resource;
 }

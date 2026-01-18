@@ -41,6 +41,7 @@
 #include "editor/editor_node.h"
 #include "editor/file_system/editor_file_system.h"
 #include "scene/gui/label.h"
+#include "scene/gui/texture_rect.h"
 
 void Library::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_scan_project"), &Library::_scan_project);
@@ -86,12 +87,12 @@ void Library::_scan_recursive(EditorFileSystemDirectory *p_dir) {
 		String type = p_dir->get_file_type(i);
 
 		if (type == "Resource" || ClassDB::is_parent_class(type, "Resource")) {
-			AssetData data;
-			data.path = path;
-			data.name = path.get_file();
-			data.type = type;
-			data.icon = EditorNode::get_singleton()->get_class_icon(type, "Resource");
-			all_assets.push_back(data);
+			AssetData asset_data;
+			asset_data.path = path;
+			asset_data.name = path.get_file();
+			asset_data.type = type;
+			asset_data.icon = EditorNode::get_singleton()->get_class_icon(type, "Resource");
+			all_assets.push_back(asset_data);
 
 			// Scan for internal resources in text files if needed
 			if (path.ends_with(".tscn") || path.ends_with(".tres")) {
@@ -118,12 +119,12 @@ void Library::_scan_internal_resources(const String &p_path) {
 				String id = line.substr(id_pos + 4).get_slice("\"", 0);
 				String type = line.substr(type_pos + 6).get_slice("\"", 0);
 
-				AssetData data;
-				data.path = p_path + "::" + id;
-				data.name = p_path.get_file() + "::" + id;
-				data.type = type;
-				data.icon = EditorNode::get_singleton()->get_class_icon(type, "Resource");
-				all_assets.push_back(data);
+				AssetData asset_data;
+				asset_data.path = p_path + "::" + id;
+				asset_data.name = p_path.get_file() + "::" + id;
+				asset_data.type = type;
+				asset_data.icon = EditorNode::get_singleton()->get_class_icon(type, "Resource");
+				all_assets.push_back(asset_data);
 			}
 		}
 	}
@@ -133,14 +134,14 @@ void Library::_update_assets_list() {
 	assets_list->clear();
 	String filter = assets_search->get_text();
 
-	for (const AssetData &data : all_assets) {
-		if (!filter.is_empty() && data.name.findn(filter) == -1 && data.type.findn(filter) == -1) {
+	for (const AssetData &asset_data : all_assets) {
+		if (!filter.is_empty() && asset_data.name.findn(filter) == -1 && asset_data.type.findn(filter) == -1) {
 			continue;
 		}
 
-		int idx = assets_list->add_item(data.name, data.icon);
-		assets_list->set_item_tooltip(idx, data.path + "\nType: " + data.type);
-		assets_list->set_item_metadata(idx, data.path);
+		int idx = assets_list->add_item(asset_data.name, asset_data.icon);
+		assets_list->set_item_tooltip(idx, asset_data.path + "\nType: " + asset_data.type);
+		assets_list->set_item_metadata(idx, asset_data.path);
 	}
 }
 
