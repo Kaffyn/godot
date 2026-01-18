@@ -81,9 +81,8 @@ void ResourceGraphNode::set_resource(const Ref<Resource> &p_resource) {
 		}
 
 		ResourceNodeProperty *prop_row = memnew(ResourceNodeProperty);
-		prop_row->set_property(E.name, resource->get(E.name));
+		prop_row->set_property(resource, E.name, resource->get(E.name));
 		add_child(prop_row);
-
 		// Enable right slot for Resources (output)
 		if (E.type == Variant::OBJECT) {
 			set_slot(child_idx, false, 0, Color(1, 1, 1), true, 0, Color(0, 1, 0));

@@ -30,8 +30,13 @@
 
 #pragma once
 
+#include "core/io/resource.h"
 #include "scene/gui/box_container.h"
+#include "scene/gui/check_box.h"
+#include "scene/gui/color_picker.h"
 #include "scene/gui/label.h"
+#include "scene/gui/line_edit.h"
+#include "scene/gui/spin_box.h"
 #include "scene/gui/texture_rect.h"
 
 class ResourceNodeProperty : public HBoxContainer {
@@ -39,11 +44,20 @@ class ResourceNodeProperty : public HBoxContainer {
 
 	TextureRect *icon;
 	Label *name_label;
-	Label *separator;
-	Label *value_label;
+
+	// Editors
+	Control *editor_widget = nullptr;
+
+	Ref<Resource> target_resource;
+	String property_name;
+	bool updating = false;
+
+	void _value_changed(const Variant &p_value);
+	void _text_changed(const String &p_text);
+	void _color_changed(const Color &p_color);
 
 public:
-	void set_property(const String &p_name, const Variant &p_value, const String &p_type_hint = "");
+	void set_property(const Ref<Resource> &p_resource, const String &p_name, const Variant &p_value, const String &p_type_hint = "");
 
 	ResourceNodeProperty();
 };
