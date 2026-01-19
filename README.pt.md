@@ -1,7 +1,7 @@
 # Zyris Engine
 
-[![Godot Version](https://img.shields.io/badge/Godot-4.5--stable-blue.svg)](https://github.com/godotengine/godot)
-[![Zyris Version](https://img.shields.io/badge/Zyris-0.1.0-orange.svg)](https://github.com/Kaffyn/ZyrisEngine/tree/Zyris)
+[![Godot Version](https://img.shields.io/badge/Godot-4.5.1--stable-blue.svg)](https://github.com/godotengine/godot)
+[![Zyris Version](https://img.shields.io/badge/4.5.1-zyris.2-orange.svg)](https://github.com/Kaffyn/ZyrisEngine/tree/Zyris)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.txt)
 
 **Zyris** é uma poderosa distribuição de engine de jogo baseada na [Godot Engine](https://godotengine.org), desenvolvida por **Kaffyn** e contribuidores. Nossa missão é expandir os limites do desenvolvimento de jogos de código aberto, implementando recursos avançados e otimizações que rivalizam com engines líderes da indústria como Unreal Engine e Unity.
@@ -28,7 +28,7 @@ O Zyris mantém sincronização contínua com o repositório official da Godot E
 - **X.Y.Z** - Versão official da Godot Engine (ex: `4.5.0`)
 - **N** - Incremento de subversão do Zyris (ex: `zyris.1`, `zyris.2`)
 
-**Versão Atual:** `4.5.1-zyris.1`
+**Versão Atual:** `4.5.1-zyris.2`
 
 ### Estratégia de Sincronização
 

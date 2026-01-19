@@ -41,5 +41,11 @@ LibraryWorkbench::LibraryWorkbench() {
 	add_child(workbench_inspector);
 }
 
+void LibraryWorkbench::edit_object(Object *p_obj) {
+	if (workbench_inspector) {
+		workbench_inspector->edit(p_obj);
+	}
+}
+
 LibraryWorkbench::~LibraryWorkbench() {
 }

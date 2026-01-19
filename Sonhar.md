@@ -73,7 +73,7 @@ Classes C++ que os módulos devem estender para garantir compatibilidade com a i
 
 ## Estrutura Interna
 
-### A Oficina (Bottom Panel - 3 Tabs)
+### The Library (Bottom Panel - 3 Tabs)
 
 O "Cinto de Utilidades", sempre disponível para dar suporte à criação.
 

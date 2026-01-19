@@ -50,6 +50,8 @@ class ResourceServer : public Object {
 	// Maps "DomainName" -> DomainDef
 	HashMap<String, DomainDef> domains;
 
+	void _register_core_domains();
+
 protected:
 	static void _bind_methods();
 

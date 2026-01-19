@@ -23,4 +23,18 @@
 			</description>
 		</method>
 	</methods>
+	<signals>
+		<signal name="graph_node_selected">
+			<param index="0" name="node" type="Node" />
+			<description>
+				Emitted when a node is selected in the visual graph editor.
+			</description>
+		</signal>
+		<signal name="graph_node_deselected">
+			<param index="0" name="node" type="Node" />
+			<description>
+				Emitted when a node is deselected in the visual graph editor.
+			</description>
+		</signal>
+	</signals>
 </class>

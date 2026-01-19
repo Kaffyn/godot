@@ -32,6 +32,7 @@
 #include "editor/library/assets/library_assets.h"
 #include "editor/library/craft/library_craft.h"
 #include "editor/library/workbench/library_workbench.h"
+#include "editor/resource/resource_editor.h"
 
 void Library::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_on_resource_created"), &Library::_on_resource_created);
@@ -63,6 +64,12 @@ Library::Library() {
 	craft_panel = memnew(LibraryCraft);
 	craft_panel->set_on_resource_created_callback(callable_mp(this, &Library::_on_resource_created));
 	tabs->add_child(craft_panel);
+
+	// Connect ResourceEditor to Workbench
+	if (ResourceEditor::get_singleton()) {
+		ResourceEditor::get_singleton()->connect("graph_node_selected", callable_mp(workbench_panel, &LibraryWorkbench::edit_object));
+		ResourceEditor::get_singleton()->connect("graph_node_deselected", callable_mp(workbench_panel, &LibraryWorkbench::edit_object).bind((Object *)nullptr));
+	}
 }
 
 Library::~Library() {

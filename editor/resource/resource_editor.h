@@ -80,6 +80,8 @@ class ResourceEditor : public Control {
 	void _update_resource_list();
 	void _on_resource_selected(int p_index);
 	void _on_filter_changed(const String &p_text);
+	void _on_graph_node_selected(Node *p_node);
+	void _on_graph_node_deselected(Node *p_node);
 
 protected:
 	static void _bind_methods();
@@ -93,4 +95,6 @@ public:
 
 	ResourceEditor();
 	~ResourceEditor();
+
+	GDVIRTUAL1(_graph_node_selected, Object *)
 };

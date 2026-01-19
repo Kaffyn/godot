@@ -58,17 +58,32 @@ void LibraryCraft::_update_craft_tree() {
 
 	if (ResourceServer::get_singleton()) {
 		Array domains = ResourceServer::get_singleton()->get_registered_domains();
+		HashMap<String, TreeItem *> categories;
+
 		for (int i = 0; i < domains.size(); i++) {
 			String domain_name = domains[i];
 			Dictionary info = ResourceServer::get_singleton()->get_domain_info(domain_name);
 			String type = info.get("resource_type", "");
 			Ref<Texture2D> icon = info.get("icon", Ref<Texture2D>());
+			Dictionary rules = info.get("rules", Dictionary());
+			String category_name = rules.get("category", "General");
 
-			if (!search_term.is_empty() && domain_name.findn(search_term) == -1 && type.findn(search_term) == -1) {
+			if (!search_term.is_empty() && domain_name.findn(search_term) == -1 && type.findn(search_term) == -1 && category_name.findn(search_term) == -1) {
 				continue;
 			}
 
-			TreeItem *item = craft_tree->create_item(root);
+			TreeItem *cat_item = nullptr;
+			if (categories.has(category_name)) {
+				cat_item = categories[category_name];
+			} else {
+				cat_item = craft_tree->create_item(root);
+				cat_item->set_text(0, category_name);
+				cat_item->set_selectable(0, false);
+				cat_item->set_custom_color(0, get_theme_color("accent_color", "Editor"));
+				categories[category_name] = cat_item;
+			}
+
+			TreeItem *item = craft_tree->create_item(cat_item);
 			item->set_text(0, domain_name);
 			item->set_metadata(0, domain_name);
 

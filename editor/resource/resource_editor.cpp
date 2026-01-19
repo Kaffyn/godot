@@ -46,6 +46,11 @@ void ResourceEditor::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("_on_resource_selected", "index"), &ResourceEditor::_on_resource_selected);
 	ClassDB::bind_method(D_METHOD("_on_filter_changed", "text"), &ResourceEditor::_on_filter_changed);
+	ClassDB::bind_method(D_METHOD("_on_graph_node_selected", "node"), &ResourceEditor::_on_graph_node_selected);
+	ClassDB::bind_method(D_METHOD("_on_graph_node_deselected", "node"), &ResourceEditor::_on_graph_node_deselected);
+
+	ADD_SIGNAL(MethodInfo("graph_node_selected", PropertyInfo(Variant::OBJECT, "node")));
+	ADD_SIGNAL(MethodInfo("graph_node_deselected", PropertyInfo(Variant::OBJECT, "node")));
 }
 void ResourceEditor::_notification(int p_what) {
 	switch (p_what) {
@@ -292,6 +297,14 @@ void ResourceEditor::_on_filter_changed(const String &p_text) {
 	_update_resource_list();
 }
 
+void ResourceEditor::_on_graph_node_selected(Node *p_node) {
+	emit_signal("graph_node_selected", p_node);
+}
+
+void ResourceEditor::_on_graph_node_deselected(Node *p_node) {
+	emit_signal("graph_node_deselected", p_node);
+}
+
 Ref<Resource> ResourceEditor::get_edited_resource() const {
 	return current_resource;
 }
@@ -371,6 +384,8 @@ ResourceEditor::ResourceEditor() {
 
 	graph_edit = memnew(GraphEdit);
 	graph_edit->set_anchors_and_offsets_preset(Control::PRESET_FULL_RECT);
+	graph_edit->connect("node_selected", callable_mp(this, &ResourceEditor::_on_graph_node_selected));
+	graph_edit->connect("node_deselected", callable_mp(this, &ResourceEditor::_on_graph_node_deselected));
 	editor_container->add_child(graph_edit);
 
 	code_editor = memnew(CodeTextEditor);

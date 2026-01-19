@@ -43,6 +43,7 @@ protected:
 
 public:
 	EditorInspector *get_inspector() const { return workbench_inspector; }
+	void edit_object(Object *p_obj);
 
 	LibraryWorkbench();
 	~LibraryWorkbench();

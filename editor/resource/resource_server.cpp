@@ -89,8 +89,42 @@ void ResourceServer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_domain_for_resource", "resource_type"), &ResourceServer::get_domain_for_resource);
 }
 
+#include "editor/editor_node.h"
+
 ResourceServer::ResourceServer() {
 	singleton = this;
+
+	// Core Zyris Domains Registration
+	_register_core_domains();
+}
+
+void ResourceServer::_register_core_domains() {
+	if (!EditorNode::get_singleton()) {
+		return;
+	}
+
+	// Ability System
+	register_domain("Character", "Character", "", EditorNode::get_singleton()->get_class_icon("Character", "Resource"), {{"category", "Ability System"}});
+	register_domain("Ability State", "AbilityState", "", EditorNode::get_singleton()->get_class_icon("AbilityState", "Resource"), {{"category", "Ability System"}});
+	register_domain("Ability Skill", "AbilitySkill", "", EditorNode::get_singleton()->get_class_icon("AbilitySkill", "Resource"), {{"category", "Ability System"}});
+	register_domain("Ability Effect", "AbilityEffect", "", EditorNode::get_singleton()->get_class_icon("AbilityEffect", "Resource"), {{"category", "Ability System"}});
+
+	// Behavior Tree
+	register_domain("Behavior Tree", "BehaviorTree", "", EditorNode::get_singleton()->get_class_icon("BehaviorTree", "Resource"), {{"category", "AI"}});
+
+	// Gaia
+	register_domain("Biome", "BiomeDef", "", EditorNode::get_singleton()->get_class_icon("BiomeDef", "Resource"), {{"category", "Gaia"}});
+	register_domain("Weather", "WeatherDef", "", EditorNode::get_singleton()->get_class_icon("WeatherDef", "Resource"), {{"category", "Gaia"}});
+
+	// Inventory
+	register_domain("Item", "Item", "", EditorNode::get_singleton()->get_class_icon("Item", "Resource"), {{"category", "Inventory"}});
+	register_domain("Inventory", "Inventory", "", EditorNode::get_singleton()->get_class_icon("Inventory", "Resource"), {{"category", "Inventory"}});
+
+	// Quests
+	register_domain("Quest", "QuestGraph", "", EditorNode::get_singleton()->get_class_icon("QuestGraph", "Resource"), {{"category", "Quests"}});
+
+	// Osmo
+	register_domain("Shake Profile", "ShakeProfile", "", EditorNode::get_singleton()->get_class_icon("ShakeProfile", "Resource"), {{"category", "Osmo"}});
 }
 
 ResourceServer::~ResourceServer() {

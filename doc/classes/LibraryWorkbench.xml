@@ -8,4 +8,13 @@
 	</description>
 	<tutorials>
 	</tutorials>
+	<methods>
+		<method name="edit_object">
+			<return type="void" />
+			<param index="0" name="obj" type="Object" />
+			<description>
+				Switches the internal [EditorInspector] to edit the specified object.
+			</description>
+		</method>
+	</methods>
 </class>
