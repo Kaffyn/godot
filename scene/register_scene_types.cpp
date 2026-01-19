@@ -112,6 +112,7 @@
 #include "scene/main/timer.h"
 #include "scene/main/viewport.h"
 #include "scene/main/window.h"
+#include "scene/main/ability_system_component.h"
 #include "scene/resources/animation_library.h"
 #include "scene/resources/atlas_texture.h"
 #include "scene/resources/audio_stream_polyphonic.h"
@@ -165,6 +166,9 @@
 #include "scene/resources/visual_shader_nodes.h"
 #include "scene/resources/visual_shader_particle_nodes.h"
 #include "scene/resources/visual_shader_sdf_nodes.h"
+#include "scene/resources/attribute_set.h"
+#include "scene/resources/gameplay_effect.h"
+#include "scene/resources/gameplay_ability.h"
 #include "scene/theme/theme_db.h"
 #ifndef DISABLE_DEPRECATED
 #include "scene/resources/animated_texture.h"
@@ -441,6 +445,7 @@ void register_scene_types() {
 	GDREGISTER_CLASS(Window);
 
 	GDREGISTER_CLASS(StatusIndicator);
+	GDREGISTER_CLASS(AbilitySystemComponent);
 
 	/* REGISTER GUI */
 
@@ -598,6 +603,10 @@ void register_scene_types() {
 	GDREGISTER_CLASS(ShaderGlobalsOverride); // can be used in any shader
 
 	OS::get_singleton()->yield(); // may take time to init
+
+	GDREGISTER_CLASS(AttributeSet);
+	GDREGISTER_CLASS(GameplayEffect);
+	GDREGISTER_CLASS(GameplayAbility);
 
 	/* REGISTER 3D */
 

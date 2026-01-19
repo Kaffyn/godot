@@ -30,6 +30,8 @@
 
 #include "register_core_types.h"
 
+#include "core/gameplay_tags.h"
+
 #include "core/config/engine.h"
 #include "core/config/project_settings.h"
 #include "core/core_bind.h"
@@ -102,6 +104,8 @@ static CoreBind::Engine *_engine = nullptr;
 static CoreBind::Special::ClassDB *_classdb = nullptr;
 static CoreBind::Marshalls *_marshalls = nullptr;
 static CoreBind::EngineDebugger *_engine_debugger = nullptr;
+
+static GameplayTagManager *gameplay_tag_manager = nullptr;
 
 static IP *ip = nullptr;
 static Time *_time = nullptr;
@@ -318,6 +322,8 @@ void register_core_types() {
 
 	worker_thread_pool = memnew(WorkerThreadPool);
 
+	gameplay_tag_manager = memnew(GameplayTagManager);
+
 	OS::get_singleton()->benchmark_end_measure("Core", "Register Types");
 }
 
@@ -375,6 +381,7 @@ void register_core_singletons() {
 	Engine::get_singleton()->add_singleton(Engine::Singleton("GDExtensionManager", GDExtensionManager::get_singleton()));
 	Engine::get_singleton()->add_singleton(Engine::Singleton("ResourceUID", ResourceUID::get_singleton()));
 	Engine::get_singleton()->add_singleton(Engine::Singleton("WorkerThreadPool", worker_thread_pool));
+	Engine::get_singleton()->add_singleton(Engine::Singleton("GameplayTagManager", GameplayTagManager::get_singleton()));
 
 	OS::get_singleton()->benchmark_end_measure("Core", "Register Singletons");
 }
@@ -408,6 +415,10 @@ void unregister_core_types() {
 	// Destroy singletons in reverse order to ensure dependencies are not broken.
 
 	memdelete(worker_thread_pool);
+
+	if (gameplay_tag_manager) {
+		memdelete(gameplay_tag_manager);
+	}
 
 	memdelete(_engine_debugger);
 	memdelete(_marshalls);

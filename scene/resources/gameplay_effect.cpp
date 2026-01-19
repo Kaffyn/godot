@@ -1,0 +1,57 @@
+/**************************************************************************/
+/*  gameplay_effect.cpp                                                   */
+/**************************************************************************/
+/*                         This file is part of:                          */
+/*                             GODOT ENGINE                               */
+/*                        https://godotengine.org                         */
+/**************************************************************************/
+/* Copyright (c) 2025-present Kaffyn and Zyris contributors              */
+/* Copyright (c) 2014-present Godot Engine contributors                  */
+/*                                                                        */
+/* Permission is hereby granted, free of charge, to any person obtaining  */
+/* a copy of this software and associated documentation files (the        */
+/* "Software"), to deal in the Software without restriction, including    */
+/* without limitation the rights to use, copy, modify, merge, publish,    */
+/* distribute, sublicense, and/or sell copies of the Software, and to     */
+/* permit persons to whom the Software is furnished to do so, subject to  */
+/* the following conditions:                                              */
+/*                                                                        */
+/* The above copyright notice and this permission notice shall be         */
+/* included in all copies or substantial portions of the Software.        */
+/*                                                                        */
+/* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,        */
+/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF     */
+/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */
+/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */
+/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */
+/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */
+/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
+/**************************************************************************/
+
+#include "gameplay_effect.h"
+
+void GameplayEffect::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("set_duration_policy", "policy"), &GameplayEffect::set_duration_policy);
+	ClassDB::bind_method(D_METHOD("get_duration_policy"), &GameplayEffect::get_duration_policy);
+	ClassDB::bind_method(D_METHOD("set_duration", "duration"), &GameplayEffect::set_duration);
+	ClassDB::bind_method(D_METHOD("get_duration"), &GameplayEffect::get_duration);
+
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "duration_policy", PROPERTY_HINT_ENUM, "Instant,Infinite,Has Duration"), "set_duration_policy", "get_duration_policy");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "duration"), "set_duration", "get_duration");
+
+	BIND_ENUM_CONSTANT(DURATION_INSTANT);
+	BIND_ENUM_CONSTANT(DURATION_INFINITE);
+	BIND_ENUM_CONSTANT(DURATION_HAS_DURATION);
+
+	BIND_ENUM_CONSTANT(MODIFIER_ADD);
+	BIND_ENUM_CONSTANT(MODIFIER_MULTIPLY);
+	BIND_ENUM_CONSTANT(MODIFIER_OVERRIDE);
+}
+
+void GameplayEffect::add_modifier(const StringName &p_attr, ModifierOp p_op, float p_mag) {
+	Modifier m;
+	m.attribute = p_attr;
+	m.op = p_op;
+	m.magnitude = p_mag;
+	modifiers.push_back(m);
+}
