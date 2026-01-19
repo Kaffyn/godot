@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="LibraryAssets" inherits="VBoxContainer" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		Asset explorer for the Zyris Library.
+	</brief_description>
+	<description>
+		[LibraryAssets] is responsible for displaying project-wide [Resource] files in a thumbnail grid. It focuses on search, filtering, and dynamic organization by folders or types.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="scan_project">
+			<return type="void" />
+			<description>
+				Performs a recursive scan for resource files ([code].tres[/code], [code].res[/code]) and updates the internal list, respecting the selected grouping and sorting modes.
+			</description>
+		</method>
+	</methods>
+	<constants>
+		<constant name="GROUP_NONE" value="0" enum="GroupingMode">
+			No grouping applied.
+		</constant>
+		<constant name="GROUP_FOLDER" value="1" enum="GroupingMode">
+			Groups resources by the directory they are saved in.
+		</constant>
+		<constant name="GROUP_TYPE" value="2" enum="GroupingMode">
+			Groups resources by their class type.
+		</constant>
+		<constant name="SORT_NAME" value="0" enum="SortMode">
+			Sorts resources alphabetically by name.
+		</constant>
+		<constant name="SORT_TYPE" value="1" enum="SortMode">
+			Sorts resources by their type.
+		</constant>
+	</constants>
+</class>

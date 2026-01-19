@@ -40,6 +40,11 @@ class ResourceNodePreview : public VBoxContainer {
 	TextureRect *preview_rect;
 	Ref<Resource> resource;
 
+	void _preview_ready(const String &p_path, const Ref<Texture2D> &p_preview, const Ref<Texture2D> &p_small_preview, const Variant &p_userdata);
+
+protected:
+	static void _bind_methods();
+
 public:
 	void set_resource(const Ref<Resource> &p_resource);
 

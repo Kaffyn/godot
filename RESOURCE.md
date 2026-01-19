@@ -1,70 +1,63 @@
-# Resource Editor (Main Panel System)
+# Editor de Resource (Sistema do Painel Principal)
 
-**Technical Design Document v1.1**
+## 1. Resumo Executivo
 
-| Metadata | Details |
-| :--- | :--- |
-| **Author** | Assistant (Lead Engine Dev) |
-| **Reviewer** | Machi (Technical Director) |
-| **Status** | **Implemented** |
+O **Resource Editor** é um sistema central da Zyris Engine, integrado diretamente no **Painel Principal** (junto com 2D, 3D e Script). Ele substitui o fluxo limitado de apenas Inspetor, permitindo que qualquer `.tres` ou resource customizado seja aberto em um espaço de trabalho dedicado com suporte a edição dupla: **Visual** e **Código**.
 
----
+Quando um Resource é selecionado no FileSystem, a Zyris Engine o abre simultaneamente no Inspetor (para ajustes rápidos) e no Painel Principal (para arquitetura profunda e edição).
 
-## 1. Executive Summary
+**Objetivos Chave:**
 
-The **Resource Editor** is a core system of the Zyris Engine, integrated directly into the **Main Panel** (alongside 2D, 3D, and Script). It replaces the limited Inspector-only workflow, allowing any `.tres` or custom resource to be opened in a dedicated workspace with dual editing support: **Visual** and **Code**.
-
-When a Resource is selected in the FileSystem, the Zyris Engine opens it simultaneously in the Inspector (for quick adjustments) and in the Main Panel (for deep architecture and editing).
-
-**Key Goals:**
-
-1. **Dual Editing:** Seamless switching between a graph-based editor (Visual) and a text-based editor (Code).
-2. **First-Class Citizen:** Positioned in the Main Panel, acknowledging that data is as critical as scripts and scenes.
-3. **Data Architecture:** Focused on component composition and managing the states of complex resources.
+1. **Edição Dupla:** Alternância perfeita entre um editor baseado em grafos (Visual) e um editor baseado em texto (Código).
+2. **Cidadão de Primeira Classe:** Posicionado no Painel Principal, reconhecendo que os dados são tão críticos quanto os scripts e as cenas.
+3. **Arquitetura de Dados:** Focado na composição de components e na gestão de estados de recursos complexos.
 
 ---
 
-## 2. Interface and Workflow Modes
+## 2. Interface e Modos de Fluxo de Trabalho
 
-The Resource Editor occupies the central editor space and offers two viewing modes:
+O Resource Editor ocupa o espaço central do editor e oferece dois modos de visualização:
 
-### 2.1 Visual Mode (Graph Mode)
+### 2.1 Modo Visual (Modo Grafo)
 
-A graph-based workbench for assembling the Resource hierarchy.
+Uma bancada baseada em grafos para montar a hierarquia do Resource.
 
-* **Composition:** Drag and drop components into the root resource.
-* **Connections:** Link properties and events between different sub-resources.
-* **Organization:** Visual management of layout metadata.
+* **Composição:** Arraste e solte components no recurso raiz.
+* **Conexões:** Vincule propriedades e eventos entre diferentes sub-recursos.
+* **Organização:** Gerenciamento visual de metadados de layout.
 
-### 2.2 Code Mode (Text Mode)
+### 2.2 Modo Código (Modo Texto)
 
-An integrated text editor, similar to the Script editor, but focused on the Resource's serialized format.
+Um editor de texto integrado, similar ao editor de Script, mas focado no formato serializado do Resource.
 
-* **Direct Editing:** Quickly modify raw values.
-* **Refactoring:** Copy, paste, and replace serialized data blocks.
-* **Debug:** See exactly how the Resource is being saved to disk.
-* **Filtering:** Automatically filters out internal metadata (`metadata/_`) and non-editor properties to provide a clean, semantic view of the data.
-
----
-
-## 3. Technical Architecture
-
-The system resides in `editor/resource` and is orchestrated by the **ResourceServer** singleton.
-
-*   **ResourceServer:** Manages registered domains (Zyris subsystems) and directs resources to their appropriate visual editors.
-*   **ResourceEditor:** The main panel control, managing the split view between the Sidebar (recent files) and the Editor Area.
+* **Edição Direta:** Modifique valores brutos rapidamente.
+* **Refatoração:** Copie, cole e substitua blocos de dados serializados.
+* **Depuração:** Veja exatamente como o Resource está sendo salvo no disco.
+* **Filtragem:** Filtra automaticamente metadados internos (`metadata/_`) e propriedades que não são do editor para fornecer uma visão limpa e semântica dos dados.
 
 ---
 
-## 4. The Library
+## 3. Arquitetura Técnica
 
-Integrated as the bottom panel, **The Library** serves as the primary asset browser for the Zyris ecosystem.
+O sistema reside em `editor/resource` e é orquestrado pelo singleton **ResourceServer**.
 
-*   **Assets Tab:** A split-view file manager featuring a Folder Tree on the left and a visual Asset Grid on the right, enabling quick navigation and preview of project resources.
-*   **CraftTable:** A specialized workbench that filters specifically for Zyris-registered domains (like Behavior Trees or Ability Blueprints), providing a focused environment for creating game data.
+* **ResourceServer:** Gerencia domínios registrados (subsistemas Zyris). Outros módulos se registram via `register_domain(name, type, visual_class, icon, rules)`, direcionando resources para seus editores visuais apropriados.
+* **ResourceEditor:** O controle do painel principal.
+  * **Sidebar:** Gerencia a lista e filtragem de resources abertos.
+  * **Toolbar:** Controles para alternância de modo **Visual/Código** e o botão **Edit Script** (ativo quando o resource tem um script anexado).
+  * **Editor Area:** Hospeda o `custom_editor` (do domínio) ou a bancada padrão `ResourceGraphNode`.
 
 ---
 
-## 5. Conclusion
+## 4. A Biblioteca (The Library)
 
-The **Resource Editor** removes the barrier between data design and technical implementation. By offering Visual and Code modes in the main panel, the Zyris Engine allows developers and designers to work on the same asset using the most efficient tool for each task, while maintaining the integrity and clarity of the project's data architecture.
+A **Library** é o painel inferior especializado para gerenciamento de assets e criação rápida.
+
+> [!NOTE]
+> Para documentação detalhada sobre os subsistemas da Library (Assets, Workbench, CraftTable), consulte o arquivo [LIBRARY.md](file:///C:/Users/bruno/Desktop/Godot/LIBRARY.md).
+
+---
+
+## 5. Conclusão
+
+O **Resource Editor** remove a barreira entre o design de dados e a implementação técnica. Ao oferecer os modos Visual e Código no painel principal, a Zyris Engine permite que desenvolvedores e designers trabalhem no mesmo asset usando a ferramenta mais eficiente para cada tarefa, mantendo a integridade e a clareza da arquitetura de dados do projeto.

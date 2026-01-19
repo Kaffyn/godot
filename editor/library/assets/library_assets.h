@@ -33,6 +33,7 @@
 #include "scene/gui/box_container.h"
 #include "scene/gui/item_list.h"
 #include "scene/gui/line_edit.h"
+#include "scene/gui/option_button.h"
 
 class EditorFileSystemDirectory;
 class EditorInspector;
@@ -40,14 +41,34 @@ class EditorInspector;
 class LibraryAssets : public VBoxContainer {
 	GDCLASS(LibraryAssets, VBoxContainer);
 
+public:
+	enum GroupingMode {
+		GROUP_NONE,
+		GROUP_FOLDER,
+		GROUP_TYPE,
+	};
+
+	enum SortMode {
+		SORT_NAME,
+		SORT_TYPE,
+	};
+
+private:
+	HBoxContainer *toolbar;
 	LineEdit *assets_search;
+	OptionButton *group_by_option;
+	OptionButton *sort_by_option;
 	ItemList *assets_list;
+
+	GroupingMode grouping_mode = GROUP_NONE;
+	SortMode sort_mode = SORT_NAME;
 
 	// Internal data for filtering
 	struct AssetData {
 		String path;
 		String name;
 		String type;
+		String folder;
 		Ref<Texture2D> icon;
 	};
 	Vector<AssetData> all_assets;
@@ -59,6 +80,8 @@ class LibraryAssets : public VBoxContainer {
 
 	void _update_assets_list();
 	void _on_assets_search_text_changed(const String &p_text);
+	void _on_group_by_selected(int p_index);
+	void _on_sort_by_selected(int p_index);
 	void _on_asset_item_activated(int p_index);
 	Variant _get_drag_data_fw(const Point2 &p_point, Control *p_from);
 

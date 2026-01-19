@@ -32,7 +32,6 @@
 #include "core/io/resource_saver.h"
 #include "editor/editor_interface.h"
 #include "editor/editor_node.h"
-#include "editor/library/library_factory.h"
 #include "editor/resource/resource_editor.h"
 #include "editor/resource/resource_server.h"
 
@@ -107,7 +106,7 @@ void LibraryCraft::_on_creation_file_selected(const String &p_path) {
 		return;
 	}
 
-	Ref<Resource> res = LibraryFactory::create_resource_from_domain(current_creation_domain);
+	Ref<Resource> res = create_resource_from_domain(current_creation_domain);
 	if (res.is_valid()) {
 		Error err = ResourceSaver::save(res, p_path);
 		if (err == OK) {
@@ -131,6 +130,54 @@ void LibraryCraft::_on_creation_file_selected(const String &p_path) {
 
 void LibraryCraft::set_on_resource_created_callback(const Callable &p_callback) {
 	on_resource_created_callback = p_callback;
+}
+
+Ref<Resource> LibraryCraft::create_resource_from_domain(const StringName &p_domain_name) {
+	if (!ResourceServer::get_singleton()) {
+		ERR_PRINT("ResourceServer singleton is not available.");
+		return Ref<Resource>();
+	}
+
+	Dictionary info = ResourceServer::get_singleton()->get_domain_info(p_domain_name);
+	String resource_class_name = info.get("resource_type", "");
+
+	if (resource_class_name.is_empty()) {
+		EditorNode::get_singleton()->show_warning(vformat(TTR("Resource domain '%s' not found or not registered correctly."), p_domain_name));
+		return Ref<Resource>();
+	}
+
+	return create_resource_by_class(resource_class_name);
+}
+
+Ref<Resource> LibraryCraft::create_resource_by_class(const StringName &p_class_name) {
+	if (!ClassDB::class_exists(p_class_name)) {
+		ERR_PRINT(vformat("Class '%s' does not exist in ClassDB.", p_class_name));
+		return Ref<Resource>();
+	}
+	if (!ClassDB::is_parent_class(p_class_name, "Resource")) {
+		ERR_PRINT(vformat("Class '%s' does not inherit from Resource.", p_class_name));
+		return Ref<Resource>();
+	}
+	if (!ClassDB::can_instantiate(p_class_name)) {
+		EditorNode::get_singleton()->show_warning(vformat(TTR("Class '%s' cannot be instantiated. Check if it's abstract or if it requires specific setup."), p_class_name));
+		return Ref<Resource>();
+	}
+
+	Object *obj = ClassDB::instantiate(p_class_name);
+	if (!obj) {
+		EditorNode::get_singleton()->show_warning(vformat(TTR("Failed to instantiate class '%s'."), p_class_name));
+		return Ref<Resource>();
+	}
+
+	Resource *res = Object::cast_to<Resource>(obj);
+	if (!res) {
+		memdelete(obj); // Clean up if cast fails
+		EditorNode::get_singleton()->show_warning(vformat(TTR("Instantiated object for class '%s' is not a Resource."), p_class_name));
+		return Ref<Resource>();
+	}
+
+	Ref<Resource> resource = res;
+	return resource;
 }
 
 LibraryCraft::LibraryCraft() {

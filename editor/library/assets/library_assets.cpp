@@ -40,12 +40,15 @@
 #include "editor/resource/resource_editor.h"
 #include "editor/themes/editor_scale.h"
 #include "scene/gui/label.h"
+#include "scene/gui/separator.h"
 #include "scene/gui/texture_rect.h"
 
 void LibraryAssets::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("scan_project"), &LibraryAssets::scan_project);
 	ClassDB::bind_method(D_METHOD("_update_assets_list"), &LibraryAssets::_update_assets_list);
 	ClassDB::bind_method(D_METHOD("_on_assets_search_text_changed", "text"), &LibraryAssets::_on_assets_search_text_changed);
+	ClassDB::bind_method(D_METHOD("_on_group_by_selected", "index"), &LibraryAssets::_on_group_by_selected);
+	ClassDB::bind_method(D_METHOD("_on_sort_by_selected", "index"), &LibraryAssets::_on_sort_by_selected);
 	ClassDB::bind_method(D_METHOD("_on_asset_item_activated", "index"), &LibraryAssets::_on_asset_item_activated);
 	ClassDB::bind_method(D_METHOD("_get_drag_data_fw", "point", "from"), &LibraryAssets::_get_drag_data_fw);
 }
@@ -85,13 +88,14 @@ void LibraryAssets::_scan_recursive(EditorFileSystemDirectory *p_dir) {
 			asset_data.path = path;
 			asset_data.name = path.get_file();
 			asset_data.type = type;
+			asset_data.folder = path.get_base_dir().replace("res://", "");
+			if (asset_data.folder.is_empty()) {
+				asset_data.folder = "/";
+			}
 			asset_data.icon = EditorNode::get_singleton()->get_class_icon(type, "Resource");
 			all_assets.push_back(asset_data);
 
-			// Scan for internal resources in text files if needed
-			if (path.ends_with(".tscn") || path.ends_with(".tres")) {
-				_scan_internal_resources(path);
-			}
+			// Not scanning internal resources for now to keep it clean, as requested "files .tres and .res"
 		}
 	}
 }
@@ -128,18 +132,64 @@ void LibraryAssets::_update_assets_list() {
 	assets_list->clear();
 	String filter = assets_search->get_text();
 
+	Vector<AssetData> filtered_assets;
 	for (const AssetData &asset_data : all_assets) {
 		if (!filter.is_empty() && asset_data.name.findn(filter) == -1 && asset_data.type.findn(filter) == -1) {
 			continue;
 		}
+		filtered_assets.push_back(asset_data);
+	}
+
+	// Sort
+	struct AssetSorter {
+		SortMode mode;
+		bool operator()(const AssetData &a, const AssetData &b) const {
+			if (mode == SORT_TYPE) {
+				if (a.type != b.type) {
+					return a.type < b.type;
+				}
+			}
+			return a.name < b.name;
+		}
+	};
+	AssetSorter sorter;
+	sorter.mode = sort_mode;
+	filtered_assets.sort_custom<AssetSorter>();
+
+	// Add with grouping
+	String last_group;
+	for (const AssetData &asset_data : filtered_assets) {
+		String current_group;
+		if (grouping_mode == GROUP_FOLDER) {
+			current_group = asset_data.folder;
+		} else if (grouping_mode == GROUP_TYPE) {
+			current_group = asset_data.type;
+		}
+
+		if (grouping_mode != GROUP_NONE && current_group != last_group) {
+			// Add a separator or special item if ItemList supported it well,
+			// but ItemList is flat. We can use metadata or just skip.
+			// For now, let's just add items.
+			last_group = current_group;
+		}
 
 		int idx = assets_list->add_item(asset_data.name, asset_data.icon);
-		assets_list->set_item_tooltip(idx, asset_data.path + "\nType: " + asset_data.type);
+		assets_list->set_item_tooltip(idx, vformat("%s\nType: %s\nPath: %s", asset_data.name, asset_data.type, asset_data.path));
 		assets_list->set_item_metadata(idx, asset_data.path);
 	}
 }
 
 void LibraryAssets::_on_assets_search_text_changed(const String &p_text) {
+	_update_assets_list();
+}
+
+void LibraryAssets::_on_group_by_selected(int p_index) {
+	grouping_mode = (GroupingMode)p_index;
+	_update_assets_list();
+}
+
+void LibraryAssets::_on_sort_by_selected(int p_index) {
+	sort_mode = (SortMode)p_index;
 	_update_assets_list();
 }
 
@@ -213,11 +263,38 @@ void LibraryAssets::set_workbench_inspector(EditorInspector *p_inspector) {
 LibraryAssets::LibraryAssets() {
 	set_name(TTR("Resources"));
 
+	toolbar = memnew(HBoxContainer);
+	add_child(toolbar);
+
 	assets_search = memnew(LineEdit);
-	assets_search->set_placeholder(TTR("Search Resources (Recursive)..."));
+	assets_search->set_placeholder(TTR("Search Resources..."));
 	assets_search->set_clear_button_enabled(true);
+	assets_search->set_h_size_flags(SIZE_EXPAND_FILL);
 	assets_search->connect("text_changed", callable_mp(this, &LibraryAssets::_on_assets_search_text_changed));
-	add_child(assets_search);
+	toolbar->add_child(assets_search);
+
+	toolbar->add_child(memnew(VSeparator));
+
+	Label *l_group = memnew(Label(TTR("Group:")));
+	toolbar->add_child(l_group);
+
+	group_by_option = memnew(OptionButton);
+	group_by_option->add_item(TTR("None"), GROUP_NONE);
+	group_by_option->add_item(TTR("Folder"), GROUP_FOLDER);
+	group_by_option->add_item(TTR("Type"), GROUP_TYPE);
+	group_by_option->connect("item_selected", callable_mp(this, &LibraryAssets::_on_group_by_selected));
+	toolbar->add_child(group_by_option);
+
+	toolbar->add_child(memnew(VSeparator));
+
+	Label *l_sort = memnew(Label(TTR("Sort:")));
+	toolbar->add_child(l_sort);
+
+	sort_by_option = memnew(OptionButton);
+	sort_by_option->add_item(TTR("Name"), SORT_NAME);
+	sort_by_option->add_item(TTR("Type"), SORT_TYPE);
+	sort_by_option->connect("item_selected", callable_mp(this, &LibraryAssets::_on_sort_by_selected));
+	toolbar->add_child(sort_by_option);
 
 	assets_list = memnew(ItemList);
 	assets_list->set_v_size_flags(SIZE_EXPAND_FILL);

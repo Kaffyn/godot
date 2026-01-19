@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="LibraryCraft" inherits="VBoxContainer" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		Resource creation tool (CraftTable) for the Zyris Library.
+	</brief_description>
+	<description>
+		[LibraryCraft] provides an interface to instantiate new resources based on domains registered with the [ResourceServer]. It uses creation wizards and save dialogs to simplify gameplay data generation.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="create_resource_by_class" qualifiers="static">
+			<return type="Resource" />
+			<param index="0" name="class_name" type="StringName" />
+			<description>
+				Instantiates a new [Resource] based on the provided class name.
+			</description>
+		</method>
+		<method name="create_resource_from_domain" qualifiers="static">
+			<return type="Resource" />
+			<param index="0" name="domain_name" type="StringName" />
+			<description>
+				Instantiates a new [Resource] based on a domain registered in the [ResourceServer].
+			</description>
+		</method>
+	</methods>
+</class>

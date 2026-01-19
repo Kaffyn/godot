@@ -56,6 +56,9 @@ protected:
 	void _notification(int p_what);
 
 public:
+	static Ref<Resource> create_resource_from_domain(const StringName &p_domain_name);
+	static Ref<Resource> create_resource_by_class(const StringName &p_class_name);
+
 	void set_on_resource_created_callback(const Callable &p_callback);
 	LibraryCraft();
 	~LibraryCraft();
