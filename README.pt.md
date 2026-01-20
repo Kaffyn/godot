@@ -1,7 +1,7 @@
 # Zyris Engine
 
-[![Godot Version](https://img.shields.io/badge/Godot-4.5.1--stable-blue.svg)](https://github.com/godotengine/godot)
-[![Zyris Version](https://img.shields.io/badge/4.5.1-zyris.2-orange.svg)](https://github.com/Kaffyn/ZyrisEngine/tree/Zyris)
+[![Godot Version](https://img.shields.io/badge/Godot-4.5.2--stable-blue.svg)](https://github.com/godotengine/godot)
+[![Zyris Version](https://img.shields.io/badge/4.5.2-zyris.1-orange.svg)](https://github.com/Kaffyn/ZyrisEngine/tree/Zyris)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.txt)
 
 **Zyris** é uma poderosa distribuição de engine de jogo baseada na [Godot Engine](https://godotengine.org), desenvolvida por **Kaffyn** e contribuidores. Nossa missão é expandir os limites do desenvolvimento de jogos de código aberto, implementando recursos avançados e otimizações que rivalizam com engines líderes da indústria como Unreal Engine e Unity.
@@ -28,7 +28,7 @@ O Zyris mantém sincronização contínua com o repositório official da Godot E
 - **X.Y.Z** - Versão official da Godot Engine (ex: `4.5.0`)
 - **N** - Incremento de subversão do Zyris (ex: `zyris.1`, `zyris.2`)
 
-**Versão Atual:** `4.5.1-zyris.2`
+**Versão Atual:** `4.5.2-zyris.1`
 
 ### Estratégia de Sincronização
 
@@ -67,12 +67,6 @@ O Zyris está implementando um conjunto abrangente de sistemas. Abaixo está nos
 
 ### Em Desenvolvimento
 
-- [ ] **Gameplay Ability System** - Engine de gameplay orientada a dados
-  - Execução de habilidades consciente de contexto
-  - Component-based character system
-  - Seleção de candidatos invertida via hash map
-  - Pronto para multiplayer com execução determinística
-
 - [ ] **Editor de Recursos & Biblioteca** - Ferramentas avançadas de composição de dados
 
   Um espaço de trabalho dedicado no Painel Principal para edição de Resources, tratando dados como cidadãos de primeira classe ao lado de Scripts e Cenas.
@@ -89,29 +83,46 @@ O Zyris está implementando um conjunto abrangente de sistemas. Abaixo está nos
   - **CraftTable:** Uma bancada especializada que filtra e exibe apenas recursos compatíveis com o Zyris (Domínios registrados) para criação agilizada.
   - **Ações de Contexto:** Operações de Renomear e Deletar integradas.
 
-- [ ] **Level Streaming System (LSS)** - Orquestração de estado de jogo e universo
-  - **Game State Machine (GSM):** Gerenciador de estado nativo no core que controla o ciclo de vida da engine (Boot → Title → Gameplay → Pause).
-  - **Smart Streaming Pools:** Carregamento em threads de background com pré-cache inteligente de chunks baseado em proximidade espacial.
-  - **Arquitetura Super Node:** `LSSRoot` integra lógica de SubViewport e Container para isolar o mundo de jogo permitindo efeitos avançados de transição.
-  - **Sincronização de Persistência:** Orquestra o Save System para garantir consistência de estado durante transições de universo.
+- [ ] **Gameplay Ability System (GAS)** - Engine de gameplay e combate orientada a dados
+  - Implementação nativa em C++ de `AbilitySystemComponent`, `GameplayAbility`, `GameplayEffect` e `AttributeSet`.
+  - Execução consciente de contexto usando `GameplayTags` de alta performance.
+  - Fluxo de execução determinístico otimizado para combate em tempo real.
 
-- [ ] **Save System** - Gerenciamento de dados persistentes de alta performance
-  - **Arquitetura Baseada em Servidor:** Servidor C++ nativo (`SaveServer`) para uma API de persistência centralizada.
-  - **Armazenamento Seguro:** Implementação de criptografia AES-256 e validação de integridade de dados.
-  - **E/S Assíncrona:** Serialização multi-thread para evitar quedas de frame durante operações de salvamento.
-  - **Coordenação:** Integrado profundamente ao LSS para restauração automática de estado e snapshots de mundo.
+- [ ] **Level Streaming System (LSS)** - Orquestração de mundo e gerenciamento de estado
+  - **Arquitetura Yggdrasil:** `LSSServer` nativo gerenciando o ciclo de vida da engine via Máquina de Estados (GSM).
+  - **Sistema de StreamingZone:** Carregamento em background com pré-cache espacial inteligente.
+  - **Arquitetura Super Node:** `LSSRoot` isola mundos de jogo para efeitos de transição avançados e gestão de universo.
 
-- [ ] **Camera System** - Orquestração de câmeras dinâmicas e cinematográficas
-  - **Arquitetura de Câmeras Virtuais (vCam):** Desacoplamento da lógica de câmera do viewport usando blending baseado em prioridade.
-  - **OsmoServer:** Singleton nativo que atua como árbitro para seleção e transição de câmeras ativas.
-  - **Shake Procedural:** Sistema de trauma baseado em ruído de Perlin para "Game Feel" realista e não destrutivo.
-  - **Tracks Cinematográficas:** Integração total com o sistema Director para sequências roteirizadas.
+- [ ] **Save System** - API de persistência de alta performance
+  - `SaveServer` nativo provendo gestão centralizada de estado e E/S assíncrona.
+  - Serialização binária multi-thread com arquitetura baseada em slots.
+  - Integrado profundamente ao LSS para snapshots automáticos de mundo e restauração de estado.
 
-- [ ] **Inventory System** - Gerenciamento de itens flexível e escalável
-  - **InventoryServer:** Autoridade centralizada para transações de itens, crafting e tabelas de loot.
-  - **Itens Data-Driven:** Recursos de `Item` altamente customizáveis com mapeamento de propriedades para o editor Sonhar.
-  - **Persistência de Containers:** Suporte nativo para integração de armazenamento persistente com o Save System.
-  - **Abstração de UI:** Arquitetura baseada em componentes para fácil implementação de slots, grids e hotbars.
+- [ ] **Camera System (vCam)** - Arbitragem cinematográfica e blending dinâmico
+  - **Arquitetura de Câmera Virtual:** Blending baseado em prioridade integrado nativamente ao `Camera3D` e `Camera2D`.
+  - **Arbitragem Nativa:** `CameraServer` atua como árbitro central para seleção de vCam ativa.
+  - **Shake Procedural:** Sistema avançado de trauma baseado em ruído de Perlin para comportamento de câmera realista.
+
+- [ ] **Inventory System** - Gestão escalável de itens e transações
+  - `InventoryServer` centralizado para transações de itens e sistema de loot autoritativo.
+  - Recursos de `ItemResource` orientados a dados e `InventoryContainer` nativo para armazenamento persistente.
+  - Arquitetura baseada em componentes para integração fluida de UI (slots, grids, hotbars).
+
+- [ ] **Editor de Recursos & Biblioteca** - Ferramentas avançadas de composição de dados
+
+  Um espaço de trabalho dedicado no Painel Principal para edição de Resources, tratando dados como cidadãos de primeira classe ao lado de Scripts e Cenas.
+
+  **Resource:**
+  - **Interface tipo IDE:** Layout em split-view com barra lateral para recursos recentes e área de edição central.
+  - **Modos Duplos:** Alternância fluida entre **Modo Visual** (Baseado em Grafos/Nós) e **Modo Código** (Visualização de texto serializado).
+  - **Filtragem Inteligente:** Exibe apenas propriedades "Editor" relevantes, filtrando metadados internos e ruídos de armazenamento, espelhando a visão limpa do Inspetor.
+  - **Integração de Script:** Botão dedicado "Editar Script" para pular instantaneamente para a lógica do recurso no Editor de Scripts.
+
+  **Library:**
+  - **Navegador de Assets:** Um gerenciador de assets focado em visualização em grade e agrupamento avançado, substituindo a estrutura tradicional de árvore de pastas.
+  - **Workbench:** Um "Inspetor Rápido" ciente do contexto para ajustes imediatos em assets selecionados sem trocar de contexto.
+  - **CraftTable:** Uma bancada especializada que filtra e exibe apenas recursos compatíveis com o Zyris (Domínios registrados) para criação agilizada.
+  - **Ações de Contexto:** Operações de Renomear e Deletar integradas.
 
 ### Sistemas Core Planejados
 
