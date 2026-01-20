@@ -141,20 +141,24 @@ void LibraryAssets::_update_assets_list() {
 	}
 
 	// Sort
-	struct AssetSorter {
-		SortMode mode;
-		bool operator()(const AssetData &a, const AssetData &b) const {
-			if (mode == SORT_TYPE) {
+	if (sort_mode == SORT_TYPE) {
+		struct AssetSorterType {
+			bool operator()(const AssetData &a, const AssetData &b) const {
 				if (a.type != b.type) {
 					return a.type < b.type;
 				}
+				return a.name < b.name; // Fallback to name
 			}
-			return a.name < b.name;
-		}
-	};
-	AssetSorter sorter;
-	sorter.mode = sort_mode;
-	filtered_assets.sort_custom<AssetSorter>();
+		};
+		filtered_assets.sort_custom<AssetSorterType>();
+	} else {
+		struct AssetSorterName {
+			bool operator()(const AssetData &a, const AssetData &b) const {
+				return a.name < b.name;
+			}
+		};
+		filtered_assets.sort_custom<AssetSorterName>();
+	}
 
 	// Add with grouping
 	String last_group;
