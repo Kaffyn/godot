@@ -31,8 +31,12 @@
 #include "register_scene_types.h"
 
 #include "core/config/project_settings.h"
+#include "core/io/save_data.h"
 #include "core/object/class_db.h"
 #include "core/os/os.h"
+#include "scene/2d/virtual_camera_2d.h"
+#include "scene/3d/streaming_zone.h"
+#include "scene/3d/virtual_camera_3d.h"
 #include "scene/animation/animation_blend_space_1d.h"
 #include "scene/animation/animation_blend_space_2d.h"
 #include "scene/animation/animation_blend_tree.h"
@@ -104,6 +108,8 @@
 #include "scene/main/canvas_layer.h"
 #include "scene/main/http_request.h"
 #include "scene/main/instance_placeholder.h"
+#include "scene/main/inventory_container.h"
+#include "scene/main/lss_root.h"
 #include "scene/main/missing_node.h"
 #include "scene/main/multiplayer_api.h"
 #include "scene/main/resource_preloader.h"
@@ -133,11 +139,14 @@
 #include "scene/resources/gradient_texture.h"
 #include "scene/resources/image_texture.h"
 #include "scene/resources/immediate_mesh.h"
+#include "scene/resources/item_resource.h"
 #include "scene/resources/label_settings.h"
 #include "scene/resources/material.h"
 #include "scene/resources/mesh_data_tool.h"
 #include "scene/resources/mesh_texture.h"
 #include "scene/resources/multimesh.h"
+#include "scene/resources/transition_profile.h"
+#include "scene/resources/universe_state.h"
 #if !defined(NAVIGATION_2D_DISABLED) || !defined(NAVIGATION_3D_DISABLED)
 #include "scene/resources/navigation_mesh.h"
 #endif // !defined(NAVIGATION_2D_DISABLED) || !defined(NAVIGATION_3D_DISABLED)
@@ -1076,6 +1085,9 @@ void register_scene_types() {
 	GDREGISTER_CLASS(Animation);
 	GDREGISTER_CLASS(AnimationLibrary);
 
+	GDREGISTER_CLASS(UniverseState);
+	GDREGISTER_CLASS(TransitionProfile);
+
 	GDREGISTER_ABSTRACT_CLASS(Font);
 	GDREGISTER_CLASS(FontFile);
 	GDREGISTER_CLASS(FontVariation);
@@ -1098,6 +1110,13 @@ void register_scene_types() {
 
 	GDREGISTER_CLASS(BitMap);
 	GDREGISTER_CLASS(Gradient);
+	GDREGISTER_CLASS(LSSRoot);
+	GDREGISTER_CLASS(InventoryContainer);
+	GDREGISTER_CLASS(ItemResource);
+	GDREGISTER_CLASS(StreamingZone);
+	GDREGISTER_CLASS(VirtualCamera3D);
+	GDREGISTER_CLASS(VirtualCamera2D);
+	GDREGISTER_CLASS(SaveData);
 
 	GDREGISTER_CLASS(SkeletonProfile);
 	GDREGISTER_CLASS(SkeletonProfileHumanoid);

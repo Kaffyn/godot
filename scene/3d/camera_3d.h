@@ -117,12 +117,22 @@ protected:
 
 	void _update_camera();
 	virtual void _request_camera_update();
-	void _update_camera_mode();
-
 	virtual void fti_pump_property() override;
 	virtual void fti_update_servers_property() override;
 	virtual void fti_update_servers_xform() override;
 
+	void _update_vcam(double p_delta);
+	void _apply_shake(double p_delta);
+
+	bool use_vcam = false;
+	float vcam_smoothing = 5.0f;
+	float shake_trauma = 0.0f;
+	float shake_intensity = 0.0f;
+
+	Transform3D vcam_target_xform;
+	real_t vcam_target_fov = 75.0;
+
+	void _update_camera_mode();
 	void _notification(int p_what);
 	void _validate_property(PropertyInfo &p_property) const;
 
@@ -209,6 +219,16 @@ public:
 #ifndef PHYSICS_3D_DISABLED
 	RID get_pyramid_shape_rid();
 #endif // PHYSICS_3D_DISABLED
+
+	void set_use_vcam(bool p_enabled);
+	bool is_using_vcam() const;
+
+	void set_vcam_smoothing(float p_smoothing);
+	float get_vcam_smoothing() const;
+
+	void set_shake_trauma(float p_trauma);
+	float get_shake_trauma() const;
+	void add_shake_trauma(float p_trauma);
 
 	Camera3D();
 	~Camera3D();

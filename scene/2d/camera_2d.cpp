@@ -32,7 +32,9 @@
 
 #include "core/config/project_settings.h"
 #include "core/input/input.h"
+#include "core/os/thread_safe.h"
 #include "scene/main/viewport.h"
+#include "servers/camera_server.h"
 
 void Camera2D::_update_scroll() {
 	if (!is_inside_tree() || !viewport) {
@@ -76,8 +78,10 @@ void Camera2D::_project_settings_changed() {
 #endif
 
 void Camera2D::_update_process_callback() {
+	bool vcam_process = use_vcam || shake_trauma > 0.0;
+
 	if (is_physics_interpolated_and_enabled()) {
-		set_process_internal(is_current());
+		set_process_internal(is_current() || vcam_process);
 		set_physics_process_internal(is_current());
 
 #ifdef TOOLS_ENABLED
@@ -93,7 +97,7 @@ void Camera2D::_update_process_callback() {
 			set_process_internal(true);
 			set_physics_process_internal(false);
 		} else {
-			set_process_internal(false);
+			set_process_internal(vcam_process);
 			set_physics_process_internal(true);
 		}
 	}
@@ -285,6 +289,16 @@ void Camera2D::_ensure_update_interpolation_data() {
 
 void Camera2D::_notification(int p_what) {
 	switch (p_what) {
+		case NOTIFICATION_INTERNAL_PROCESS: {
+			double delta = get_process_delta_time();
+			if (use_vcam) {
+				_update_vcam(delta);
+			}
+			if (shake_trauma > 0.0) {
+				_apply_shake(delta);
+			}
+			_update_scroll();
+		} break;
 #ifdef TOOLS_ENABLED
 		case NOTIFICATION_READY: {
 			if (is_part_of_edited_scene()) {
@@ -292,10 +306,6 @@ void Camera2D::_notification(int p_what) {
 			}
 		} break;
 #endif
-
-		case NOTIFICATION_INTERNAL_PROCESS: {
-			_update_scroll();
-		} break;
 
 		case NOTIFICATION_INTERNAL_PHYSICS_PROCESS: {
 			if (is_physics_interpolated_and_enabled()) {
@@ -869,7 +879,93 @@ bool Camera2D::is_margin_drawing_enabled() const {
 	return margin_drawing_enabled;
 }
 
+void Camera2D::_update_vcam(double p_delta) {
+	Object *vcam_obj = CameraServer::get_singleton()->get_best_vcam_2d();
+	Node2D *vcam = Object::cast_to<Node2D>(vcam_obj);
+
+	if (!vcam) {
+		return;
+	}
+
+	real_t weight = MIN(1.0, vcam_smoothing * p_delta);
+
+	Transform2D target_xform = vcam->get_global_transform();
+	Transform2D current_xform = get_global_transform();
+
+	Transform2D next_xform;
+	next_xform.set_origin(current_xform.get_origin().lerp(target_xform.get_origin(), weight));
+	next_xform.set_rotation(Math::lerp_angle(current_xform.get_rotation(), target_xform.get_rotation(), weight));
+	// Simplified scale lerp
+	Vector2 next_scale = current_xform.get_scale().lerp(target_xform.get_scale(), weight);
+	next_xform.set_scale(next_scale);
+
+	set_global_transform(next_xform);
+
+	// Also interpolate zoom if it's a VirtualCamera2D
+	Variant v_zoom = vcam->get("zoom");
+	if (v_zoom.get_type() == Variant::VECTOR2) {
+		Vector2 target_zoom = v_zoom;
+		set_zoom(get_zoom().lerp(target_zoom, weight));
+	}
+}
+
+void Camera2D::_apply_shake(double p_delta) {
+	shake_trauma = MAX(0.0, shake_trauma - p_delta);
+	shake_intensity = shake_trauma * shake_trauma;
+
+	if (shake_intensity > 0.0) {
+		Vector2 offset_v;
+		offset_v.x = Math::random(-1.0, 1.0) * shake_intensity * 10.0; // 2D needs higher values for pixels
+		offset_v.y = Math::random(-1.0, 1.0) * shake_intensity * 10.0;
+
+		set_offset(get_offset() + offset_v);
+	}
+}
+
+void Camera2D::set_use_vcam(bool p_enabled) {
+	use_vcam = p_enabled;
+	set_process_internal(use_vcam || shake_trauma > 0.0 || position_smoothing_enabled || rotation_smoothing_enabled);
+}
+
+bool Camera2D::is_using_vcam() const {
+	return use_vcam;
+}
+
+void Camera2D::set_vcam_smoothing(float p_smoothing) {
+	vcam_smoothing = p_smoothing;
+}
+
+float Camera2D::get_vcam_smoothing() const {
+	return vcam_smoothing;
+}
+
+void Camera2D::set_shake_trauma(float p_trauma) {
+	shake_trauma = CLAMP(p_trauma, 0.0, 1.0);
+	set_process_internal(use_vcam || shake_trauma > 0.0 || position_smoothing_enabled || rotation_smoothing_enabled);
+}
+
+float Camera2D::get_shake_trauma() const {
+	return shake_trauma;
+}
+
+void Camera2D::add_shake_trauma(float p_trauma) {
+	set_shake_trauma(shake_trauma + p_trauma);
+}
+
 void Camera2D::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("set_use_vcam", "enabled"), &Camera2D::set_use_vcam);
+	ClassDB::bind_method(D_METHOD("is_using_vcam"), &Camera2D::is_using_vcam);
+	ClassDB::bind_method(D_METHOD("set_vcam_smoothing", "smoothing"), &Camera2D::set_vcam_smoothing);
+	ClassDB::bind_method(D_METHOD("get_vcam_smoothing"), &Camera2D::get_vcam_smoothing);
+	ClassDB::bind_method(D_METHOD("set_shake_trauma", "trauma"), &Camera2D::set_shake_trauma);
+	ClassDB::bind_method(D_METHOD("get_shake_trauma"), &Camera2D::get_shake_trauma);
+	ClassDB::bind_method(D_METHOD("add_shake_trauma", "trauma"), &Camera2D::add_shake_trauma);
+
+	ADD_GROUP("Zyris vCam", "");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "use_vcam"), "set_use_vcam", "is_using_vcam");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "vcam_smoothing"), "set_vcam_smoothing", "get_vcam_smoothing");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "shake_trauma", PROPERTY_HINT_RANGE, "0,1,0.01"), "set_shake_trauma", "get_shake_trauma");
+
 	ClassDB::bind_method(D_METHOD("set_offset", "offset"), &Camera2D::set_offset);
 	ClassDB::bind_method(D_METHOD("get_offset"), &Camera2D::get_offset);
 

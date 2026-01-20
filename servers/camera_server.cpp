@@ -55,10 +55,17 @@ void CameraServer::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("camera_feed_removed", PropertyInfo(Variant::INT, "id")));
 	ADD_SIGNAL(MethodInfo(feeds_updated_signal_name));
 
-	BIND_ENUM_CONSTANT(FEED_RGBA_IMAGE);
-	BIND_ENUM_CONSTANT(FEED_YCBCR_IMAGE);
-	BIND_ENUM_CONSTANT(FEED_Y_IMAGE);
 	BIND_ENUM_CONSTANT(FEED_CBCR_IMAGE);
+
+	ClassDB::bind_method(D_METHOD("register_vcam_3d", "id", "priority"), &CameraServer::register_vcam_3d);
+	ClassDB::bind_method(D_METHOD("unregister_vcam_3d", "id"), &CameraServer::unregister_vcam_3d);
+	ClassDB::bind_method(D_METHOD("update_vcam_3d_priority", "id", "priority"), &CameraServer::update_vcam_3d_priority);
+	ClassDB::bind_method(D_METHOD("get_best_vcam_3d"), &CameraServer::get_best_vcam_3d);
+
+	ClassDB::bind_method(D_METHOD("register_vcam_2d", "id", "priority"), &CameraServer::register_vcam_2d);
+	ClassDB::bind_method(D_METHOD("unregister_vcam_2d", "id"), &CameraServer::unregister_vcam_2d);
+	ClassDB::bind_method(D_METHOD("update_vcam_2d_priority", "id", "priority"), &CameraServer::update_vcam_2d_priority);
+	ClassDB::bind_method(D_METHOD("get_best_vcam_2d"), &CameraServer::get_best_vcam_2d);
 }
 
 CameraServer *CameraServer::singleton = nullptr;
@@ -175,6 +182,76 @@ RID CameraServer::feed_texture(int p_id, CameraServer::FeedImage p_texture) {
 	Ref<CameraFeed> feed = get_feed(index);
 
 	return feed->get_texture(p_texture);
+}
+
+void CameraServer::register_vcam_3d(ObjectID p_id, int p_priority) {
+	VCamEntry entry;
+	entry.id = p_id;
+	entry.priority = p_priority;
+	vcams_3d.push_back(entry);
+	vcams_3d.sort();
+}
+
+void CameraServer::unregister_vcam_3d(ObjectID p_id) {
+	for (int i = 0; i < vcams_3d.size(); i++) {
+		if (vcams_3d[i].id == p_id) {
+			vcams_3d.remove_at(i);
+			return;
+		}
+	}
+}
+
+void CameraServer::update_vcam_3d_priority(ObjectID p_id, int p_priority) {
+	for (int i = 0; i < vcams_3d.size(); i++) {
+		if (vcams_3d[i].id == p_id) {
+			vcams_3d.write[i].priority = p_priority;
+			vcams_3d.sort();
+			return;
+		}
+	}
+}
+
+Object *CameraServer::get_best_vcam_3d() const {
+	if (vcams_3d.is_empty()) {
+		return nullptr;
+	}
+	// Sorted ascending, so last is best.
+	return ObjectDB::get_instance(vcams_3d[vcams_3d.size() - 1].id);
+}
+
+void CameraServer::register_vcam_2d(ObjectID p_id, int p_priority) {
+	VCamEntry entry;
+	entry.id = p_id;
+	entry.priority = p_priority;
+	vcams_2d.push_back(entry);
+	vcams_2d.sort();
+}
+
+void CameraServer::unregister_vcam_2d(ObjectID p_id) {
+	for (int i = 0; i < vcams_2d.size(); i++) {
+		if (vcams_2d[i].id == p_id) {
+			vcams_2d.remove_at(i);
+			return;
+		}
+	}
+}
+
+void CameraServer::update_vcam_2d_priority(ObjectID p_id, int p_priority) {
+	for (int i = 0; i < vcams_2d.size(); i++) {
+		if (vcams_2d[i].id == p_id) {
+			vcams_2d.write[i].priority = p_priority;
+			vcams_2d.sort();
+			return;
+		}
+	}
+}
+
+Object *CameraServer::get_best_vcam_2d() const {
+	if (vcams_2d.is_empty()) {
+		return nullptr;
+	}
+	// Sorted ascending, so last is best.
+	return ObjectDB::get_instance(vcams_2d[vcams_2d.size() - 1].id);
 }
 
 CameraServer::CameraServer() {

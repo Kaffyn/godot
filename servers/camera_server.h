@@ -31,6 +31,7 @@
 #pragma once
 
 #include "core/object/class_db.h"
+#include "core/object/object_id.h"
 #include "core/object/ref_counted.h"
 #include "core/os/thread_safe.h"
 #include "core/templates/rid.h"
@@ -58,6 +59,17 @@ public:
 		FEED_IMAGES = 2
 	};
 
+	struct VCamEntry {
+		ObjectID id;
+		int priority = 0;
+		bool operator<(const VCamEntry &p_other) const {
+			if (priority == p_other.priority) {
+				return id < p_other.id;
+			}
+			return priority < p_other.priority;
+		}
+	};
+
 	typedef CameraServer *(*CreateFunc)();
 	static inline constexpr const char feeds_updated_signal_name[] = "camera_feeds_updated";
 
@@ -67,6 +79,9 @@ protected:
 
 	bool monitoring_feeds = false;
 	Vector<Ref<CameraFeed>> feeds;
+
+	Vector<VCamEntry> vcams_3d;
+	Vector<VCamEntry> vcams_2d;
 
 	static CameraServer *singleton;
 
@@ -110,6 +125,17 @@ public:
 
 	// Intended for use with custom CameraServer implementation.
 	RID feed_texture(int p_id, FeedImage p_texture);
+
+	// vCam support
+	void register_vcam_3d(ObjectID p_id, int p_priority);
+	void unregister_vcam_3d(ObjectID p_id);
+	void update_vcam_3d_priority(ObjectID p_id, int p_priority);
+	Object *get_best_vcam_3d() const;
+
+	void register_vcam_2d(ObjectID p_id, int p_priority);
+	void unregister_vcam_2d(ObjectID p_id);
+	void update_vcam_2d_priority(ObjectID p_id, int p_priority);
+	Object *get_best_vcam_2d() const;
 
 	CameraServer();
 	~CameraServer();

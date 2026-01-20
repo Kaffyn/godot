@@ -173,12 +173,22 @@ void Camera3D::set_desired_process_modes(bool p_process_internal, bool p_physics
 }
 
 void Camera3D::_update_process_mode() {
-	set_process_internal(_desired_process_internal);
+	bool process = _desired_process_internal || use_vcam || shake_trauma > 0.0;
+	set_process_internal(process);
 	set_physics_process_internal(_desired_physics_process_internal);
 }
 
 void Camera3D::_notification(int p_what) {
 	switch (p_what) {
+		case NOTIFICATION_INTERNAL_PROCESS: {
+			double delta = get_process_delta_time();
+			if (use_vcam) {
+				_update_vcam(delta);
+			}
+			if (shake_trauma > 0.0) {
+				_apply_shake(delta);
+			}
+		} break;
 		case NOTIFICATION_ENTER_WORLD: {
 			// Needs to track the Viewport because it's needed on NOTIFICATION_EXIT_WORLD
 			// and Spatial will handle it first, including clearing its reference to the Viewport,
@@ -613,7 +623,98 @@ Camera3D::DopplerTracking Camera3D::get_doppler_tracking() const {
 	return doppler_tracking;
 }
 
+void Camera3D::_update_vcam(double p_delta) {
+	Object *vcam_obj = CameraServer::get_singleton()->get_best_vcam_3d();
+	Node3D *vcam = Object::cast_to<Node3D>(vcam_obj);
+
+	if (!vcam) {
+		return;
+	}
+
+	// Simple lerp/slerp for now, can be improved with a proper blending weight per vCam
+	real_t weight = MIN(1.0, vcam_smoothing * p_delta);
+
+	Transform3D target_xform = vcam->get_global_transform();
+	Transform3D current_xform = get_global_transform();
+
+	Transform3D next_xform;
+	next_xform.origin = current_xform.origin.lerp(target_xform.origin, weight);
+	next_xform.basis = current_xform.basis.slerp(target_xform.basis, weight).orthonormalized();
+
+	set_global_transform(next_xform);
+
+	// Also interpolate optics if it's a VirtualCamera3D
+	// We use duck-typing or cast to VirtualCamera3D if we want specific properties
+	// For now, let's just use FOV if it exists
+	Variant v_fov = vcam->get("fov");
+	if (v_fov.get_type() == Variant::FLOAT || v_fov.get_type() == Variant::INT) {
+		real_t target_fov = v_fov;
+		set_fov(Math::lerp(get_fov(), target_fov, weight));
+	}
+}
+
+void Camera3D::_apply_shake(double p_delta) {
+	// Simple linear decay for trauma
+	shake_trauma = MAX(0.0, shake_trauma - p_delta);
+	shake_intensity = shake_trauma * shake_trauma; // Squaring gives better feeling
+
+	if (shake_intensity > 0.0) {
+		// Mock Perlin noise with Random for now
+		Vector3 offset;
+		offset.x = Math::random(-1.0, 1.0) * shake_intensity;
+		offset.y = Math::random(-1.0, 1.0) * shake_intensity;
+		offset.z = Math::random(-1.0, 1.0) * shake_intensity;
+
+		// Apply offset to the RenderingServer camera without changing the node transform
+		Transform3D tr = get_camera_transform();
+		tr.origin += offset;
+		RenderingServer::get_singleton()->camera_set_transform(camera, tr);
+	}
+}
+
+void Camera3D::set_use_vcam(bool p_enabled) {
+	use_vcam = p_enabled;
+	_update_process_mode();
+}
+
+bool Camera3D::is_using_vcam() const {
+	return use_vcam;
+}
+
+void Camera3D::set_vcam_smoothing(float p_smoothing) {
+	vcam_smoothing = p_smoothing;
+}
+
+float Camera3D::get_vcam_smoothing() const {
+	return vcam_smoothing;
+}
+
+void Camera3D::set_shake_trauma(float p_trauma) {
+	shake_trauma = CLAMP(p_trauma, 0.0, 1.0);
+}
+
+float Camera3D::get_shake_trauma() const {
+	return shake_trauma;
+}
+
+void Camera3D::add_shake_trauma(float p_trauma) {
+	set_shake_trauma(shake_trauma + p_trauma);
+}
+
 void Camera3D::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("set_use_vcam", "enabled"), &Camera3D::set_use_vcam);
+	ClassDB::bind_method(D_METHOD("is_using_vcam"), &Camera3D::is_using_vcam);
+	ClassDB::bind_method(D_METHOD("set_vcam_smoothing", "smoothing"), &Camera3D::set_vcam_smoothing);
+	ClassDB::bind_method(D_METHOD("get_vcam_smoothing"), &Camera3D::get_vcam_smoothing);
+	ClassDB::bind_method(D_METHOD("set_shake_trauma", "trauma"), &Camera3D::set_shake_trauma);
+	ClassDB::bind_method(D_METHOD("get_shake_trauma"), &Camera3D::get_shake_trauma);
+	ClassDB::bind_method(D_METHOD("add_shake_trauma", "trauma"), &Camera3D::add_shake_trauma);
+
+	ADD_GROUP("Zyris vCam", "");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "use_vcam"), "set_use_vcam", "is_using_vcam");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "vcam_smoothing"), "set_vcam_smoothing", "get_vcam_smoothing");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "shake_trauma", PROPERTY_HINT_RANGE, "0,1,0.01"), "set_shake_trauma", "get_shake_trauma");
+
 	ClassDB::bind_method(D_METHOD("project_ray_normal", "screen_point"), &Camera3D::project_ray_normal);
 	ClassDB::bind_method(D_METHOD("project_local_ray_normal", "screen_point"), &Camera3D::project_local_ray_normal);
 	ClassDB::bind_method(D_METHOD("project_ray_origin", "screen_point"), &Camera3D::project_ray_origin);

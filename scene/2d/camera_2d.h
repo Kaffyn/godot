@@ -110,6 +110,14 @@ protected:
 		uint32_t last_update_physics_tick = UINT32_MAX; // Ensure tick 0 is detected as a change.
 	} _interpolation_data;
 
+	void _update_vcam(double p_delta);
+	void _apply_shake(double p_delta);
+
+	bool use_vcam = false;
+	float vcam_smoothing = 5.0f;
+	float shake_trauma = 0.0f;
+	float shake_intensity = 0.0f;
+
 	void _ensure_update_interpolation_data();
 
 	Size2 _get_camera_screen_size() const;
@@ -201,6 +209,16 @@ public:
 
 	void set_margin_drawing_enabled(bool p_enabled);
 	bool is_margin_drawing_enabled() const;
+
+	void set_use_vcam(bool p_enabled);
+	bool is_using_vcam() const;
+
+	void set_vcam_smoothing(float p_smoothing);
+	float get_vcam_smoothing() const;
+
+	void set_shake_trauma(float p_trauma);
+	float get_shake_trauma() const;
+	void add_shake_trauma(float p_trauma);
 
 	Camera2D();
 };
