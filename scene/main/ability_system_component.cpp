@@ -33,6 +33,9 @@
 // AbilitySystemComponent
 
 void AbilitySystemComponent::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("set_attribute_set", "set"), &AbilitySystemComponent::set_attribute_set);
+	ClassDB::bind_method(D_METHOD("get_attribute_set"), &AbilitySystemComponent::get_attribute_set);
+
 	ClassDB::bind_method(D_METHOD("grant_ability", "ability"), &AbilitySystemComponent::grant_ability);
 	ClassDB::bind_method(D_METHOD("try_activate_ability", "tag_name"), &AbilitySystemComponent::try_activate_ability);
 

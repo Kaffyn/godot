@@ -108,22 +108,6 @@ O Zyris está implementando um conjunto abrangente de sistemas. Abaixo está nos
   - Recursos de `ItemResource` orientados a dados e `InventoryContainer` nativo para armazenamento persistente.
   - Arquitetura baseada em componentes para integração fluida de UI (slots, grids, hotbars).
 
-- [ ] **Editor de Recursos & Biblioteca** - Ferramentas avançadas de composição de dados
-
-  Um espaço de trabalho dedicado no Painel Principal para edição de Resources, tratando dados como cidadãos de primeira classe ao lado de Scripts e Cenas.
-
-  **Resource:**
-  - **Interface tipo IDE:** Layout em split-view com barra lateral para recursos recentes e área de edição central.
-  - **Modos Duplos:** Alternância fluida entre **Modo Visual** (Baseado em Grafos/Nós) e **Modo Código** (Visualização de texto serializado).
-  - **Filtragem Inteligente:** Exibe apenas propriedades "Editor" relevantes, filtrando metadados internos e ruídos de armazenamento, espelhando a visão limpa do Inspetor.
-  - **Integração de Script:** Botão dedicado "Editar Script" para pular instantaneamente para a lógica do recurso no Editor de Scripts.
-
-  **Library:**
-  - **Navegador de Assets:** Um gerenciador de assets focado em visualização em grade e agrupamento avançado, substituindo a estrutura tradicional de árvore de pastas.
-  - **Workbench:** Um "Inspetor Rápido" ciente do contexto para ajustes imediatos em assets selecionados sem trocar de contexto.
-  - **CraftTable:** Uma bancada especializada que filtra e exibe apenas recursos compatíveis com o Zyris (Domínios registrados) para criação agilizada.
-  - **Ações de Contexto:** Operações de Renomear e Deletar integradas.
-
 ### Sistemas Core Planejados
 
 - [ ] **Perception System** - Engine de percepção avançada

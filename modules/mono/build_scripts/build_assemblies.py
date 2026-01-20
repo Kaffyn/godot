@@ -281,7 +281,7 @@ def generate_sdk_package_versions():
         # "beta" and "3" to follow SemVer 2.0.
         import re
 
-        match = re.search(r"[\d]+$", version_status)
+        match = re.search(r"(?<!\.)[\d]+$", version_status)
         if match:
             pos = match.start()
             version_status = version_status[:pos] + "." + version_status[pos:]
