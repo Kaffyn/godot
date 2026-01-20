@@ -89,6 +89,12 @@ O Zyris está implementando um conjunto abrangente de sistemas. Abaixo está nos
   - **CraftTable:** Uma bancada especializada que filtra e exibe apenas recursos compatíveis com o Zyris (Domínios registrados) para criação agilizada.
   - **Ações de Contexto:** Operações de Renomear e Deletar integradas.
 
+- [ ] **Level Streaming System** - Gerenciamento de estado de jogo e universo
+  - **Game State Machine:** Gerencia o ciclo de vida completo do jogo (Boot → Menu → Gameplay → Pause).
+  - **Smart Streaming:** Carregamento em threads de background e pré-cache de cenas adjacentes.
+  - **Sistema de Portais:** Transições perfeitas entre mundos/níveis.
+  - **Integração de Persistência:** Coordena com o sistema de save (Mimir) durante transições.
+
 ### Sistemas Core Planejados
 
 - [ ] **AI Perception System** - Engine de percepção avançada
@@ -130,13 +136,6 @@ O Zyris está implementando um conjunto abrangente de sistemas. Abaixo está nos
   - Trilhas semânticas (Câmera, Some, IA)
   - Restauração de estado
   - Edição não destrutiva
-
-- [ ] **Level Streaming System** - Gerenciamento de estado de jogo e níveis
-  - Transições de mundo baseadas em portais
-  - Carregamento/descarregamento de chunks
-  - Máquina de estados de jogo (Boot → Menu → Gameplay)
-  - Pré-cache inteligente
-  - Integração com sistema de save
 
 - [ ] **Save System** - Gerenciamento de dados persistentes
   - API de persistência baseada em servidor

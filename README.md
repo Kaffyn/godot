@@ -89,6 +89,12 @@ Zyris is implementing a comprehensive suite of engine systems. Below is our deve
   - **CraftTable:** A specialized workbench filters and displays only Zyris-compatible resources (registered Domains) for streamlined creation.
   - **Context Actions:** Built-in Rename and Delete operations.
 
+- [ ] **Level Streaming System** - Game state and universe management
+  - **Game State Machine:** Manages the entire game lifecycle (Boot → Menu → Gameplay → Pause).
+  - **Smart Streaming:** Threaded background loading and pre-caching of adjacent scenes.
+  - **Portal System:** Seamless transitions between worlds/levels.
+  - **Persistence Integration:** Coordinates with the save system (Mimir) during transitions.
+
 ### Planned Core Systems
 
 - [ ] **AI Perception System** - Advanced perception engine
@@ -130,13 +136,6 @@ Zyris is implementing a comprehensive suite of engine systems. Below is our deve
   - Semantic tracks (Camera, Sound, AI)
   - State restoration
   - Non-destructive editing
-
-- [ ] **Level Streaming System** - Game state and level management
-  - Portal-based world transitions
-  - Chunk loading/unloading
-  - Game state machine (Boot → Menu → Gameplay)
-  - Smart pre-caching
-  - Save system integration
 
 - [ ] **Save System** - Persistent data management
   - Server-based persistence API
