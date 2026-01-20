@@ -1,7 +1,7 @@
 # Zyris Engine
 
-[![Godot Version](https://img.shields.io/badge/Godot-4.5--stable-blue.svg)](https://github.com/godotengine/godot)
-[![Zyris Version](https://img.shields.io/badge/Zyris-0.1.0-orange.svg)](https://github.com/Kaffyn/ZyrisEngine)
+[![Godot Version](https://img.shields.io/badge/Godot-4.5.1--stable-blue.svg)](https://github.com/godotengine/godot)
+[![Zyris Version](https://img.shields.io/badge/4.5.1-zyris.2-orange.svg)](https://github.com/Kaffyn/ZyrisEngine/tree/Zyris)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.txt)
 
 **Zyris** is a powerful game engine distribution powered by [Godot Engine](https://godotengine.org), developed by **Kaffyn** and contributors. Our mission is to push the boundaries of open-source game development by implementing advanced features and optimizations that rival industry-leading engines like Unreal Engine and Unity.
