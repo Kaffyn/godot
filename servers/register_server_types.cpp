@@ -58,6 +58,8 @@
 #include "debugger/servers_debugger.h"
 #include "display/native_menu.h"
 #include "display_server.h"
+#include "inventory_server.h"
+#include "lss_server.h"
 #include "movie_writer/movie_writer.h"
 #include "movie_writer/movie_writer_pngwav.h"
 #include "rendering/renderer_rd/framebuffer_cache_rd.h"
@@ -72,6 +74,7 @@
 #include "rendering/storage/render_scene_buffers.h"
 #include "rendering/storage/render_scene_data.h"
 #include "rendering_server.h"
+#include "save_server.h"
 #include "servers/rendering/shader_types.h"
 #include "text/text_server_dummy.h"
 #include "text/text_server_extension.h"
@@ -111,6 +114,7 @@
 #endif // XR_DISABLED
 
 ShaderTypes *shader_types = nullptr;
+static LSSServer *lss_server = nullptr;
 
 #ifndef PHYSICS_2D_DISABLED
 static PhysicsServer2D *_create_dummy_physics_server_2d() {
@@ -160,6 +164,9 @@ void register_server_types() {
 	GDREGISTER_CLASS(NativeMenu);
 
 	GDREGISTER_CLASS(CameraServer);
+	GDREGISTER_CLASS(InventoryServer);
+	GDREGISTER_CLASS(LSSServer);
+	GDREGISTER_CLASS(SaveServer);
 
 	GDREGISTER_ABSTRACT_CLASS(RenderingDevice);
 
@@ -349,6 +356,8 @@ void register_server_types() {
 		MovieWriter::add_writer(writer_pngwav);
 	}
 
+	lss_server = memnew(LSSServer);
+
 	OS::get_singleton()->benchmark_end_measure("Servers", "Register Extensions");
 }
 
@@ -361,13 +370,17 @@ void unregister_server_types() {
 		memdelete(writer_pngwav);
 	}
 
+	if (lss_server) {
+		memdelete(lss_server);
+	}
+
 	OS::get_singleton()->benchmark_end_measure("Servers", "Unregister Extensions");
 }
 
 void register_server_singletons() {
 	OS::get_singleton()->benchmark_begin_measure("Servers", "Register Singletons");
 
-	Engine::get_singleton()->add_singleton(Engine::Singleton("AudioServer", AudioServer::get_singleton(), "AudioServer"));
+	Engine::get_singleton()->add_singleton(Engine::Singleton("Save", SaveServer::get_singleton(), "SaveServer"));
 	Engine::get_singleton()->add_singleton(Engine::Singleton("CameraServer", CameraServer::get_singleton(), "CameraServer"));
 	Engine::get_singleton()->add_singleton(Engine::Singleton("DisplayServer", DisplayServer::get_singleton(), "DisplayServer"));
 	Engine::get_singleton()->add_singleton(Engine::Singleton("NativeMenu", NativeMenu::get_singleton(), "NativeMenu"));

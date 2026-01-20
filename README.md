@@ -89,11 +89,29 @@ Zyris is implementing a comprehensive suite of engine systems. Below is our deve
   - **CraftTable:** A specialized workbench filters and displays only Zyris-compatible resources (registered Domains) for streamlined creation.
   - **Context Actions:** Built-in Rename and Delete operations.
 
-- [ ] **Level Streaming System** - Game state and universe management
-  - **Game State Machine:** Manages the entire game lifecycle (Boot → Menu → Gameplay → Pause).
-  - **Smart Streaming:** Threaded background loading and pre-caching of adjacent scenes.
-  - **Portal System:** Seamless transitions between worlds/levels.
-  - **Persistence Integration:** Coordinates with the save system (Mimir) during transitions.
+- [ ] **Level Streaming System (LSS)** - Game state and universe orchestration
+  - **Game State Machine (GSM):** A native, core-level state manager controlling the engine's lifecycle (Boot → Title → Gameplay → Pause).
+  - **Smart Streaming Pools:** Threaded background loading with intelligent pre-caching of adjacent chunks based on spatial proximity.
+  - **Super Node Architecture:** `LSSRoot` integrates SubViewport and Container logic to isolate the game world for advanced trans-process effects.
+  - **Persistence Sync:** Orchestrates the Save System to ensure state consistency during universe transitions.
+
+- [ ] **Save System** - High-performance persistent data management
+  - **Server-Based Architecture:** Native C++ server (`SaveServer`) for centralized persistence API.
+  - **Secure Storage:** Implementation of AES-256 encryption and data validation.
+  - **Async I/O:** Multithreaded serialization to prevent frame drops during save/load operations.
+  - **Coordination:** Deeply integrated with LSS for automatic state restoration and world snapshots.
+
+- [ ] **Camera System** - Dynamic camera and cinematic orchestration
+  - **Virtual Camera (vCam) Architecture:** Decoupling of camera logic from the viewport using priority-based blending.
+  - **OsmoServer:** Native singleton acting as the arbiter for active camera selection and transitions.
+  - **Procedural Shake:** Perlin noise-based trauma system for realistic and non-destructive "Game Feel".
+  - **Cinematic Tracks:** Full integration with the Director system for scripted sequences.
+
+- [ ] **Inventory System** - Flexible and scalable item management
+  - **InventoryServer:** Centralized authority for item transactions, crafting, and loot tables.
+  - **Data-Driven Items:** Highly customizable `Item` resources with property mapping for the Sonhar editor.
+  - **Container Persistence:** Native support for persistent storage integration with the Save System.
+  - **UI Abstraction:** Component-based architecture for easy implementation of slots, grids, and hotbars.
 
 ### Planned Core Systems
 
@@ -136,12 +154,6 @@ Zyris is implementing a comprehensive suite of engine systems. Below is our deve
   - Semantic tracks (Camera, Sound, AI)
   - State restoration
   - Non-destructive editing
-
-- [ ] **Save System** - Persistent data management
-  - Server-based persistence API
-  - AES-256 encryption
-  - Version migration support
-  - Multithreaded I/O
 
 - [ ] **Quest System** - Graph-based narrative system
   - Visual quest editor

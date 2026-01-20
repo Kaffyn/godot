@@ -30,7 +30,7 @@ Menu gnome é Machi, sou professor de Godot e estou desenvolvendo o **Zyris**, u
   - [Inventory](#inventory)
   - [Kinesis](#kinesis)
   - [Sonhar](#sonhar)
-  - [Mimir](#mimir)
+  - [Save System](#save-system)
   - [Osmo](#osmo)
     - [Arquitetura: Virtual Cameras](#arquitetura-virtual-cameras)
     - [Conceitos Fundamentais](#conceitos-fundamentais)
@@ -477,16 +477,16 @@ Gaia não é apenas visual. Ele conversa diretamente com o `AbilitySystem` via *
 - Se estiver frio, adiciona `Env.Temperature.Cold`.
 - Se estiver no deserto, adiciona `Env.Biome.Desert`.
 
-2. **Consumo de Recursos:**
+1. **Consumo de Recursos:**
 
 - O Player pode ter um `Effect` passivo: "Se `Env.Temperature.Cold` estiver ativo, consuma +2 Stamina por segundo".
 
-3. **Requirements:**
+1. **Requirements:**
 
 - Uma Skill `SummonSandworm` pode ter como requisito `Env.Biome.Desert`.
 - Uma Skill `LightningStrike` pode ter dano ampliado se `Env.Weather.Rain` estiver ativo (Combo Elemental).
 
-4. **Sinergia de Classe (Build Dependency):**
+1. **Sinergia de Classe (Build Dependency):**
    - **Ice Mage:** Ganha regeneração de Mana na Tundra (`Env.Biome.Tundra`), mas sofre em Desertos.
    - **Fire Mage:** Ganha Power no Deserto, mas seus custos aumentam na Chuva.
    - **Warrior:** Neutro. Não ganha buffs nem debuffs, garantindo consistência em qualquer cenário.
@@ -524,7 +524,7 @@ Gaia afeta o mundo inteiro.
 
 - **Item:** Definição base do item.
 - **ItemCategory:** Classificação.
-- **Inventory:** O storage de dados (pode set salvo no Mimir).
+- **Inventory:** O storage de dados (pode set salvo no Save System).
 - **LootTable:** Tabelas de drop.
 - **Recipe:** Regras de crafting.
 
@@ -577,30 +577,30 @@ Infraestrutura híbrida (C++/GDScript) focada em **Inversion of Control**. Outro
 
 ---
 
-## Mimir
+## Save System
 
 > A Memória Eterna (Server-Based)
 >
 > **Infraestrutura de Persistência:** API de baixo nível para serialização de dados.
 >
 > **Filosofia (Server & API):**
-> Mimir não é um Node. Mimir é um **Server** (Singleton C++) que dorme 99% do tempo e só acorda quando invocado (ex: pelo `Yggdrasil`).
+> O Save System não é um Node. Ele é um **Server** (Singleton C++) que dorme 99% do tempo e só acorda quando invocado (ex: pelo `LSS`).
 
-Mimir não utilize Autoloads. O acesso é direto via Singleton C++.
+O Save System não utilize Autoloads. O acesso é direto via Singleton C++.
 
 **Server:**
 
-- **MimirServer (C++):** Motor de IO, Threads e Criptografia (AES-256). API global via `create_save()` e `load_save()`.
+- **SaveServer (C++):** Motor de IO, Threads e Criptografia (AES-256). API global via `save_game()` e `load_game()`.
 
 **Integração:**
 
-- **Trigger:** Acionado pelo `Yggdrasil` em transições de cena.
+- **Trigger:** Acionado pelo `LSS` em transições de cena.
 
 **Resources:**
 
 - **SaveSlot:** O arquivo no disco.
 - **MigrationScript:** Lógica de atualização de versão (`v1` -> `v2`).
-- **MimirSaveFile:** Estrutura serializável.
+- **SaveFile:** Estrutura serializável.
 
 ---
 
@@ -868,7 +868,7 @@ Sistema avançado de carregamento de mundos para jogos grandes.
 
 **`StimulusEmitter`**
 
-Wrapper leve sobre um **Area2D**.
+Wrapper simplificado sobre um **Area2D**.
 
 - Carrega os metadados (`Tags`, `Intensidade`) que o Sensor lê ao colidir.
 
@@ -876,7 +876,7 @@ Wrapper leve sobre um **Area2D**.
   - `type`: Tipo de estímulo (Visual, Auditivo, etc).
   - `faction`: Quem emitiu.
   - `tags`: Etiquetas semânticas ("Danger", "Food").
-  - `intensity`: Força do sinal.
+  - `intensity`: Força do impulso.
 
 **Integração com Behavior Tree**
 

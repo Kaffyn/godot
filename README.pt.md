@@ -89,15 +89,33 @@ O Zyris está implementando um conjunto abrangente de sistemas. Abaixo está nos
   - **CraftTable:** Uma bancada especializada que filtra e exibe apenas recursos compatíveis com o Zyris (Domínios registrados) para criação agilizada.
   - **Ações de Contexto:** Operações de Renomear e Deletar integradas.
 
-- [ ] **Level Streaming System** - Gerenciamento de estado de jogo e universo
-  - **Game State Machine:** Gerencia o ciclo de vida completo do jogo (Boot → Menu → Gameplay → Pause).
-  - **Smart Streaming:** Carregamento em threads de background e pré-cache de cenas adjacentes.
-  - **Sistema de Portais:** Transições perfeitas entre mundos/níveis.
-  - **Integração de Persistência:** Coordena com o sistema de save (Mimir) durante transições.
+- [ ] **Level Streaming System (LSS)** - Orquestração de estado de jogo e universo
+  - **Game State Machine (GSM):** Gerenciador de estado nativo no core que controla o ciclo de vida da engine (Boot → Title → Gameplay → Pause).
+  - **Smart Streaming Pools:** Carregamento em threads de background com pré-cache inteligente de chunks baseado em proximidade espacial.
+  - **Arquitetura Super Node:** `LSSRoot` integra lógica de SubViewport e Container para isolar o mundo de jogo permitindo efeitos avançados de transição.
+  - **Sincronização de Persistência:** Orquestra o Save System para garantir consistência de estado durante transições de universo.
+
+- [ ] **Save System** - Gerenciamento de dados persistentes de alta performance
+  - **Arquitetura Baseada em Servidor:** Servidor C++ nativo (`SaveServer`) para uma API de persistência centralizada.
+  - **Armazenamento Seguro:** Implementação de criptografia AES-256 e validação de integridade de dados.
+  - **E/S Assíncrona:** Serialização multi-thread para evitar quedas de frame durante operações de salvamento.
+  - **Coordenação:** Integrado profundamente ao LSS para restauração automática de estado e snapshots de mundo.
+
+- [ ] **Camera System** - Orquestração de câmeras dinâmicas e cinematográficas
+  - **Arquitetura de Câmeras Virtuais (vCam):** Desacoplamento da lógica de câmera do viewport usando blending baseado em prioridade.
+  - **OsmoServer:** Singleton nativo que atua como árbitro para seleção e transição de câmeras ativas.
+  - **Shake Procedural:** Sistema de trauma baseado em ruído de Perlin para "Game Feel" realista e não destrutivo.
+  - **Tracks Cinematográficas:** Integração total com o sistema Director para sequências roteirizadas.
+
+- [ ] **Inventory System** - Gerenciamento de itens flexível e escalável
+  - **InventoryServer:** Autoridade centralizada para transações de itens, crafting e tabelas de loot.
+  - **Itens Data-Driven:** Recursos de `Item` altamente customizáveis com mapeamento de propriedades para o editor Sonhar.
+  - **Persistência de Containers:** Suporte nativo para integração de armazenamento persistente com o Save System.
+  - **Abstração de UI:** Arquitetura baseada em componentes para fácil implementação de slots, grids e hotbars.
 
 ### Sistemas Core Planejados
 
-- [ ] **AI Perception System** - Engine de percepção avançada
+- [ ] **Perception System** - Engine de percepção avançada
   - Integração com backend de física
   - Sistema de estímulos multi-sensoriais (Visual, Auditivo, Olfativo, Térmico)
   - Otimização espacial via BVH
@@ -136,12 +154,6 @@ O Zyris está implementando um conjunto abrangente de sistemas. Abaixo está nos
   - Trilhas semânticas (Câmera, Some, IA)
   - Restauração de estado
   - Edição não destrutiva
-
-- [ ] **Save System** - Gerenciamento de dados persistentes
-  - API de persistência baseada em servidor
-  - Criptografia AES-256
-  - Suporte a migração de versão
-  - E/S multi-thread
 
 - [ ] **Quest System** - Sistema narrativo baseado em grafos
   - Editor visual de quests

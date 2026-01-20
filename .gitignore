@@ -391,3 +391,5 @@ $RECYCLE.BIN/
 *.lnk
 *.generated.props
 /zyrispluginmodules
+/teste/.godot
+teste/.editorconfig
