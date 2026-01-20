@@ -84,10 +84,10 @@ O Zyris está implementando um conjunto abrangente de sistemas. Abaixo está nos
   - **Integração de Script:** Botão dedicado "Editar Script" para pular instantaneamente para a lógica do recurso no Editor de Scripts.
 
   **Library:**
-  - **Navegador de Assets:** Um gerenciador de arquivos em split-view com Árvore de Pastas e Grade de Assets, especializado para gerenciamento visual.
-  - **Ações de Contexto:** Operações de Renomear e Deletar integradas.
+  - **Navegador de Assets:** Um gerenciador de assets focado em visualização em grade e agrupamento avançado, substituindo a estrutura tradicional de árvore de pastas.
+  - **Workbench:** Um "Inspetor Rápido" ciente do contexto para ajustes imediatos em assets selecionados sem trocar de contexto.
   - **CraftTable:** Uma bancada especializada que filtra e exibe apenas recursos compatíveis com o Zyris (Domínios registrados) para criação agilizada.
-
+  - **Ações de Contexto:** Operações de Renomear e Deletar integradas.
 
 ### Sistemas Core Planejados
 

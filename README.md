@@ -84,9 +84,10 @@ Zyris is implementing a comprehensive suite of engine systems. Below is our deve
   - **Script Integration:** Dedicated "Edit Script" button to instantly jump to the resource's logic in the Script Editor.
 
   **Library:**
-  - **Asset Browser:** A split-view file manager with a Folder Tree and an Asset Grid, specialized for visual resource management.
-  - **Context Actions:** Built-in Rename and Delete operations.
+  - **Asset Browser:** A specialized asset manager focusing on visual grids and advanced grouping, replacing the traditional folder tree structure.
+  - **Workbench:** A context-aware "Quick Inspector" for immediate adjustments to selected assets without switching contexts.
   - **CraftTable:** A specialized workbench filters and displays only Zyris-compatible resources (registered Domains) for streamlined creation.
+  - **Context Actions:** Built-in Rename and Delete operations.
 
 ### Planned Core Systems
 
