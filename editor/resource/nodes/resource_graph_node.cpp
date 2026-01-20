@@ -63,7 +63,7 @@ void ResourceGraphNode::set_resource(const Ref<Resource> &p_resource) {
 	List<PropertyInfo> props;
 	resource->get_property_list(&props);
 
-	int slot_idx = 0;
+
 	// Adjust slot index because of preview and separator children (GraphNode slots are mapped to children indices usually, but set_slot takes index)
 	// Actually set_slot index corresponds to child index.
 	// Child 0: Preview
