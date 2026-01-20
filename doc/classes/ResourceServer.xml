@@ -5,6 +5,12 @@
 	</brief_description>
 	<description>
 		[ResourceServer] is the central orchestration system for the Zyris Resource ecosystem. It allows modules to register "Domains", which associate specific [Resource] types with specialized visual editors and creation rules.
+		Core Zyris domains are registered automatically, including:
+		- [b]Ability System[/b]: GameplayAbility, GameplayEffect, AttributeSet.
+		- [b]AI[/b]: BehaviorTree.
+		- [b]Gaia[/b]: BiomeDef, WeatherDef.
+		- [b]Inventory[/b]: Item, Inventory.
+		- [b]Quests[/b]: QuestGraph.
 	</description>
 	<tutorials>
 	</tutorials>

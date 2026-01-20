@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="AbilitySystemComponent" inherits="Node" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		The central hub for the Gameplay Ability System on an actor.
+	</brief_description>
+	<description>
+		The AbilitySystemComponent (ASC) manages abilities, attributes, and effects for a specific node (Character, Object).
+		It acts as the interface for granting abilities, activating them, and processing gameplay effects.
+		The ASC uses an O(1) inverted index map to quickly find abilities associated with specific GameplayTags.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="grant_ability">
+			<return type="void" />
+			<param index="0" name="ability" type="GameplayAbility" />
+			<description>
+				Grants a new ability to this component. The ability is added to the valid candidates list for future activation.
+			</description>
+		</method>
+		<method name="try_activate_ability">
+			<return type="bool" />
+			<param index="0" name="tag_name" type="StringName" />
+			<description>
+				Attempts to activate an ability by its matching tag name. Returns true if an ability was successfully found and activated.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="attribute_set" type="AttributeSet" setter="set_attribute_set" getter="get_attribute_set">
+			The AttributeSet resource managing the stats for this owner.
+		</member>
+	</members>
+</class>

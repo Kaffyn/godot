@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GameplayEffect" inherits="Resource" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		A data-driven resource that modifies attributes or grants tags.
+	</brief_description>
+	<description>
+		GameplayEffects are the primary way to change attributes (damage, healing, buffs) and apply states (tags) to actors in the Gameplay Ability System.
+		They can have different duration policies: Instant, Infinite, or Has Duration.
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="duration" type="float" setter="set_duration" getter="get_duration" default="0.0">
+			The duration of the effect in seconds. Only relevant if [member duration_policy] is [constant DURATION_HAS_DURATION].
+		</member>
+		<member name="duration_policy" type="int" setter="set_duration_policy" getter="get_duration_policy" enum="GameplayEffect.DurationPolicy" default="0">
+			Defines how the effect behaves over time.
+		</member>
+	</members>
+	<constants>
+		<constant name="DURATION_INSTANT" value="0" enum="DurationPolicy">
+			The effect is applied immediately and then discarded (e.g., instant damage).
+		</constant>
+		<constant name="DURATION_INFINITE" value="1" enum="DurationPolicy">
+			The effect persists indefinitely until removed (e.g., permanent passive buff).
+		</constant>
+		<constant name="DURATION_HAS_DURATION" value="2" enum="DurationPolicy">
+			The effect persists for a set [member duration] (e.g., 5 seconds of poison).
+		</constant>
+		<constant name="MODIFIER_ADD" value="0" enum="ModifierOp">
+			Adds the magnitude to the attribute.
+		</constant>
+		<constant name="MODIFIER_MULTIPLY" value="1" enum="ModifierOp">
+			Multiplies the attribute by the magnitude.
+		</constant>
+		<constant name="MODIFIER_OVERRIDE" value="2" enum="ModifierOp">
+			Overrides the attribute value with the magnitude.
+		</constant>
+	</constants>
+</class>

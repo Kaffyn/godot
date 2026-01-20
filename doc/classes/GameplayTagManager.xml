@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GameplayTagManager" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		Singleton to manage GameplayTags.
+	</brief_description>
+	<description>
+		The GameplayTagManager handles the registration and retrieval of [GameplayTag]s. It maintains the hierarchical relationship between tags (e.g., "Status.Damage" is a parent of "Status.Damage.Fire").
+		Access the singleton via [method get_singleton] or the static methods exposed in the implementation.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_tag" qualifiers="const">
+			<return type="GameplayTag" />
+			<param index="0" name="name" type="StringName" />
+			<description>
+				Retrieves a registered GameplayTag by its name. Returns an empty/invalid tag if not found.
+			</description>
+		</method>
+		<method name="get_tag_name" qualifiers="const">
+			<return type="StringName" />
+			<param index="0" name="id" type="int" />
+			<description>
+				Returns the name of the tag associated with the given ID.
+			</description>
+		</method>
+		<method name="register_tag">
+			<return type="GameplayTag" />
+			<param index="0" name="name" type="StringName" />
+			<description>
+				Registers a new GameplayTag with the given name. If the tag already exists, returns the existing one. Handles hierarchical naming (dot-separated) automatically.
+			</description>
+		</method>
+	</methods>
+</class>

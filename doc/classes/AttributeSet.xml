@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="AttributeSet" inherits="Resource" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		Defines a set of numeric attributes for the Gameplay Ability System.
+	</brief_description>
+	<description>
+		AttributeSet holds the data for attributes (e.g., Health, Mana, Strength). Each attribute has a Base Value (permanent) and a Current Value (temporary, affected by buffs/effects).
+		Use this resource to define the stats of a character or object.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_attribute_base" qualifiers="const">
+			<return type="float" />
+			<param index="0" name="name" type="StringName" />
+			<description>
+				Returns the permanent, base value of the attribute.
+			</description>
+		</method>
+		<method name="get_attribute_current" qualifiers="const">
+			<return type="float" />
+			<param index="0" name="name" type="StringName" />
+			<description>
+				Returns the current value of the attribute, which includes active temporary modifiers.
+			</description>
+		</method>
+		<method name="has_attribute" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="name" type="StringName" />
+			<description>
+				Checks if an attribute with the given name exists in this set.
+			</description>
+		</method>
+		<method name="set_attribute_base">
+			<return type="void" />
+			<param index="0" name="name" type="StringName" />
+			<param index="1" name="value" type="float" />
+			<description>
+				Sets the base value of the attribute.
+			</description>
+		</method>
+		<method name="set_attribute_current">
+			<return type="void" />
+			<param index="0" name="name" type="StringName" />
+			<param index="1" name="value" type="float" />
+			<description>
+				Sets the current value of the attribute directly. NOTE: Typically, you should use GameplayEffects to modify values rather than setting them directly.
+			</description>
+		</method>
+	</methods>
+</class>

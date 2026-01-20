@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GameplayTagContainer" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		A container for efficient GameplayTag storage and comparison.
+	</brief_description>
+	<description>
+		Stores a list of [GameplayTag]s and provides efficient methods to check for matching, overlapping, or presence of tags. Useful for implementing "Has Any Tag", "Has All Tags" logic.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="add_tag">
+			<return type="void" />
+			<param index="0" name="name" type="StringName" />
+			<description>
+				Adds a tag to the container by name.
+			</description>
+		</method>
+		<method name="has_all" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="other" type="GameplayTagContainer" />
+			<description>
+				Returns true if this container holds ALL the tags present in the [param other] container.
+			</description>
+		</method>
+		<method name="has_any" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="other" type="GameplayTagContainer" />
+			<description>
+				Returns true if this container holds ANY of the tags present in the [param other] container.
+			</description>
+		</method>
+		<method name="has_tag" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="name" type="StringName" />
+			<description>
+				Returns true if the container holds the specified tag (by name). Handles hierarchy matching.
+			</description>
+		</method>
+		<method name="remove_tag">
+			<return type="void" />
+			<param index="0" name="name" type="StringName" />
+			<description>
+				Removes a tag from the container by name.
+			</description>
+		</method>
+	</methods>
+</class>

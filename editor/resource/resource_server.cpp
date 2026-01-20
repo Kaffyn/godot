@@ -103,11 +103,10 @@ void ResourceServer::_register_core_domains() {
 		return;
 	}
 
-	// Ability System
-	register_domain("Character", "Character", "", EditorNode::get_singleton()->get_class_icon("Character", "Resource"), {{"category", "Ability System"}});
-	register_domain("Ability State", "AbilityState", "", EditorNode::get_singleton()->get_class_icon("AbilityState", "Resource"), {{"category", "Ability System"}});
-	register_domain("Ability Skill", "AbilitySkill", "", EditorNode::get_singleton()->get_class_icon("AbilitySkill", "Resource"), {{"category", "Ability System"}});
-	register_domain("Ability Effect", "AbilityEffect", "", EditorNode::get_singleton()->get_class_icon("AbilityEffect", "Resource"), {{"category", "Ability System"}});
+	// Ability System (GAS)
+	register_domain("Attribute Set", "AttributeSet", "", EditorNode::get_singleton()->get_class_icon("AttributeSet", "Resource"), {{"category", "Ability System"}});
+	register_domain("Gameplay Ability", "GameplayAbility", "", EditorNode::get_singleton()->get_class_icon("GameplayAbility", "Resource"), {{"category", "Ability System"}});
+	register_domain("Gameplay Effect", "GameplayEffect", "", EditorNode::get_singleton()->get_class_icon("GameplayEffect", "Resource"), {{"category", "Ability System"}});
 
 	// Behavior Tree
 	register_domain("Behavior Tree", "BehaviorTree", "", EditorNode::get_singleton()->get_class_icon("BehaviorTree", "Resource"), {{"category", "AI"}});

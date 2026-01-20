@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GameplayAbility" inherits="Resource" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		Base class for in-game abilities (actions, skills, spells).
+	</brief_description>
+	<description>
+		GameplayAbility defines logic for an action that an actor can perform. This can range from simple attacks to complex mechanics.
+		It is designed to be subclassed either in C++ or GDScript to implement specific behaviors via virtual methods like [method _activate_ability].
+		Abilities rely on [GameplayTag]s for costs, cooldowns, and blocking conditions.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="_activate_ability" qualifiers="virtual">
+			<return type="void" />
+			<description>
+				Scriptable hook called when the ability is activated. Implement your logic here (play animation, spawn projectile, etc.).
+			</description>
+		</method>
+		<method name="_can_activate_ability" qualifiers="virtual">
+			<return type="bool" />
+			<description>
+				Scriptable hook to check custom conditions for activation. Should return true if the ability can be activated.
+			</description>
+		</method>
+		<method name="activate">
+			<return type="void" />
+			<description>
+				Triggers the ability activation logic. Calls [method _activate_ability].
+			</description>
+		</method>
+		<method name="can_activate" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Checks if the ability can be activated (cooldowns, costs, tags). Calls [method _can_activate_ability].
+			</description>
+		</method>
+		<method name="commit">
+			<return type="void" />
+			<description>
+				Commits the ability execution, usually consuming resources (mana, stamina) and starting cooldowns.
+			</description>
+		</method>
+		<method name="end">
+			<return type="void" />
+			<description>
+				Ends the ability execution. Use this to clean up states or remove tags.
+			</description>
+		</method>
+	</methods>
+</class>
