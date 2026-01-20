@@ -45,21 +45,6 @@ O Zyris está implementando um conjunto abrangente de sistemas. Abaixo está nos
 
 ### Implementado
 
-- [x] **Editor de Recursos & Biblioteca** - Ferramentas avançadas de composição de dados
-
-  Um espaço de trabalho dedicado no Painel Principal para edição de Resources, tratando dados como cidadãos de primeira classe ao lado de Scripts e Cenas.
-
-  **Resource:**
-  - **Interface tipo IDE:** Layout em split-view com barra lateral para recursos recentes e área de edição central.
-  - **Modos Duplos:** Alternância fluida entre **Modo Visual** (Baseado em Grafos/Nós) e **Modo Código** (Visualização de texto serializado).
-  - **Filtragem Inteligente:** Exibe apenas propriedades "Editor" relevantes, filtrando metadados internos e ruídos de armazenamento, espelhando a visão limpa do Inspetor.
-  - **Integração de Script:** Botão dedicado "Editar Script" para pular instantaneamente para a lógica do recurso no Editor de Scripts.
-
-  **Library:**
-  - **Navegador de Assets:** Um gerenciador de arquivos em split-view com Árvore de Pastas e Grade de Assets, especializado para gerenciamento visual.
-  - **Ações de Contexto:** Operações de Renomear e Deletar integradas.
-  - **CraftTable:** Uma bancada especializada que filtra e exibe apenas recursos compatíveis com o Zyris (Domínios registrados) para criação agilizada.
-
 - [x] **Virtual Input Devices** - Camada de abstração de entrada multi-plataforma
 
   Um sistema completo de entrada virtual integrado diretamente ao core da engine, fornecendo controles de toque fluidos para dispositivos móveis e híbridos.
@@ -87,6 +72,22 @@ O Zyris está implementando um conjunto abrangente de sistemas. Abaixo está nos
   - Component-based character system
   - Seleção de candidatos invertida via hash map
   - Pronto para multiplayer com execução determinística
+
+- [ ] **Editor de Recursos & Biblioteca** - Ferramentas avançadas de composição de dados
+
+  Um espaço de trabalho dedicado no Painel Principal para edição de Resources, tratando dados como cidadãos de primeira classe ao lado de Scripts e Cenas.
+
+  **Resource:**
+  - **Interface tipo IDE:** Layout em split-view com barra lateral para recursos recentes e área de edição central.
+  - **Modos Duplos:** Alternância fluida entre **Modo Visual** (Baseado em Grafos/Nós) e **Modo Código** (Visualização de texto serializado).
+  - **Filtragem Inteligente:** Exibe apenas propriedades "Editor" relevantes, filtrando metadados internos e ruídos de armazenamento, espelhando a visão limpa do Inspetor.
+  - **Integração de Script:** Botão dedicado "Editar Script" para pular instantaneamente para a lógica do recurso no Editor de Scripts.
+
+  **Library:**
+  - **Navegador de Assets:** Um gerenciador de arquivos em split-view com Árvore de Pastas e Grade de Assets, especializado para gerenciamento visual.
+  - **Ações de Contexto:** Operações de Renomear e Deletar integradas.
+  - **CraftTable:** Uma bancada especializada que filtra e exibe apenas recursos compatíveis com o Zyris (Domínios registrados) para criação agilizada.
+
 
 ### Sistemas Core Planejados
 

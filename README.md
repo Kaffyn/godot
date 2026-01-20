@@ -45,21 +45,6 @@ Zyris is implementing a comprehensive suite of engine systems. Below is our deve
 
 ### Implemented
 
-- [x] **Resource Editor & Library** - Advanced data composition tools
-
-  A dedicated Main Panel workspace for editing Resources, treating data as a first-class citizen alongside Scripts and Scenes.
-
-  **Resource:**
-  - **IDE-like Interface:** Split-view layout with a sidebar for recent resources and a central editing area.
-  - **Dual Modes:** Seamlessly switch between **Visual Mode** (Graph/Node-based) and **Code Mode** (Text-based serialization view).
-  - **Smart Filtering:** Displays only relevant "Editor" properties, filtering out internal metadata and storage noise, mirroring the Inspector's clean view.
-  - **Script Integration:** Dedicated "Edit Script" button to instantly jump to the resource's logic in the Script Editor.
-
-  **Library:**
-  - **Asset Browser:** A split-view file manager with a Folder Tree and an Asset Grid, specialized for visual resource management.
-  - **Context Actions:** Built-in Rename and Delete operations.
-  - **CraftTable:** A specialized workbench filters and displays only Zyris-compatible resources (registered Domains) for streamlined creation.
-
 - [x] **Virtual Input Devices** - Cross-platform input abstraction layer
 
   A complete virtual input system integrated directly into the engine core, providing seamless touch controls for mobile and hybrid devices.
@@ -87,6 +72,21 @@ Zyris is implementing a comprehensive suite of engine systems. Below is our deve
   - Component-based character system
   - Hash map inverted candidate selection
   - Multiplayer-ready with deterministic execution
+
+- [ ] **Resource Editor & Library** - Advanced data composition tools
+
+  A dedicated Main Panel workspace for editing Resources, treating data as a first-class citizen alongside Scripts and Scenes.
+
+  **Resource:**
+  - **IDE-like Interface:** Split-view layout with a sidebar for recent resources and a central editing area.
+  - **Dual Modes:** Seamlessly switch between **Visual Mode** (Graph/Node-based) and **Code Mode** (Text-based serialization view).
+  - **Smart Filtering:** Displays only relevant "Editor" properties, filtering out internal metadata and storage noise, mirroring the Inspector's clean view.
+  - **Script Integration:** Dedicated "Edit Script" button to instantly jump to the resource's logic in the Script Editor.
+
+  **Library:**
+  - **Asset Browser:** A split-view file manager with a Folder Tree and an Asset Grid, specialized for visual resource management.
+  - **Context Actions:** Built-in Rename and Delete operations.
+  - **CraftTable:** A specialized workbench filters and displays only Zyris-compatible resources (registered Domains) for streamlined creation.
 
 ### Planned Core Systems
 
