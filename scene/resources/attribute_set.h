@@ -5,8 +5,8 @@
 /*                             GODOT ENGINE                               */
 /*                        https://godotengine.org                         */
 /**************************************************************************/
-/* Copyright (c) 2025-present Kaffyn and Zyris contributors              */
-/* Copyright (c) 2014-present Godot Engine contributors                  */
+/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */
+/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */
 /*                                                                        */
 /* Permission is hereby granted, free of charge, to any person obtaining  */
 /* a copy of this software and associated documentation files (the        */
@@ -65,6 +65,12 @@ public:
 };
 
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
-	float get_##PropertyName() const { return get_attribute_current(#PropertyName); } \
-	void set_##PropertyName(float p_val) { set_attribute_current(#PropertyName, p_val); } \
-	void init_##PropertyName(float p_val) { set_attribute_base(#PropertyName, p_val); }
+	float get_##PropertyName() const {               \
+		return get_attribute_current(#PropertyName); \
+	}                                                \
+	void set_##PropertyName(float p_val) {           \
+		set_attribute_current(#PropertyName, p_val); \
+	}                                                \
+	void init_##PropertyName(float p_val) {          \
+		set_attribute_base(#PropertyName, p_val);    \
+	}

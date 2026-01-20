@@ -5,8 +5,8 @@
 /*                             GODOT ENGINE                               */
 /*                        https://godotengine.org                         */
 /**************************************************************************/
-/* Copyright (c) 2025-present Kaffyn and Zyris contributors              */
-/* Copyright (c) 2014-present Godot Engine contributors                  */
+/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */
+/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */
 /*                                                                        */
 /* Permission is hereby granted, free of charge, to any person obtaining  */
 /* a copy of this software and associated documentation files (the        */
@@ -33,8 +33,8 @@
 #include "core/object/class_db.h"
 #include "core/object/object.h"
 #include "core/object/ref_counted.h"
-#include "core/string/ustring.h"
 #include "core/string/string_name.h"
+#include "core/string/ustring.h"
 #include "core/templates/hash_map.h"
 #include "core/templates/vector.h"
 

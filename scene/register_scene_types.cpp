@@ -99,6 +99,7 @@
 #include "scene/gui/virtual_joystick.h"
 #include "scene/gui/virtual_joystick_dynamic.h"
 #include "scene/gui/virtual_touch_pad.h"
+#include "scene/main/ability_system_component.h"
 #include "scene/main/canvas_item.h"
 #include "scene/main/canvas_layer.h"
 #include "scene/main/http_request.h"
@@ -112,7 +113,6 @@
 #include "scene/main/timer.h"
 #include "scene/main/viewport.h"
 #include "scene/main/window.h"
-#include "scene/main/ability_system_component.h"
 #include "scene/resources/animation_library.h"
 #include "scene/resources/atlas_texture.h"
 #include "scene/resources/audio_stream_polyphonic.h"
@@ -141,7 +141,10 @@
 #if !defined(NAVIGATION_2D_DISABLED) || !defined(NAVIGATION_3D_DISABLED)
 #include "scene/resources/navigation_mesh.h"
 #endif // !defined(NAVIGATION_2D_DISABLED) || !defined(NAVIGATION_3D_DISABLED)
+#include "scene/resources/attribute_set.h"
 #include "scene/resources/dpi_texture.h"
+#include "scene/resources/gameplay_ability.h"
+#include "scene/resources/gameplay_effect.h"
 #include "scene/resources/packed_scene.h"
 #include "scene/resources/particle_process_material.h"
 #include "scene/resources/placeholder_textures.h"
@@ -166,9 +169,6 @@
 #include "scene/resources/visual_shader_nodes.h"
 #include "scene/resources/visual_shader_particle_nodes.h"
 #include "scene/resources/visual_shader_sdf_nodes.h"
-#include "scene/resources/attribute_set.h"
-#include "scene/resources/gameplay_effect.h"
-#include "scene/resources/gameplay_ability.h"
 #include "scene/theme/theme_db.h"
 #ifndef DISABLE_DEPRECATED
 #include "scene/resources/animated_texture.h"
