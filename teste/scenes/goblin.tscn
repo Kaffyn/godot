@@ -1,0 +1,54 @@
+[gd_scene load_steps=8 format=3 uid="uid://goblin_scene"]
+
+[ext_resource type="Script" path="res://scripts/mobs/goblin.gd" id="1_goblin_script"]
+[ext_resource type="Resource" uid="uid://goblin_attr" path="res://resources/goblin_attributes.trese" id="2_attr"]
+
+[sub_system type="CapsuleShape3D" id="CapsuleShape3D_1"]
+radius = 0.4
+height = 1.0
+
+[sub_system type="SphereShape3D" id="SphereShape3D_1"]
+radius = 8.0
+
+[node name="Goblin" type="CharacterBody3D"]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_goblin_script")
+speed = 3.5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("CapsuleShape3D_1")
+
+[node name="Visuals" type="CSGCombiner3D" parent="."]
+
+[node name="Body" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+radius = 0.3
+height = 0.8
+sides = 6
+
+[node name="Head" type="CSGSphere3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+radius = 0.25
+radial_segments = 6
+rings = 4
+
+[node name="EarsL" type="CSGPenta3D" parent="Visuals"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -0.3, 0.9, 0)
+
+[node name="EarsR" type="CSGPenta3D" parent="Visuals"]
+transform = Transform3D(-0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0.3, 0.9, 0)
+
+[node name="AbilitySystemComponent" type="AbilitySystemComponent" parent="."]
+attribute_set = ExtResource("2_attr")
+
+[node name="DetectionArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea"]
+shape = SubResource("SphereShape3D_1")
+
+[connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
+[connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]

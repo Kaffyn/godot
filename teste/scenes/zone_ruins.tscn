@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://zone_ruins"]
+
+[node name="ZoneRuins" type="Node3D"]
+
+[node name="LSSZone" type="StreamingZone" parent="."]
+zone_id = "ruins"
+
+[node name="Columns" type="Node3D" parent="."]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Columns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2, 10)
+use_collision = true
+size = Vector3(1, 4, 1)

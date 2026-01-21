@@ -1,0 +1,6 @@
+extends Resource
+class_name GoblinAttributeSet
+
+@export var health: float = 30.0
+@export var max_health: float = 30.0
+@export var damage: float = 5.0

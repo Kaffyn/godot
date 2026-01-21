@@ -1,0 +1,70 @@
+[gd_scene load_steps=10 format=3 uid="uid://dp6m6f6v1k6v"]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_script"]
+[ext_resource type="Resource" uid="uid://alchemist_attr" path="res://resources/alchemist_attributes.trese" id="2_attr"]
+
+[sub_system type="CapsuleShape3D" id="CapsuleShape3D_1"]
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_script")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_1")
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="AlchemistMesh" type="CSGCombiner3D" parent="Visuals"]
+use_collision = false
+
+[node name="Body" type="CSGCylinder3D" parent="Visuals/AlchemistMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+radius = 0.4
+height = 1.2
+sides = 8
+
+[node name="Head" type="CSGSphere3D" parent="Visuals/AlchemistMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+radius = 0.3
+radial_segments = 8
+rings = 6
+
+[node name="Hat" type="CSGCylinder3D" parent="Visuals/AlchemistMesh"]
+transform = Transform3D(1, 0, 0, 0, 0.965926, -0.258819, 0, 0.258819, 0.965926, 0, 1.9, -0.1)
+radius = 0.4
+height = 0.1
+sides = 8
+
+[node name="HatTop" type="CSGCylinder3D" parent="Visuals/AlchemistMesh"]
+transform = Transform3D(1, 0, 0, 0, 0.965926, -0.258819, 0, 0.258819, 0.965926, 0, 2.1, -0.2)
+radius = 0.2
+height = 0.4
+sides = 6
+
+[node name="HandL" type="CSGBox3D" parent="Visuals/AlchemistMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1.1, 0.3)
+size = Vector3(0.2, 0.2, 0.2)
+
+[node name="HandR" type="CSGBox3D" parent="Visuals/AlchemistMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.1, 0.3)
+size = Vector3(0.2, 0.2, 0.2)
+
+[node name="AbilitySystemComponent" type="AbilitySystemComponent" parent="."]
+attribute_set = ExtResource("2_attr")
+
+[node name="InventoryContainer" type="InventoryContainer" parent="."]
+
+[node name="vCam_Follow" type="VirtualCamera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.906308, 0.422618, 0, -0.422618, 0.906308, 0, 2.5, 4)
+priority = 10
+fov = 75.0
+
+[node name="vCam_Focus" type="VirtualCamera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.984808, 0.173648, 0, -0.173648, 0.984808, 0.7, 1.2, 1.5)
+priority = 0
+fov = 40.0
+
+[node name="CameraBrain" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+use_vcam = true
+vcam_smoothing = 5.0

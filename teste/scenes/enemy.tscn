@@ -1,0 +1,51 @@
+[gd_scene load_steps=12 format=3 uid="uid://enemy_showcase"]
+
+[script_class name="Enemy" code="extends CharacterBody3D
+class_name Enemy
+
+@export var speed: float = 2.0
+@onready var asc: AbilitySystemComponent = $AbilitySystemComponent
+var target: Node3D = null
+
+func _physics_process(delta: float) -> void:
+    if target:
+        var dir = (target.global_position - global_position).normalized()
+        velocity = dir * speed
+        move_and_slide()
+        look_at(global_position + velocity, Vector3.UP)
+
+func _on_detection_area_body_entered(body: Node3D) -> void:
+    if body.is_in_group(\"player\"):
+        target = body
+
+func _on_detection_area_body_exited(body: Node3D) -> void:
+    if body == target:
+        target = null
+"]
+
+[node name="Enemy" type="CharacterBody3D"]
+collision_layer = 4
+collision_mask = 3
+script = SubResource("GDScript_1")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("BoxShape3D_1")
+
+[node name="Visuals" type="CSGCombiner3D" parent="."]
+
+[node name="Crystal" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0, 1, 0, 0.6, 0)
+size = Vector3(0.6, 0.6, 0.6)
+
+[node name="AbilitySystemComponent" type="AbilitySystemComponent" parent="."]
+
+[node name="DetectionArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea"]
+shape = SubResource("SphereShape3D_1")
+
+[connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
+[connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]

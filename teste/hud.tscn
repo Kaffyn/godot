@@ -1,0 +1,142 @@
+[gd_scene load_steps=3 format=3 uid="uid://hud_showcase"]
+
+[ext_resource type="Script" path="res://scripts/hud.gd" id="1_hud_script"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_hud_script")
+
+[node name="VirtualDevices" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="VirtualJoystick" type="VirtualJoystick" parent="VirtualDevices"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 50.0
+offset_top = -250.0
+offset_right = 250.0
+offset_bottom = -50.0
+grow_vertical = 0
+use_dynamic_radius = true
+action_left = "ui_left"
+action_right = "ui_right"
+action_up = "ui_up"
+action_down = "ui_down"
+
+[node name="VirtualTouchPad" type="VirtualTouchPad" parent="VirtualDevices"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -600.0
+offset_top = -500.0
+offset_right = -50.0
+offset_bottom = -50.0
+grow_horizontal = 0
+grow_vertical = 0
+sensitivity = 0.5
+
+[node name="AbilityButtons" type="Control" parent="VirtualDevices"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -300.0
+offset_top = -250.0
+offset_right = -50.0
+offset_bottom = -50.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="BtnDash" type="VirtualButton" parent="VirtualDevices/AbilityButtons"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 100.0
+offset_right = 100.0
+offset_bottom = 200.0
+action = "ability_1"
+
+[node name="BtnPulse" type="VirtualButton" parent="VirtualDevices/AbilityButtons"]
+layout_mode = 0
+offset_left = 120.0
+offset_top = 100.0
+offset_right = 220.0
+offset_bottom = 200.0
+action = "ability_2"
+
+[node name="InteractiveHUD" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="CharacterSheet" type="PanelContainer" parent="InteractiveHUD"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 320.0
+offset_bottom = 220.0
+
+[node name="VBox" type="VBoxContainer" parent="InteractiveHUD/CharacterSheet"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="InteractiveHUD/CharacterSheet/VBox"]
+layout_mode = 2
+text = "THE ALCHEMIST"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="InteractiveHUD/CharacterSheet/VBox"]
+layout_mode = 2
+
+[node name="PowerLabel" type="Label" parent="InteractiveHUD/CharacterSheet/VBox"]
+layout_mode = 2
+text = "Alchemic Power: 10"
+
+[node name="AttributesLabel" type="Label" parent="InteractiveHUD/CharacterSheet/VBox"]
+layout_mode = 2
+text = "Level: 1
+Status: Ready"
+
+[node name="PassiveHUD" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="StatusBars" type="VBoxContainer" parent="PassiveHUD"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 20.0
+offset_right = 200.0
+offset_bottom = 100.0
+grow_horizontal = 2
+
+[node name="HealthBar" type="ProgressBar" parent="PassiveHUD/StatusBars"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+value = 100.0
+
+[node name="StaminaBar" type="ProgressBar" parent="PassiveHUD/StatusBars"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+value = 100.0

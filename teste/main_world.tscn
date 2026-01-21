@@ -1,0 +1,62 @@
+[gd_scene load_steps=6 format=3 uid="uid://world_showcase"]
+
+[ext_resource type="PackedScene" uid="uid://dp6m6f6v1k6v" path="res://player.tscn" id="1_player"]
+[ext_resource type="PackedScene" uid="uid://hud_showcase" path="res://hud.tscn" id="2_hud"]
+[ext_resource type="PackedScene" uid="uid://goblin_scene" path="res://scenes/goblin.tscn" id="3_goblin"]
+[ext_resource type="PackedScene" uid="uid://enemy_showcase" path="res://scenes/enemy.tscn" id="4_crystal"]
+
+[node name="MainWorld" type="Node3D"]
+
+[node name="LSSRoot" type="LSSRoot" parent="."]
+
+[node name="Player" parent="." groups=["player"] instance=ExtResource("1_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+
+[node name="HUD" parent="." instance=ExtResource("2_hud")]
+
+[node name="Terrain" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="Ground" type="CSGBox3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+size = Vector3(100, 2, 100)
+
+[node name="MountainRange" type="Node3D" parent="Terrain"]
+
+[node name="Peak1" type="CSGPolygon3D" parent="Terrain/MountainRange"]
+transform = Transform3D(5, 0, 0, 0, 10, 0, 0, 0, 5, -20, 0, -20)
+polygon = PackedVector2Array(0, 0, 2, 0, 1, 2)
+mode = 1
+spin_degrees = 360.0
+spin_sides = 6
+
+[node name="Peak2" type="CSGPolygon3D" parent="Terrain/MountainRange"]
+transform = Transform3D(8, 0, 0, 0, 15, 0, 0, 0, 8, 30, 0, -10)
+polygon = PackedVector2Array(0, 0, 2, 0, 1, 2)
+mode = 1
+spin_degrees = 360.0
+spin_sides = 8
+
+[node name="RiverBed" type="CSGCylinder3D" parent="Terrain"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+operation = 2
+radius = 4.0
+height = 100.0
+sides = 12
+
+[node name="Enemies" type="Node3D" parent="."]
+
+[node name="Goblin1" parent="Enemies" instance=ExtResource("3_goblin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -5)
+
+[node name="Goblin2" parent="Enemies" instance=ExtResource("3_goblin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, -15)
+
+[node name="CrystalSpawn" parent="Enemies" instance=ExtResource("4_crystal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 10)
+
+[node name="Environment" type="Node3D" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 10, 0)
+shadow_enabled = true

@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://zone_forest"]
+
+[node name="ZoneForest" type="Node3D"]
+
+[node name="LSSZone" type="StreamingZone" parent="."]
+zone_id = "forest"
+auto_load = true
+
+[node name="Trees" type="Node3D" parent="."]
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Trees"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1, -5)
+use_collision = true
+radius = 0.5
+height = 3.0
+sides = 12

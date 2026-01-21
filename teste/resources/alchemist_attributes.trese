@@ -1,0 +1,8 @@
+extends Resource
+class_name AlchemistAttributeSet
+
+@export var health: float = 100.0
+@export var max_health: float = 100.0
+@export var stamina: float = 50.0
+@export var max_stamina: float = 50.0
+@export var alchemic_power: float = 10.0
