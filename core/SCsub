@@ -231,6 +231,8 @@ SConscript("string/SCsub")
 SConscript("config/SCsub")
 SConscript("error/SCsub")
 
+# Zyris Core Extensions
+env.add_source_files(env.core_sources, "zyris_tags.cpp")
 
 # Build it all as a library
 lib = env.add_library("core", env.core_sources)

@@ -38,29 +38,42 @@ class VirtualCamera3D : public Node3D {
 private:
 	int priority = 0;
 	real_t fov = 75.0;
-	real_t near_clip = 0.05;
-	real_t far_clip = 4000.0;
-	float blending_time = 0.5f;
+	real_t blending_time = 1.0;
+
+	// Avoidance System
+	bool enable_avoidance = false;
+	real_t avoidance_distance = 5.0;
+	uint32_t collision_mask = 1;
+	Vector3 compensated_position;
+	bool is_obstructed = false;
 
 protected:
-	void _notification(int p_what);
 	static void _bind_methods();
 
 public:
 	void set_priority(int p_priority);
-	int get_priority() const;
+	int get_priority() const { return priority; }
 
 	void set_fov(real_t p_fov);
-	real_t get_fov() const;
+	real_t get_fov() const { return fov; }
 
-	void set_near(real_t p_near);
-	real_t get_near() const;
+	void set_blending_time(real_t p_time);
+	real_t get_blending_time() const { return blending_time; }
 
-	void set_far(real_t p_far);
-	real_t get_far() const;
+	// Avoidance
+	void set_enable_avoidance(bool p_enable);
+	bool get_enable_avoidance() const { return enable_avoidance; }
 
-	void set_blending_time(float p_time);
-	float get_blending_time() const;
+	void set_avoidance_distance(real_t p_distance);
+	real_t get_avoidance_distance() const { return avoidance_distance; }
+
+	void set_collision_mask(uint32_t p_mask);
+	uint32_t get_collision_mask() const { return collision_mask; }
+
+	Vector3 get_compensated_position() const { return compensated_position; }
+	bool is_position_obstructed() const { return is_obstructed; }
+
+	void update_avoidance(const Vector3 &p_target_position);
 
 	VirtualCamera3D();
 };
