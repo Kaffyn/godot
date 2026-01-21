@@ -56,64 +56,24 @@ void VirtualCamera3D::set_priority(int p_priority) {
 	}
 }
 
-int VirtualCamera3D::get_priority() const {
-	return priority;
-}
-
 void VirtualCamera3D::set_fov(real_t p_fov) {
 	fov = p_fov;
-}
-
-real_t VirtualCamera3D::get_fov() const {
-	return fov;
-}
-
-void VirtualCamera3D::set_near(real_t p_near) {
-	near_clip = p_near;
-}
-
-real_t VirtualCamera3D::get_near() const {
-	return near_clip;
-}
-
-void VirtualCamera3D::set_far(real_t p_far) {
-	far_clip = p_far;
-}
-
-real_t VirtualCamera3D::get_far() const {
-	return far_clip;
 }
 
 void VirtualCamera3D::set_blending_time(float p_time) {
 	blending_time = p_time;
 }
 
-float VirtualCamera3D::get_blending_time() const {
-	return blending_time;
-}
-
 void VirtualCamera3D::set_enable_avoidance(bool p_enable) {
 	enable_avoidance = p_enable;
-}
-
-bool VirtualCamera3D::get_enable_avoidance() const {
-	return enable_avoidance;
 }
 
 void VirtualCamera3D::set_avoidance_distance(real_t p_distance) {
 	avoidance_distance = MAX(0.1, p_distance);
 }
 
-real_t VirtualCamera3D::get_avoidance_distance() const {
-	return avoidance_distance;
-}
-
 void VirtualCamera3D::set_collision_mask(uint32_t p_mask) {
 	collision_mask = p_mask;
-}
-
-uint32_t VirtualCamera3D::get_collision_mask() const {
-	return collision_mask;
 }
 
 void VirtualCamera3D::update_avoidance(const Vector3 &p_target_position) {
@@ -169,10 +129,6 @@ void VirtualCamera3D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_priority"), &VirtualCamera3D::get_priority);
 	ClassDB::bind_method(D_METHOD("set_fov", "fov"), &VirtualCamera3D::set_fov);
 	ClassDB::bind_method(D_METHOD("get_fov"), &VirtualCamera3D::get_fov);
-	ClassDB::bind_method(D_METHOD("set_near", "near"), &VirtualCamera3D::set_near);
-	ClassDB::bind_method(D_METHOD("get_near"), &VirtualCamera3D::get_near);
-	ClassDB::bind_method(D_METHOD("set_far", "far"), &VirtualCamera3D::set_far);
-	ClassDB::bind_method(D_METHOD("get_far"), &VirtualCamera3D::get_far);
 	ClassDB::bind_method(D_METHOD("set_blending_time", "time"), &VirtualCamera3D::set_blending_time);
 	ClassDB::bind_method(D_METHOD("get_blending_time"), &VirtualCamera3D::get_blending_time);
 
@@ -189,8 +145,6 @@ void VirtualCamera3D::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "priority"), "set_priority", "get_priority");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "fov", PROPERTY_HINT_RANGE, "1,179,0.1,degrees"), "set_fov", "get_fov");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "near", PROPERTY_HINT_RANGE, "0.001,10,0.001,or_greater,exp,suffix:m"), "set_near", "get_near");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "far", PROPERTY_HINT_RANGE, "0.01,4000,0.01,or_greater,exp,suffix:m"), "set_far", "get_far");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "blending_time", PROPERTY_HINT_RANGE, "0,10,0.01,suffix:s"), "set_blending_time", "get_blending_time");
 
 	ADD_GROUP("Avoidance", "avoidance_");
