@@ -33,6 +33,8 @@
 #include "core/templates/vset.h"
 #include "scene/3d/physics/collision_object_3d.h"
 
+class NeuralAgent;
+
 class Area3D : public CollisionObject3D {
 	GDCLASS(Area3D, CollisionObject3D);
 
@@ -142,6 +144,10 @@ private:
 
 	void _initialize_wind();
 
+	NodePath neural_agent_path;
+	NeuralAgent *neural_agent_cache = nullptr;
+	void _update_neural_agent_cache();
+
 protected:
 	void _notification(int p_what);
 	static void _bind_methods();
@@ -224,6 +230,9 @@ public:
 
 	void set_reverb_uniformity(float p_uniformity);
 	float get_reverb_uniformity() const;
+
+	void set_neural_agent_path(const NodePath &p_path);
+	NodePath get_neural_agent_path() const;
 
 	Area3D();
 	~Area3D();

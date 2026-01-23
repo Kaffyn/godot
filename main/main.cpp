@@ -98,6 +98,8 @@
 #include "servers/physics_server_3d_dummy.h"
 #endif // PHYSICS_3D_DISABLED
 
+#include "servers/neural_server.h"
+
 #ifndef XR_DISABLED
 #include "servers/xr_server.h"
 #endif // XR_DISABLED
@@ -4824,6 +4826,8 @@ bool Main::iteration() {
 #ifndef NAVIGATION_3D_DISABLED
 	NavigationServer3D::get_singleton()->process(process_step * time_scale);
 #endif // NAVIGATION_3D_DISABLED
+
+	NeuralServer::get_singleton()->update(process_step * time_scale);
 
 	RenderingServer::get_singleton()->sync(); //sync if still drawing from previous frames.
 

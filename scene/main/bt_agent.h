@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  inventory_server.cpp                                                  */
+/*  bt_agent.h                                                            */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,35 +28,39 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "inventory_server.h"
-#include "scene/resources/item_resource.h"
+#pragma once
 
-InventoryServer *InventoryServer::singleton = nullptr;
+#include "scene/main/node.h"
+#include "scene/resources/bt_node.h"
 
-InventoryServer *InventoryServer::get_singleton() {
-	return singleton;
-}
+class AbilitySystemComponent;
 
-bool InventoryServer::validate_transaction(Object *p_from, Object *p_to, Ref<ItemResource> p_item, int p_amount) {
-	// Logic to validate if item can be moved (weight, space, etc.)
-	return true;
-}
+class BTAgent : public Node {
+	GDCLASS(BTAgent, Node);
 
-void InventoryServer::execute_transaction(Object *p_from, Object *p_to, Ref<ItemResource> p_item, int p_amount) {
-	if (validate_transaction(p_from, p_to, p_item, p_amount)) {
-		// Logic to remove from p_from and add to p_to
-	}
-}
+	Ref<BTNode> root_node;
+	Dictionary blackboard;
+	AbilitySystemComponent *asc_cache = nullptr;
+	bool active = true;
 
-void InventoryServer::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("validate_transaction", "from", "to", "item", "amount"), &InventoryServer::validate_transaction);
-	ClassDB::bind_method(D_METHOD("execute_transaction", "from", "to", "item", "amount"), &InventoryServer::execute_transaction);
-}
+	void _update_asc_cache();
 
-InventoryServer::InventoryServer() {
-	singleton = this;
-}
+protected:
+	static void _bind_methods();
+	void _notification(int p_what);
 
-InventoryServer::~InventoryServer() {
-	singleton = nullptr;
-}
+public:
+	void set_root_node(const Ref<BTNode> &p_node);
+	Ref<BTNode> get_root_node() const;
+
+	void set_blackboard_value(const StringName &p_key, const Variant &p_value);
+	Variant get_blackboard_value(const StringName &p_key, const Variant &p_default = Variant()) const;
+
+	void set_active(bool p_active);
+	bool is_active() const;
+
+	AbilitySystemComponent *get_asc() const { return asc_cache; }
+	Vector3 get_agent_position() const;
+
+	BTAgent();
+};

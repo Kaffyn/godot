@@ -62,6 +62,7 @@
 #include "lss_server.h"
 #include "movie_writer/movie_writer.h"
 #include "movie_writer/movie_writer_pngwav.h"
+#include "neural_server.h"
 #include "rendering/renderer_rd/framebuffer_cache_rd.h"
 #include "rendering/renderer_rd/storage_rd/render_data_rd.h"
 #include "rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h"
@@ -115,6 +116,7 @@
 
 ShaderTypes *shader_types = nullptr;
 static LSSServer *lss_server = nullptr;
+static NeuralServer *neural_server = nullptr;
 
 #ifndef PHYSICS_2D_DISABLED
 static PhysicsServer2D *_create_dummy_physics_server_2d() {
@@ -167,6 +169,7 @@ void register_server_types() {
 	GDREGISTER_CLASS(InventoryServer);
 	GDREGISTER_CLASS(LSSServer);
 	GDREGISTER_CLASS(SaveServer);
+	GDREGISTER_CLASS(NeuralServer);
 
 	GDREGISTER_ABSTRACT_CLASS(RenderingDevice);
 
@@ -357,6 +360,7 @@ void register_server_types() {
 	}
 
 	lss_server = memnew(LSSServer);
+	neural_server = memnew(NeuralServer);
 
 	OS::get_singleton()->benchmark_end_measure("Servers", "Register Extensions");
 }
@@ -374,6 +378,10 @@ void unregister_server_types() {
 		memdelete(lss_server);
 	}
 
+	if (neural_server) {
+		memdelete(neural_server);
+	}
+
 	OS::get_singleton()->benchmark_end_measure("Servers", "Unregister Extensions");
 }
 
@@ -381,6 +389,7 @@ void register_server_singletons() {
 	OS::get_singleton()->benchmark_begin_measure("Servers", "Register Singletons");
 
 	Engine::get_singleton()->add_singleton(Engine::Singleton("Save", SaveServer::get_singleton(), "SaveServer"));
+	Engine::get_singleton()->add_singleton(Engine::Singleton("Neural", NeuralServer::get_singleton(), "NeuralServer"));
 	Engine::get_singleton()->add_singleton(Engine::Singleton("CameraServer", CameraServer::get_singleton(), "CameraServer"));
 	Engine::get_singleton()->add_singleton(Engine::Singleton("DisplayServer", DisplayServer::get_singleton(), "DisplayServer"));
 	Engine::get_singleton()->add_singleton(Engine::Singleton("NativeMenu", NativeMenu::get_singleton(), "NativeMenu"));

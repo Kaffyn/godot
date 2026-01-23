@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  inventory_server.cpp                                                  */
+/*  neural_model.h                                                        */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,35 +28,30 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "inventory_server.h"
-#include "scene/resources/item_resource.h"
+#pragma once
 
-InventoryServer *InventoryServer::singleton = nullptr;
+#include "core/io/resource.h"
 
-InventoryServer *InventoryServer::get_singleton() {
-	return singleton;
-}
+class NeuralModel : public Resource {
+	GDCLASS(NeuralModel, Resource);
 
-bool InventoryServer::validate_transaction(Object *p_from, Object *p_to, Ref<ItemResource> p_item, int p_amount) {
-	// Logic to validate if item can be moved (weight, space, etc.)
-	return true;
-}
+private:
+	PackedByteArray model_data;
+	String model_format = "ONNX";
+	Dictionary metadata;
 
-void InventoryServer::execute_transaction(Object *p_from, Object *p_to, Ref<ItemResource> p_item, int p_amount) {
-	if (validate_transaction(p_from, p_to, p_item, p_amount)) {
-		// Logic to remove from p_from and add to p_to
-	}
-}
+protected:
+	static void _bind_methods();
 
-void InventoryServer::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("validate_transaction", "from", "to", "item", "amount"), &InventoryServer::validate_transaction);
-	ClassDB::bind_method(D_METHOD("execute_transaction", "from", "to", "item", "amount"), &InventoryServer::execute_transaction);
-}
+public:
+	void set_model_data(const PackedByteArray &p_data);
+	PackedByteArray get_model_data() const;
 
-InventoryServer::InventoryServer() {
-	singleton = this;
-}
+	void set_model_format(const String &p_format);
+	String get_model_format() const;
 
-InventoryServer::~InventoryServer() {
-	singleton = nullptr;
-}
+	void set_metadata(const Dictionary &p_metadata);
+	Dictionary get_metadata() const;
+
+	NeuralModel();
+};

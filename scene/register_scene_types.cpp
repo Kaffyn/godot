@@ -35,6 +35,7 @@
 #include "core/object/class_db.h"
 #include "core/os/os.h"
 #include "scene/2d/virtual_camera_2d.h"
+#include "scene/3d/neural_emitter.h"
 #include "scene/3d/streaming_zone.h"
 #include "scene/3d/virtual_camera_3d.h"
 #include "scene/animation/animation_blend_space_1d.h"
@@ -104,6 +105,7 @@
 #include "scene/gui/virtual_joystick_dynamic.h"
 #include "scene/gui/virtual_touch_pad.h"
 #include "scene/main/ability_system_component.h"
+#include "scene/main/bt_agent.h"
 #include "scene/main/canvas_item.h"
 #include "scene/main/canvas_layer.h"
 #include "scene/main/http_request.h"
@@ -112,6 +114,7 @@
 #include "scene/main/lss_root.h"
 #include "scene/main/missing_node.h"
 #include "scene/main/multiplayer_api.h"
+#include "scene/main/neural_agent.h"
 #include "scene/main/resource_preloader.h"
 #include "scene/main/scene_tree.h"
 #include "scene/main/shader_globals_override.h"
@@ -125,6 +128,7 @@
 #include "scene/resources/audio_stream_wav.h"
 #include "scene/resources/bit_map.h"
 #include "scene/resources/bone_map.h"
+#include "scene/resources/bt_node.h"
 #include "scene/resources/camera_attributes.h"
 #include "scene/resources/camera_texture.h"
 #include "scene/resources/canvas_item_material.h"
@@ -145,6 +149,7 @@
 #include "scene/resources/mesh_data_tool.h"
 #include "scene/resources/mesh_texture.h"
 #include "scene/resources/multimesh.h"
+#include "scene/resources/neural_model.h"
 #include "scene/resources/transition_profile.h"
 #include "scene/resources/universe_state.h"
 #if !defined(NAVIGATION_2D_DISABLED) || !defined(NAVIGATION_3D_DISABLED)
@@ -1084,6 +1089,20 @@ void register_scene_types() {
 
 	GDREGISTER_CLASS(Animation);
 	GDREGISTER_CLASS(AnimationLibrary);
+
+	GDREGISTER_CLASS(NeuralModel);
+	GDREGISTER_CLASS(NeuralAgent);
+	GDREGISTER_CLASS(NeuralEmitter);
+
+	GDREGISTER_CLASS(BTNode);
+	GDREGISTER_ABSTRACT_CLASS(BTLeaf);
+	GDREGISTER_ABSTRACT_CLASS(BTDecorator);
+	GDREGISTER_ABSTRACT_CLASS(BTComposite);
+	GDREGISTER_CLASS(BTSequence);
+	GDREGISTER_CLASS(BTSelector);
+	GDREGISTER_CLASS(BTCheckPerception);
+	GDREGISTER_CLASS(BTActionAbility);
+	GDREGISTER_CLASS(BTAgent);
 
 	GDREGISTER_CLASS(UniverseState);
 	GDREGISTER_CLASS(TransitionProfile);

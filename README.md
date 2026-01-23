@@ -67,6 +67,38 @@ Zyris is implementing a comprehensive set of systems. Below is our development r
 
 ### In Development
 
+- [ ] **Neural System** - Integrated Cognition & Perception Engine
+
+  A unified infrastructure for AI perception and cognition, integrated directly into Godot's native spatial and physics systems.
+
+  **Core Components:**
+  - `NeuralServer` - High-performance singleton for stimulus management and spatial querying.
+  - `NeuralAgent` - The "Brain" of an entity, performing sensor fusion from multiple inputs.
+  - `NeuralEmitter` - A source of semantic stimuli (Visual, Auditory, etc.) using `GameplayTags`.
+
+  **Key Features:**
+  - **Deep Node Integration** - Native `RayCast3D`, `Area3D`, and `AudioListener3D` extended to act as smart neural sensors.
+  - **Sensor Fusion Architecture** - Agents automatically aggregate data from all child sensors into a unified context.
+  - **Semantic Perception** - Stimuli carry qualitative data (e.g., `Danger`, `Ally`) via the tag system.
+  - **Spatial Optimization** - High-speed BVH-based queries for environmental awareness.
+  - **Stimulus Cycle Management** - Automatic aging and expiration of transient stimuli (sounds, visual cues) within the engine loop.
+
+- [ ] **Behavior Tree System** - Hybrid AI Architecture
+
+  A high-performance Behavior Tree implementation designed for native synergy with perception and gameplay mechanics.
+
+  **Structural Nodes:**
+  - `BTAgent` - Execution host with integrated short-term memory (`Blackboard`).
+  - `BTSequence` / `BTSelector` - Core control flow composites.
+  - `BTDecorator` - Conditional wrappers and logic modifiers.
+
+  **Key Features:**
+  - **Hybrid Dependency** - Native integration with `NeuralServer` for perception and `AbilitySystemComponent` (GAS) for action.
+  - **Perception-Driven Logic** - `BTCheckPerception` node allows trees to react instantly to environment stimuli.
+  - **GAS Action Execution** - `BTActionAbility` leaf node triggers complex Gameplay Abilities directly.
+  - **Deterministic Execution** - Optimized C++ traversal for consistent AI behavior.
+  - **Scalable Blackboard** - Dictionary-based persistent state management per agent.
+
 - [ ] **Resource Editor & Library** - Advanced data composition tools
 
   A dedicated workspace in the Main Panel for editing Resources, treating data as first-class citizens alongside Scripts and Scenes.
@@ -110,25 +142,12 @@ Zyris is implementing a comprehensive set of systems. Below is our development r
 
 ### Planned Core Systems
 
-- [ ] **Perception System** - Advanced perception engine
-  - Physics backend integration
-  - Multi-sensory stimulus system (Visual, Auditory, Olfactory, Thermal)
-  - Spatial optimization via BVH
-  - Blackboard memory integration
-
 - [ ] **Environmental System** - Systemic weather and environment simulation
   - Global wetness and wind simulation
   - Temperature and survival mechanics
   - Biome-based weather systems
   - Day/night cycle with astronomical simulation
   - Shader integration for atmospheric effects
-
-- [ ] **Behavior Tree System** - Hybrid AI system
-  - Visual editor (Main Panel)
-  - Reinforcement Learning training pipeline (Python backend)
-  - AI integration for adaptive difficulty
-  - Multi-threaded execution
-  - Deterministic multiplayer support
 
 - [ ] **Camera System** - Advanced camera management
   - Virtual camera architecture (Cinemachine-inspired)

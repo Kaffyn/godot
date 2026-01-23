@@ -67,6 +67,38 @@ O Zyris está implementando um conjunto abrangente de sistemas. Abaixo está nos
 
 ### Em Desenvolvimento
 
+- [ ] **Sistema Neural** - Engine Integrada de Cognição e Percepção
+
+  Uma infraestrutura unificada para percepção e cognição de IA, integrada diretamente aos sistemas nativos de física e espacial da Godot.
+
+  **Componentes Core:**
+  - `NeuralServer` - Singleton de alta performance para gestão de estímulos e consultas espaciais.
+  - `NeuralAgent` - O "Cérebro" de uma entidade, realizando a fusão sensorial de múltiplos inputs.
+  - `NeuralEmitter` - Uma fonte de estímulos semânticos (Visual, Auditivo, etc.) usando `GameplayTags`.
+
+  **Recursos Principais:**
+  - **Integração Profunda de Nós** - Nós nativos `RayCast3D`, `Area3D` e `AudioListener3D` estendidos para atuar como sensores neurais inteligentes.
+  - **Arquitetura de Fusão Sensorial** - Agentes agregam automaticamente dados de todos os sensores filhos em um contexto unificado.
+  - **Percepção Semântica** - Estímulos carregam dados qualitativos (ex: `Perigo`, `Aliado`) via sistema de tags.
+  - **Otimização Espacial** - Consultas baseadas em BVH de alta velocidade para consciência ambiental.
+  - **Gestão de Ciclo de Estímulos** - Envelhecimento e expiração automática de estímulos transientes (sons, pistas visuais) no loop da engine.
+
+- [ ] **Behavior Tree System** - Arquitetura de IA Híbrida
+
+  Uma implementação de Behavior Tree de alta performance projetada para sinergia nativa com percepção e mecânicas de gameplay.
+
+  **Nós Estruturais:**
+  - `BTAgent` - Host de execução com memória de curto prazo integrada (`Blackboard`).
+  - `BTSequence` / `BTSelector` - Compostos core de fluxo de controle.
+  - `BTDecorator` - Wrappers condicionais e modificadores de lógica.
+
+  **Recursos Principais:**
+  - **Dependência Híbrida** - Integração nativa com `NeuralServer` para percepção e `AbilitySystemComponent` (GAS) para ação.
+  - **Lógica Orientada a Percepção** - Nó `BTCheckPerception` permite que as árvores reajam instantaneamente a estímulos do ambiente.
+  - **Execução de Ações GAS** - Nó folha `BTActionAbility` dispara Gameplay Abilities complexas diretamente.
+  - **Execução Determinística** - Travessia em C++ otimizada para comportamento de IA consistente.
+  - **Blackboard Escalável** - Gestão de estado persistente baseado em dicionário por agente.
+
 - [ ] **Editor de Recursos & Biblioteca** - Ferramentas avançadas de composição de dados
 
   Um espaço de trabalho dedicado no Painel Principal para edição de Resources, tratando dados como cidadãos de primeira classe ao lado de Scripts e Cenas.
@@ -110,25 +142,12 @@ O Zyris está implementando um conjunto abrangente de sistemas. Abaixo está nos
 
 ### Sistemas Core Planejados
 
-- [ ] **Perception System** - Engine de percepção avançada
-  - Integração com backend de física
-  - Sistema de estímulos multi-sensoriais (Visual, Auditivo, Olfativo, Térmico)
-  - Otimização espacial via BVH
-  - Integração com memória Blackboard
-
 - [ ] **Environmental System** - Simulação sistêmica de clima e ambiente
   - Simulação global de umidade e vento
   - Mecânicas de temperatura e sobrevivência
   - Sistemas de clima baseados em biomas
   - Ciclo dia/noite com simulação astronômica
   - Integração de shaders para efeitos atmosféricos
-
-- [ ] **Behavior Tree System** - Sistema de IA híbrido
-  - Editor visual (Painel Principal)
-  - Pipeline de treinamento via Reinforcement Learning (backend em Python)
-  - Integração de IA para dificuldade adaptativa
-  - Execução multi-thread
-  - Suporte a multiplayer determinístico
 
 - [ ] **Camera System** - Gerenciamento avançado de câmera
   - Arquitetura de câmera virtual (inspirada em Cinemachine)

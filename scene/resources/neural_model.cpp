@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  inventory_server.cpp                                                  */
+/*  neural_model.cpp                                                      */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,35 +28,44 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "inventory_server.h"
-#include "scene/resources/item_resource.h"
+#include "neural_model.h"
 
-InventoryServer *InventoryServer::singleton = nullptr;
-
-InventoryServer *InventoryServer::get_singleton() {
-	return singleton;
+void NeuralModel::set_model_data(const PackedByteArray &p_data) {
+	model_data = p_data;
 }
 
-bool InventoryServer::validate_transaction(Object *p_from, Object *p_to, Ref<ItemResource> p_item, int p_amount) {
-	// Logic to validate if item can be moved (weight, space, etc.)
-	return true;
+PackedByteArray NeuralModel::get_model_data() const {
+	return model_data;
 }
 
-void InventoryServer::execute_transaction(Object *p_from, Object *p_to, Ref<ItemResource> p_item, int p_amount) {
-	if (validate_transaction(p_from, p_to, p_item, p_amount)) {
-		// Logic to remove from p_from and add to p_to
-	}
+void NeuralModel::set_model_format(const String &p_format) {
+	model_format = p_format;
 }
 
-void InventoryServer::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("validate_transaction", "from", "to", "item", "amount"), &InventoryServer::validate_transaction);
-	ClassDB::bind_method(D_METHOD("execute_transaction", "from", "to", "item", "amount"), &InventoryServer::execute_transaction);
+String NeuralModel::get_model_format() const {
+	return model_format;
 }
 
-InventoryServer::InventoryServer() {
-	singleton = this;
+void NeuralModel::set_metadata(const Dictionary &p_metadata) {
+	metadata = p_metadata;
 }
 
-InventoryServer::~InventoryServer() {
-	singleton = nullptr;
+Dictionary NeuralModel::get_metadata() const {
+	return metadata;
+}
+
+void NeuralModel::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("set_model_data", "data"), &NeuralModel::set_model_data);
+	ClassDB::bind_method(D_METHOD("get_model_data"), &NeuralModel::get_model_data);
+	ClassDB::bind_method(D_METHOD("set_model_format", "format"), &NeuralModel::set_model_format);
+	ClassDB::bind_method(D_METHOD("get_model_format"), &NeuralModel::get_model_format);
+	ClassDB::bind_method(D_METHOD("set_metadata", "metadata"), &NeuralModel::set_metadata);
+	ClassDB::bind_method(D_METHOD("get_metadata"), &NeuralModel::get_metadata);
+
+	ADD_PROPERTY(PropertyInfo(Variant::PACKED_BYTE_ARRAY, "model_data", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR), "set_model_data", "get_model_data");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "model_format"), "set_model_format", "get_model_format");
+	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "metadata"), "set_metadata", "get_metadata");
+}
+
+NeuralModel::NeuralModel() {
 }

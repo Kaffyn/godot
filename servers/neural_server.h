@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  inventory_server.cpp                                                  */
+/*  neural_server.h                                                       */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,35 +28,74 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "inventory_server.h"
-#include "scene/resources/item_resource.h"
+#pragma once
 
-InventoryServer *InventoryServer::singleton = nullptr;
+#include "core/object/class_db.h"
+#include "core/object/object.h"
+#include "core/templates/hash_map.h"
+#include "core/templates/list.h"
+#include "core/templates/local_vector.h"
+#include "core/templates/vector.h"
+#include "core/variant/variant.h"
 
-InventoryServer *InventoryServer::get_singleton() {
-	return singleton;
-}
+// Forward declarations
+class NeuralAgent;
 
-bool InventoryServer::validate_transaction(Object *p_from, Object *p_to, Ref<ItemResource> p_item, int p_amount) {
-	// Logic to validate if item can be moved (weight, space, etc.)
-	return true;
-}
+struct NeuralStimulus {
+	enum Type {
+		STIMULUS_VISUAL,
+		STIMULUS_AUDITORY,
+		STIMULUS_OLFACTORY,
+		STIMULUS_THERMAL,
+		STIMULUS_VIBRATIONAL,
+		STIMULUS_MAX
+	};
 
-void InventoryServer::execute_transaction(Object *p_from, Object *p_to, Ref<ItemResource> p_item, int p_amount) {
-	if (validate_transaction(p_from, p_to, p_item, p_amount)) {
-		// Logic to remove from p_from and add to p_to
-	}
-}
+	Type type = STIMULUS_VISUAL;
+	Vector3 position;
+	real_t intensity = 1.0;
+	StringName faction;
+	PackedStringArray tags;
+	ObjectID emitter_id;
+	real_t lifetime = 0.0; // 0 = transient (1 frame)
+};
 
-void InventoryServer::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("validate_transaction", "from", "to", "item", "amount"), &InventoryServer::validate_transaction);
-	ClassDB::bind_method(D_METHOD("execute_transaction", "from", "to", "item", "amount"), &InventoryServer::execute_transaction);
-}
+class NeuralServer : public Object {
+	GDCLASS(NeuralServer, Object);
 
-InventoryServer::InventoryServer() {
-	singleton = this;
-}
+public:
+	typedef NeuralStimulus::Type StimulusType;
+	typedef NeuralStimulus Stimulus;
 
-InventoryServer::~InventoryServer() {
-	singleton = nullptr;
-}
+	static NeuralServer *singleton;
+
+private:
+	HashMap<ObjectID, Vector<Stimulus>> active_stimuli;
+	Vector<NeuralAgent *> registered_agents;
+
+protected:
+	static void _bind_methods();
+
+public:
+	static NeuralServer *get_singleton();
+
+	// Perception API
+	void emit_stimulus(const Stimulus &p_stimulus);
+	Vector<Stimulus> query_stimuli(const Vector3 &p_position, real_t p_radius, uint32_t p_type_mask = 0xFFFFFFFF);
+
+	// Agent Registry
+	void register_agent(NeuralAgent *p_agent);
+	void unregister_agent(NeuralAgent *p_agent);
+
+	// Inference API
+	void request_inference(ObjectID p_agent_id, const String &p_model_path, const Dictionary &p_inputs);
+
+	void update(double p_delta);
+
+	NeuralServer();
+	~NeuralServer();
+};
+
+VARIANT_ENUM_CAST(NeuralServer::StimulusType);
+
+#define Neural NeuralServer::get_singleton()

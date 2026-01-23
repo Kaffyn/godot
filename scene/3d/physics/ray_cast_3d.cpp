@@ -30,7 +30,10 @@
 
 #include "ray_cast_3d.h"
 
+#include "scene/3d/neural_emitter.h"
 #include "scene/3d/physics/collision_object_3d.h"
+#include "scene/main/neural_agent.h"
+#include "servers/neural_server.h"
 
 void RayCast3D::set_target_position(const Vector3 &p_point) {
 	target_position = p_point;
@@ -178,6 +181,7 @@ void RayCast3D::_notification(int p_what) {
 					exclude.erase(Object::cast_to<CollisionObject3D>(get_parent())->get_rid());
 				}
 			}
+			_update_neural_agent_cache();
 		} break;
 
 		case NOTIFICATION_EXIT_TREE: {
@@ -209,6 +213,34 @@ void RayCast3D::_notification(int p_what) {
 				}
 				if (is_inside_tree() && debug_instance.is_valid()) {
 					RenderingServer::get_singleton()->instance_set_transform(debug_instance, get_global_transform());
+				}
+			}
+
+			if (!neural_agent_path.is_empty() && collided) {
+				if (!neural_agent_cache) {
+					_update_neural_agent_cache();
+				}
+
+				if (neural_agent_cache) {
+					Object *obj = get_collider();
+					Node *collider_node = Object::cast_to<Node>(obj);
+					if (collider_node) {
+						for (int i = 0; i < collider_node->get_child_count(); i++) {
+							NeuralEmitter *emitter = Object::cast_to<NeuralEmitter>(collider_node->get_child(i));
+							if (emitter && emitter->is_active()) {
+								NeuralServer::Stimulus S;
+								S.type = emitter->get_stimulus_type();
+								S.position = collision_point;
+								S.intensity = emitter->get_intensity();
+								S.faction = emitter->get_faction();
+								S.tags = emitter->get_tags();
+								S.emitter_id = emitter->get_instance_id();
+
+								neural_agent_cache->add_stimulus(S);
+								break;
+							}
+						}
+					}
 				}
 			}
 		} break;
@@ -387,6 +419,11 @@ void RayCast3D::_bind_methods() {
 	ADD_GROUP("Debug Shape", "debug_shape");
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "debug_shape_custom_color"), "set_debug_shape_custom_color", "get_debug_shape_custom_color");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "debug_shape_thickness", PROPERTY_HINT_RANGE, "1,5"), "set_debug_shape_thickness", "get_debug_shape_thickness");
+
+	ADD_GROUP("Neural", "neural_");
+	ClassDB::bind_method(D_METHOD("set_neural_agent_path", "path"), &RayCast3D::set_neural_agent_path);
+	ClassDB::bind_method(D_METHOD("get_neural_agent_path"), &RayCast3D::get_neural_agent_path);
+	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "neural_agent_path"), "set_neural_agent_path", "get_neural_agent_path");
 }
 
 int RayCast3D::get_debug_shape_thickness() const {
@@ -554,6 +591,23 @@ void RayCast3D::_clear_debug_shape() {
 		RenderingServer::get_singleton()->free(debug_mesh->get_rid());
 		debug_mesh = Ref<ArrayMesh>();
 	}
+}
+
+void RayCast3D::set_neural_agent_path(const NodePath &p_path) {
+	neural_agent_path = p_path;
+	neural_agent_cache = nullptr;
+}
+
+NodePath RayCast3D::get_neural_agent_path() const {
+	return neural_agent_path;
+}
+
+void RayCast3D::_update_neural_agent_cache() {
+	if (!is_inside_tree()) {
+		return;
+	}
+	Node *n = get_node_or_null(neural_agent_path);
+	neural_agent_cache = Object::cast_to<NeuralAgent>(n);
 }
 
 RayCast3D::RayCast3D() {

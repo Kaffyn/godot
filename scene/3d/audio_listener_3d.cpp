@@ -30,7 +30,9 @@
 
 #include "audio_listener_3d.h"
 
+#include "scene/main/neural_agent.h"
 #include "scene/main/viewport.h"
+#include "servers/neural_server.h"
 
 void AudioListener3D::_update_audio_listener_state() {
 }
@@ -79,6 +81,12 @@ void AudioListener3D::_update_listener() {
 
 void AudioListener3D::_notification(int p_what) {
 	switch (p_what) {
+		case NOTIFICATION_ENTER_TREE: {
+			scenario_id = get_world_3d()->get_scenario();
+			_update_listener();
+			_update_neural_agent_cache();
+		} break;
+
 		case NOTIFICATION_ENTER_WORLD: {
 			bool first_listener = get_viewport()->_audio_listener_3d_add(this);
 			if (!is_part_of_edited_scene() && (current || first_listener)) {
@@ -90,6 +98,23 @@ void AudioListener3D::_notification(int p_what) {
 			_request_listener_update();
 			if (doppler_tracking != DOPPLER_TRACKING_DISABLED) {
 				velocity_tracker->update_position(get_global_transform().origin);
+			}
+		} break;
+
+		case NOTIFICATION_INTERNAL_PHYSICS_PROCESS: {
+			if (neural_agent_path.is_empty()) {
+				break;
+			}
+
+			if (!neural_agent_cache) {
+				_update_neural_agent_cache();
+			}
+
+			if (neural_agent_cache) {
+				Vector<NeuralServer::Stimulus> stimuli = NeuralServer::get_singleton()->query_stimuli(get_global_position(), hearing_range, 1 << NeuralStimulus::STIMULUS_AUDITORY);
+				for (int i = 0; i < stimuli.size(); i++) {
+					neural_agent_cache->add_stimulus(stimuli[i]);
+				}
 			}
 		} break;
 
@@ -105,6 +130,11 @@ void AudioListener3D::_notification(int p_what) {
 			}
 
 			get_viewport()->_audio_listener_3d_remove(this);
+		} break;
+
+		case NOTIFICATION_EXIT_TREE: {
+			scenario_id = RID();
+			set_physics_process_internal(false);
 		} break;
 	}
 }
@@ -169,7 +199,17 @@ void AudioListener3D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_doppler_tracking", "mode"), &AudioListener3D::set_doppler_tracking);
 	ClassDB::bind_method(D_METHOD("get_doppler_tracking"), &AudioListener3D::get_doppler_tracking);
 
+	ClassDB::bind_method(D_METHOD("set_neural_agent_path", "path"), &AudioListener3D::set_neural_agent_path);
+	ClassDB::bind_method(D_METHOD("get_neural_agent_path"), &AudioListener3D::get_neural_agent_path);
+
+	ClassDB::bind_method(D_METHOD("set_hearing_range", "range"), &AudioListener3D::set_hearing_range);
+	ClassDB::bind_method(D_METHOD("get_hearing_range"), &AudioListener3D::get_hearing_range);
+
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "doppler_tracking", PROPERTY_HINT_ENUM, "Disabled,Idle,Physics"), "set_doppler_tracking", "get_doppler_tracking");
+
+	ADD_GROUP("Neural", "neural_");
+	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "neural_agent_path"), "set_neural_agent_path", "get_neural_agent_path");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "neural_hearing_range", PROPERTY_HINT_RANGE, "0,1000,0.1,or_greater"), "set_hearing_range", "get_hearing_range");
 
 	BIND_ENUM_CONSTANT(DOPPLER_TRACKING_DISABLED);
 	BIND_ENUM_CONSTANT(DOPPLER_TRACKING_IDLE_STEP);
@@ -190,4 +230,30 @@ AudioListener3D::AudioListener3D() {
 }
 
 AudioListener3D::~AudioListener3D() {
+}
+
+void AudioListener3D::set_neural_agent_path(const NodePath &p_path) {
+	neural_agent_path = p_path;
+	neural_agent_cache = nullptr;
+	set_physics_process_internal(!neural_agent_path.is_empty());
+}
+
+NodePath AudioListener3D::get_neural_agent_path() const {
+	return neural_agent_path;
+}
+
+void AudioListener3D::set_hearing_range(float p_range) {
+	hearing_range = p_range;
+}
+
+float AudioListener3D::get_hearing_range() const {
+	return hearing_range;
+}
+
+void AudioListener3D::_update_neural_agent_cache() {
+	if (!is_inside_tree()) {
+		return;
+	}
+	Node *n = get_node_or_null(neural_agent_path);
+	neural_agent_cache = Object::cast_to<NeuralAgent>(n);
 }

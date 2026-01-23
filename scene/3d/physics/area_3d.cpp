@@ -29,8 +29,10 @@
 /**************************************************************************/
 
 #include "area_3d.h"
-
+#include "scene/3d/neural_emitter.h"
+#include "scene/main/neural_agent.h"
 #include "servers/audio_server.h"
+#include "servers/neural_server.h"
 
 void Area3D::set_gravity_space_override_mode(SpaceOverride p_mode) {
 	gravity_space_override = p_mode;
@@ -371,6 +373,69 @@ void Area3D::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE: {
 			_initialize_wind();
+			_update_neural_agent_cache();
+		} break;
+
+		case NOTIFICATION_INTERNAL_PHYSICS_PROCESS: {
+			if (neural_agent_path.is_empty()) {
+				break;
+			}
+
+			if (!neural_agent_cache) {
+				_update_neural_agent_cache();
+			}
+
+			if (neural_agent_cache) {
+				// Process overlapping bodies
+				for (const KeyValue<ObjectID, BodyState> &E : body_map) {
+					if (!E.value.in_tree) {
+						continue;
+					}
+					Object *obj = ObjectDB::get_instance(E.key);
+					Node *node = Object::cast_to<Node>(obj);
+					if (node) {
+						for (int i = 0; i < node->get_child_count(); i++) {
+							NeuralEmitter *emitter = Object::cast_to<NeuralEmitter>(node->get_child(i));
+							if (emitter && emitter->is_active()) {
+								NeuralServer::Stimulus S;
+								S.type = emitter->get_stimulus_type();
+								S.position = emitter->get_global_position();
+								S.intensity = emitter->get_intensity();
+								S.faction = emitter->get_faction();
+								S.tags = emitter->get_tags();
+								S.emitter_id = emitter->get_instance_id();
+
+								neural_agent_cache->add_stimulus(S);
+							}
+						}
+					}
+				}
+
+				// Process overlapping areas
+				for (const KeyValue<ObjectID, AreaState> &E : area_map) {
+					if (!E.value.in_tree) {
+						continue;
+					}
+					Object *obj = ObjectDB::get_instance(E.key);
+					Node *node = Object::cast_to<Node>(obj);
+					if (node) {
+						for (int i = 0; i < node->get_child_count(); i++) {
+							NeuralEmitter *emitter = Object::cast_to<NeuralEmitter>(node->get_child(i));
+							if (emitter && emitter->is_active()) {
+								NeuralServer::Stimulus S;
+								S.type = emitter->get_stimulus_type();
+								S.position = emitter->get_global_position();
+								S.intensity = emitter->get_intensity();
+								S.faction = emitter->get_faction();
+								S.tags = emitter->get_tags();
+								S.emitter_id = emitter->get_instance_id();
+
+								neural_agent_cache->add_stimulus(S);
+							}
+						}
+					}
+				}
+			}
 		} break;
 	}
 }
@@ -644,6 +709,24 @@ float Area3D::get_reverb_uniformity() const {
 	return reverb_uniformity;
 }
 
+void Area3D::set_neural_agent_path(const NodePath &p_path) {
+	neural_agent_path = p_path;
+	neural_agent_cache = nullptr;
+	set_physics_process_internal(!neural_agent_path.is_empty());
+}
+
+NodePath Area3D::get_neural_agent_path() const {
+	return neural_agent_path;
+}
+
+void Area3D::_update_neural_agent_cache() {
+	if (!is_inside_tree()) {
+		return;
+	}
+	Node *n = get_node_or_null(neural_agent_path);
+	neural_agent_cache = Object::cast_to<NeuralAgent>(n);
+}
+
 void Area3D::_validate_property(PropertyInfo &p_property) const {
 	if (!Engine::get_singleton()->is_editor_hint()) {
 		return;
@@ -711,9 +794,6 @@ void Area3D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_angular_damp", "angular_damp"), &Area3D::set_angular_damp);
 	ClassDB::bind_method(D_METHOD("get_angular_damp"), &Area3D::get_angular_damp);
-
-	ClassDB::bind_method(D_METHOD("set_linear_damp", "linear_damp"), &Area3D::set_linear_damp);
-	ClassDB::bind_method(D_METHOD("get_linear_damp"), &Area3D::get_linear_damp);
 
 	ClassDB::bind_method(D_METHOD("set_priority", "priority"), &Area3D::set_priority);
 	ClassDB::bind_method(D_METHOD("get_priority"), &Area3D::get_priority);
@@ -798,6 +878,11 @@ void Area3D::_bind_methods() {
 	ADD_GROUP("Audio Bus", "audio_bus_");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "audio_bus_override"), "set_audio_bus_override", "is_overriding_audio_bus");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "audio_bus_name", PROPERTY_HINT_ENUM, ""), "set_audio_bus_name", "get_audio_bus_name");
+
+	ADD_GROUP("Neural", "neural_");
+	ClassDB::bind_method(D_METHOD("set_neural_agent_path", "path"), &Area3D::set_neural_agent_path);
+	ClassDB::bind_method(D_METHOD("get_neural_agent_path"), &Area3D::get_neural_agent_path);
+	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "neural_agent_path"), "set_neural_agent_path", "get_neural_agent_path");
 
 	ADD_GROUP("Reverb Bus", "reverb_bus_");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "reverb_bus_enabled"), "set_use_reverb_bus", "is_using_reverb_bus");

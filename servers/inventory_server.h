@@ -32,7 +32,7 @@
 
 #include "core/object/class_db.h"
 #include "core/object/object.h"
-#include "core/templates/hash_map.h"
+#include "scene/resources/item_resource.h"
 
 class ItemResource;
 

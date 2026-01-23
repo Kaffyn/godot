@@ -48,6 +48,7 @@ private:
 	bool is_obstructed = false;
 
 protected:
+	void _notification(int p_what);
 	static void _bind_methods();
 
 public:

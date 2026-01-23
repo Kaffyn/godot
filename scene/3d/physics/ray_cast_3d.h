@@ -33,6 +33,7 @@
 #include "scene/3d/node_3d.h"
 
 class CollisionObject3D;
+class NeuralAgent;
 
 class RayCast3D : public Node3D {
 	GDCLASS(RayCast3D, Node3D);
@@ -72,6 +73,10 @@ class RayCast3D : public Node3D {
 
 	RID debug_instance;
 	Ref<ArrayMesh> debug_mesh;
+
+	NodePath neural_agent_path;
+	NeuralAgent *neural_agent_cache = nullptr;
+	void _update_neural_agent_cache();
 
 protected:
 	void _notification(int p_what);
@@ -131,6 +136,9 @@ public:
 	void remove_exception_rid(const RID &p_rid);
 	void remove_exception(const CollisionObject3D *p_node);
 	void clear_exceptions();
+
+	void set_neural_agent_path(const NodePath &p_path);
+	NodePath get_neural_agent_path() const;
 
 	RayCast3D();
 };

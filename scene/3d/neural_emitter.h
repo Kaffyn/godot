@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  inventory_server.cpp                                                  */
+/*  neural_emitter.h                                                      */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,35 +28,44 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "inventory_server.h"
-#include "scene/resources/item_resource.h"
+#pragma once
 
-InventoryServer *InventoryServer::singleton = nullptr;
+#include "../../servers/neural_server.h"
+#include "scene/3d/node_3d.h"
 
-InventoryServer *InventoryServer::get_singleton() {
-	return singleton;
-}
+class NeuralEmitter : public Node3D {
+	GDCLASS(NeuralEmitter, Node3D);
 
-bool InventoryServer::validate_transaction(Object *p_from, Object *p_to, Ref<ItemResource> p_item, int p_amount) {
-	// Logic to validate if item can be moved (weight, space, etc.)
-	return true;
-}
+private:
+	NeuralServer::StimulusType type = NeuralStimulus::STIMULUS_VISUAL;
+	real_t intensity = 1.0;
+	StringName faction;
+	PackedStringArray tags;
+	bool active = true;
+	real_t pulse_interval = 0.0; // 0 = continuous
+	double time_since_pulse = 0.0;
 
-void InventoryServer::execute_transaction(Object *p_from, Object *p_to, Ref<ItemResource> p_item, int p_amount) {
-	if (validate_transaction(p_from, p_to, p_item, p_amount)) {
-		// Logic to remove from p_from and add to p_to
-	}
-}
+protected:
+	void _notification(int p_what);
+	static void _bind_methods();
 
-void InventoryServer::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("validate_transaction", "from", "to", "item", "amount"), &InventoryServer::validate_transaction);
-	ClassDB::bind_method(D_METHOD("execute_transaction", "from", "to", "item", "amount"), &InventoryServer::execute_transaction);
-}
+public:
+	void set_stimulus_type(NeuralServer::StimulusType p_type);
+	NeuralServer::StimulusType get_stimulus_type() const;
 
-InventoryServer::InventoryServer() {
-	singleton = this;
-}
+	void set_intensity(real_t p_intensity);
+	real_t get_intensity() const;
 
-InventoryServer::~InventoryServer() {
-	singleton = nullptr;
-}
+	void set_faction(const StringName &p_faction);
+	StringName get_faction() const;
+
+	void set_tags(const PackedStringArray &p_tags);
+	PackedStringArray get_tags() const;
+
+	void set_active(bool p_active);
+	bool is_active() const;
+
+	void emit();
+
+	NeuralEmitter();
+};

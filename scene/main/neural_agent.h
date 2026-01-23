@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  inventory_server.cpp                                                  */
+/*  neural_agent.h                                                        */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,35 +28,40 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "inventory_server.h"
-#include "scene/resources/item_resource.h"
+#pragma once
 
-InventoryServer *InventoryServer::singleton = nullptr;
+#include "../../servers/neural_server.h"
+#include "core/variant/array.h"
+#include "core/variant/dictionary.h"
+#include "scene/main/node.h"
 
-InventoryServer *InventoryServer::get_singleton() {
-	return singleton;
-}
+class NeuralAgent : public Node {
+	GDCLASS(NeuralAgent, Node);
 
-bool InventoryServer::validate_transaction(Object *p_from, Object *p_to, Ref<ItemResource> p_item, int p_amount) {
-	// Logic to validate if item can be moved (weight, space, etc.)
-	return true;
-}
+private:
+	StringName agent_faction;
+	Dictionary blackboard;
+	Ref<Resource> neural_model; // Ref<NeuralModel>
 
-void InventoryServer::execute_transaction(Object *p_from, Object *p_to, Ref<ItemResource> p_item, int p_amount) {
-	if (validate_transaction(p_from, p_to, p_item, p_amount)) {
-		// Logic to remove from p_from and add to p_to
-	}
-}
+	Vector<NeuralServer::Stimulus> perceived_stimuli;
 
-void InventoryServer::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("validate_transaction", "from", "to", "item", "amount"), &InventoryServer::validate_transaction);
-	ClassDB::bind_method(D_METHOD("execute_transaction", "from", "to", "item", "amount"), &InventoryServer::execute_transaction);
-}
+protected:
+	void _notification(int p_what);
+	static void _bind_methods();
 
-InventoryServer::InventoryServer() {
-	singleton = this;
-}
+public:
+	void set_faction(const StringName &p_faction);
+	StringName get_faction() const;
 
-InventoryServer::~InventoryServer() {
-	singleton = nullptr;
-}
+	void set_model(const Ref<Resource> &p_model);
+	Ref<Resource> get_model() const;
+
+	void add_stimulus(const NeuralServer::Stimulus &p_stimulus);
+	Array get_perceived_stimuli() const;
+
+	Dictionary get_blackboard() const;
+	void set_blackboard_value(const StringName &p_key, const Variant &p_value);
+
+	NeuralAgent();
+	~NeuralAgent();
+};

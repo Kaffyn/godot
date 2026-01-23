@@ -36,6 +36,11 @@
 class AudioListener3D : public Node3D {
 	GDCLASS(AudioListener3D, Node3D);
 
+	NodePath neural_agent_path;
+	class NeuralAgent *neural_agent_cache = nullptr;
+	float hearing_range = 50.0;
+	void _update_neural_agent_cache();
+
 public:
 	enum DopplerTracking {
 		DOPPLER_TRACKING_DISABLED,
@@ -56,6 +61,12 @@ public:
 
 	AudioListener3D();
 	~AudioListener3D();
+
+	void set_neural_agent_path(const NodePath &p_path);
+	NodePath get_neural_agent_path() const;
+
+	void set_hearing_range(float p_range);
+	float get_hearing_range() const;
 
 private:
 	bool force_change = false;
